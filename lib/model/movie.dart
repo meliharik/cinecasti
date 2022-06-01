@@ -1,7 +1,7 @@
 class Movie {
   bool? adult;
   String? backdropPath;
-  Null? belongsToCollection;
+  dynamic belongsToCollection;
   int? budget;
   List<Genres>? genres;
   String? homepage;
@@ -60,7 +60,7 @@ class Movie {
     if (json['genres'] != null) {
       genres = <Genres>[];
       json['genres'].forEach((v) {
-        genres!.add(new Genres.fromJson(v));
+        genres!.add(Genres.fromJson(v));
       });
     }
     homepage = json['homepage'];
@@ -74,13 +74,13 @@ class Movie {
     if (json['production_companies'] != null) {
       productionCompanies = <ProductionCompanies>[];
       json['production_companies'].forEach((v) {
-        productionCompanies!.add(new ProductionCompanies.fromJson(v));
+        productionCompanies!.add(ProductionCompanies.fromJson(v));
       });
     }
     if (json['production_countries'] != null) {
       productionCountries = <ProductionCountries>[];
       json['production_countries'].forEach((v) {
-        productionCountries!.add(new ProductionCountries.fromJson(v));
+        productionCountries!.add(ProductionCountries.fromJson(v));
       });
     }
     releaseDate = json['release_date'];
@@ -89,7 +89,7 @@ class Movie {
     if (json['spoken_languages'] != null) {
       spokenLanguages = <SpokenLanguages>[];
       json['spoken_languages'].forEach((v) {
-        spokenLanguages!.add(new SpokenLanguages.fromJson(v));
+        spokenLanguages!.add(SpokenLanguages.fromJson(v));
       });
     }
     status = json['status'];

@@ -1,25 +1,44 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
-import 'package:html/parser.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/screens/card_back.dart';
 import 'package:movie_suggestion/screens/card_front.dart';
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
 
   @override
-  _MainScreenState createState() => _MainScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends ConsumerState<MainScreen> {
   String selectedGenre = 'Action';
   String selectedScore = "5";
   bool isClicked = false;
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
+
+  @override
+  void initState() {
+    super.initState();
+    getFirstMovie();
+  }
+
+  Future<void> getFirstMovie() async {
+    final String response =
+        await rootBundle.loadString('assets/json/fight_club.json');
+    final data = await json.decode(response);
+    final movie = Movie.fromJson(data);
+    ref.read(movieProvider.state).state = movie;
+    // ref.read(movieRatingProvider.state).state = 0.0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -81,6 +100,7 @@ class _MainScreenState extends State<MainScreen> {
                                 });
                               },
                               items: <DropdownMenuItem<String>>[
+                                dropDownGenre('Any Genre'),
                                 dropDownGenre("Action"),
                                 dropDownGenre("Adventure"),
                                 dropDownGenre("Animation"),
@@ -150,6 +170,7 @@ class _MainScreenState extends State<MainScreen> {
                                 });
                               },
                               items: <DropdownMenuItem<String>>[
+                                dropDownScore('Any Score'),
                                 dropDownScore("5"),
                                 dropDownScore("6"),
                                 dropDownScore("7"),
@@ -165,12 +186,13 @@ class _MainScreenState extends State<MainScreen> {
               //   width: 15,
               // ),
               isClicked
-                  ? Container(
+                  ? SizedBox(
                       height: 40,
                       child: ElevatedButton.icon(
                         icon: const Icon(Icons.arrow_back_ios_new_outlined),
                         label: const Text('Back'),
                         onPressed: () {
+                          ref.read(stopSearchingProvider.state).state = true;
                           setState(() {
                             isClicked = false;
                           });
@@ -178,7 +200,7 @@ class _MainScreenState extends State<MainScreen> {
                         },
                       ),
                     )
-                  : Container(
+                  : SizedBox(
                       height: 40,
                       child: ElevatedButton.icon(
                         icon: const Icon(Icons.search),
@@ -187,6 +209,8 @@ class _MainScreenState extends State<MainScreen> {
                           setState(() {
                             isClicked = true;
                           });
+                          ref.read(isLoadingProvider.state).state = true;
+                          getRandomMovie(ref);
                           cardKey.currentState!.toggleCard();
                         },
                       ),
@@ -200,32 +224,84 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
-}
 
-dropDownGenre(String genre) {
-  return DropdownMenuItem(
-    child: Text(genre),
-    value: genre,
-  );
-}
+  dropDownGenre(String genre) {
+    return DropdownMenuItem(
+      child: Text(genre),
+      value: genre,
+    );
+  }
 
-dropDownScore(String score) {
-  return DropdownMenuItem(
-    child: Text(score),
-    value: score,
-  );
-}
+  dropDownScore(String score) {
+    return DropdownMenuItem(
+      child: Text(score),
+      value: score,
+    );
+  }
 
-// Future<Movie> getRandomMovie(){}
+  Future<void> getRandomMovie(ref) async {
+    int randomNumber = 0;
+    bool isMovieFound = false;
 
-Future getIMDB(String imdbId) async {
-  final response = await http.get(
-      Uri.parse("https://imdb-api.com/en/API/UserRatings/k_8dy8at8i/$imdbId"));
-  if (response.statusCode == 200) {
-    var document = jsonDecode(response.body);
-    var id = document["totalRating"];
-    debugPrint(id);
-  } else {
-    throw Exception('Failed to load post');
+    while (isMovieFound != true) {
+      // if (ref.watch(stopSearchingProvider) == true) {
+      //   ref.read(stopSearchingProvider.state).state = false;
+      //   break;
+      // }
+      randomNumber = Random().nextInt(99999);
+      debugPrint("randomNumber: " + randomNumber.toString());
+      final response = await http.get(Uri.parse(
+          "https://api.themoviedb.org/3/movie/$randomNumber?api_key=cb7c804a5ca858c46d783add66f4de13"));
+      if (response.statusCode == 200) {
+        var document = json.decode(response.body);
+        if (document['success'] == false) {
+          continue;
+        } else {
+          Movie movie = Movie.fromJson(document);
+          // double rating = await getIMDB(movie.imdbId.toString());
+          // if (selectedScore != 'Any Score' &&
+          //     rating < double.parse(selectedScore)) {
+          //   continue;
+          // }
+          bool isGenreFound = false;
+
+          for (var i = 0; i < movie.genres!.length; i++) {
+            Genres genre = movie.genres![i];
+            if (genre.name == selectedGenre) {
+              isGenreFound = true;
+              break;
+            }
+          }
+
+          if (isGenreFound == false) {
+            continue;
+          }
+          for (var i = 0; i < movie.genres!.length; i++) {
+            debugPrint(movie.genres![i].name);
+          }
+
+          isMovieFound = true;
+          ref.read(isLoadingProvider.state).state = false;
+
+          ref.read(movieRatingProvider.state).state = 0.0;
+          ref.read(movieProvider.state).state = movie;
+        }
+      } else {
+        Exception("Error");
+      }
+    }
+  }
+
+  Future<double> getIMDB(String imdbId) async {
+    final response = await http.get(Uri.parse(
+        "https://imdb-api.com/en/API/UserRatings/k_8dy8at8i/$imdbId"));
+    if (response.statusCode == 200) {
+      var document = jsonDecode(response.body);
+      double totalRating = double.parse(document["totalRating"] ?? "0");
+      debugPrint("rating: " + totalRating.toString());
+      return totalRating;
+    } else {
+      throw Exception('Failed to load post');
+    }
   }
 }

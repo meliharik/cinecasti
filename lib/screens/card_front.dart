@@ -7,7 +7,7 @@ class CardFront extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(15)),
+          borderRadius: const BorderRadius.all(Radius.circular(15)),
           color: Colors.grey[400]),
       child: Center(
         child: Image.asset(
