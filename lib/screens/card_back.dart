@@ -94,7 +94,7 @@ class _CardBackState extends ConsumerState<CardBack> {
                   width: 3,
                 ),
                 Text(
-                  ref.watch(movieRatingProvider).toString(),
+                  movie.voteAverage.toString(),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,

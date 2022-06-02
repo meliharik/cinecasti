@@ -258,7 +258,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           continue;
         } else {
           Movie movie = Movie.fromJson(document);
-          // double rating = await getIMDB(movie.imdbId.toString());
+          
           // if (selectedScore != 'Any Score' &&
           //     rating < double.parse(selectedScore)) {
           //   continue;
@@ -283,25 +283,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           isMovieFound = true;
           ref.read(isLoadingProvider.state).state = false;
 
-          ref.read(movieRatingProvider.state).state = 0.0;
           ref.read(movieProvider.state).state = movie;
         }
       } else {
         Exception("Error");
       }
-    }
-  }
-
-  Future<double> getIMDB(String imdbId) async {
-    final response = await http.get(Uri.parse(
-        "https://imdb-api.com/en/API/UserRatings/k_8dy8at8i/$imdbId"));
-    if (response.statusCode == 200) {
-      var document = jsonDecode(response.body);
-      double totalRating = double.parse(document["totalRating"] ?? "0");
-      debugPrint("rating: " + totalRating.toString());
-      return totalRating;
-    } else {
-      throw Exception('Failed to load post');
     }
   }
 }
