@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const MainScreen(),
-      theme: FlexThemeData.light(
+      theme: FlexThemeData.dark(
         scheme: FlexScheme.red,
         surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
         blendLevel: 20,

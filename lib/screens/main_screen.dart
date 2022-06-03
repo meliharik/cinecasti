@@ -36,7 +36,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     final data = await json.decode(response);
     final movie = Movie.fromJson(data);
     ref.read(movieProvider.state).state = movie;
-    // ref.read(movieRatingProvider.state).state = 0.0;
   }
 
   @override
@@ -206,6 +205,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                         icon: const Icon(Icons.search),
                         label: const Text('Suggest'),
                         onPressed: () {
+                          ref.read(stopSearchingProvider.state).state = false;
+
                           setState(() {
                             isClicked = true;
                           });
@@ -244,10 +245,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     bool isMovieFound = false;
 
     while (isMovieFound != true) {
-      // if (ref.watch(stopSearchingProvider) == true) {
-      //   ref.read(stopSearchingProvider.state).state = false;
-      //   break;
-      // }
+      if (ref.watch(stopSearchingProvider) == true) {
+        ref.read(stopSearchingProvider.state).state = false;
+        break;
+      }
       randomNumber = Random().nextInt(99999);
       debugPrint("randomNumber: " + randomNumber.toString());
       final response = await http.get(Uri.parse(
@@ -258,11 +259,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           continue;
         } else {
           Movie movie = Movie.fromJson(document);
-          
-          // if (selectedScore != 'Any Score' &&
-          //     rating < double.parse(selectedScore)) {
-          //   continue;
-          // }
+
+          if (selectedScore != 'Any Score' &&
+              movie.voteAverage! < double.parse(selectedScore)) {
+            continue;
+          }
           bool isGenreFound = false;
 
           for (var i = 0; i < movie.genres!.length; i++) {
@@ -273,7 +274,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             }
           }
 
-          if (isGenreFound == false) {
+          if (isGenreFound == false && selectedGenre != 'Any Genre') {
             continue;
           }
           for (var i = 0; i < movie.genres!.length; i++) {

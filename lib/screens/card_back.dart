@@ -106,7 +106,7 @@ class _CardBackState extends ConsumerState<CardBack> {
           ),
         ),
         Positioned(
-          bottom: 50,
+          bottom: 10,
           left: 10,
           child: SizedBox(
             width: MediaQuery.of(context).size.width - 50,
@@ -181,9 +181,26 @@ class _CardBackState extends ConsumerState<CardBack> {
                           ),
                         )
                       ],
-                    )
+                    ),
                   ],
-                )
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Tap the card to see more details.',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white54,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
