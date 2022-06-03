@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:movie_suggestion/screens/main_screen.dart';
+import 'package:movie_suggestion/screens/tabbar_main.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:movie_suggestion/screens/recomend_screen.dart';
 
 void main() async {
   HttpOverrides.global = MyHttpOverrides();
@@ -17,9 +18,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const MainScreen(),
+      home: const TabBarMain(),
       theme: FlexThemeData.dark(
-        scheme: FlexScheme.red,
+        scheme: FlexScheme.blumineBlue,
         surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
         blendLevel: 20,
         appBarOpacity: 0.95,

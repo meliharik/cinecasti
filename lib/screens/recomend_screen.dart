@@ -8,17 +8,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/model/movie.dart';
-import 'package:movie_suggestion/screens/card_back.dart';
-import 'package:movie_suggestion/screens/card_front.dart';
+import 'package:movie_suggestion/screens/card/card_back.dart';
+import 'package:movie_suggestion/screens/card/card_front.dart';
 
-class MainScreen extends ConsumerStatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+class RecomendScreen extends ConsumerStatefulWidget {
+  const RecomendScreen({Key? key}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends ConsumerState<MainScreen> {
+class _MainScreenState extends ConsumerState<RecomendScreen> {
   String selectedGenre = 'Action';
   String selectedScore = "5";
   bool isClicked = false;
@@ -125,9 +125,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                         ),
                       ],
                     ),
-              // SizedBox(
-              //   width: 10,
-              // ),
               isClicked
                   ? Container()
                   : Column(
