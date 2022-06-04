@@ -1,9 +1,17 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:movie_suggestion/data/genres.dart';
+import 'package:movie_suggestion/model/members.dart';
 import 'package:movie_suggestion/model/movie.dart';
+import 'package:movie_suggestion/model/movie_provider.dart';
+import 'package:movie_suggestion/service/movie_service.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class MovieDetail extends ConsumerStatefulWidget {
   final int id;
@@ -15,34 +23,984 @@ class MovieDetail extends ConsumerStatefulWidget {
 }
 
 class _MovieDetailState extends ConsumerState<MovieDetail> {
-  Future getMovieById() async {
-    final response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/movie/${widget.id}?api_key=cb7c804a5ca858c46d783add66f4de13'));
-    if (response.statusCode == 200) {
-      var document = json.decode(response.body);
-      return Movie.fromJson(document);
-    } else {
-      Exception('Failed to load movie');
-      return null;
-    }
+  final controller = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(() {
+      debugPrint(controller.position.pixels.toString());
+      // listen to scroll events
+      if (controller.position.pixels == controller.position.maxScrollExtent) {
+        // load more data
+        debugPrint('max scroll');
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder(
-        future: getMovieById(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            Movie movie = snapshot.data as Movie;
-            return Center(child: Text(movie.id.toString()));
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error'));
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
+    return FutureBuilder(
+      future: MovieService.getMovieById(widget.id),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          Movie movie = snapshot.data as Movie;
+          return getMovieDetail(movie);
+        } else if (snapshot.hasError) {
+          debugPrint(snapshot.error.toString());
+          return const Scaffold(
+            body: Center(child: Text('Error')),
+          );
+        } else {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+      },
+    );
+  }
+
+  Widget getMovieDetail(Movie movie) {
+    return SafeArea(
+      child: Scaffold(
+        body: CustomScrollView(
+          controller: controller,
+          slivers: [
+            getAppBar(movie),
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  card1(movie),
+                  // card2(movie),
+                  card3(movie),
+                  card4(movie),
+                  card5(movie),
+                  card6(movie),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget getAppBar(Movie movie) {
+    return SliverAppBar(
+      pinned: true,
+      collapsedHeight: MediaQuery.of(context).size.height * 0.15,
+      leading: IconButton(
+        icon: const Icon(
+          FontAwesomeIcons.angleLeft,
+        ),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      actions: [
+        // IconButton(
+        //   icon: const Icon(FontAwesomeIcons.solidHeart),
+        //   onPressed: () {},
+        // ),
+        IconButton(
+          icon: const Icon(FontAwesomeIcons.shareNodes),
+          onPressed: () {},
+        ),
+      ],
+      // shape: ShapeBorder.lerp(
+      //   BeveledRectangleBorder(
+      //     borderRadius: BorderRadius.circular(20),
+      //   ),
+      //   BeveledRectangleBorder(
+      //     borderRadius: BorderRadius.circular(20),
+      //   ),
+      //   0.5,
+      // ),
+      expandedHeight: MediaQuery.of(context).size.height * 0.65,
+      // pinned: true,
+      flexibleSpace: FlexibleSpaceBar(
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              movie.title.toString(),
+              overflow: TextOverflow.clip,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(
+              height: 6,
+            ),
+            Text(
+              movie.tagline.toString(),
+              overflow: TextOverflow.clip,
+              style: const TextStyle(
+                color: Colors.white60,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        titlePadding: const EdgeInsets.all(16),
+        background: Stack(
+          children: [
+            Center(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Image.network(
+                  'https://image.tmdb.org/t/p/original/${movie.posterPath}',
+                  loadingBuilder: (context, child, loadingProgress) =>
+                      loadingProgress == null
+                          ? child
+                          : Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                            .toInt()
+                                    : null,
+                              ),
+                            ),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                // borderRadius: const BorderRadius.all(
+                //   Radius.circular(15),
+                // ),
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Theme.of(context).scaffoldBackgroundColor,
+                    Colors.black.withOpacity(0.0)
+                  ],
+                  stops: const [
+                    0.0,
+                    0.5,
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget card1(Movie movie) {
+    String formattedDate =
+        DateFormat.yMMMd().format(DateTime.parse(movie.releaseDate.toString()));
+    return Card(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(
+                  formattedDate,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  movie.runtime.toString() + ' min',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                movie.adult == true
+                    ? const Text(
+                        '18+ ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
+                      )
+                    : const Text(
+                        'PG  ',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            const Divider(
+              color: Colors.grey,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              movie.overview.toString() + movie.id.toString(),
+              style: const TextStyle(
+                fontSize: 15,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Divider(
+              color: Colors.grey,
+            ),
+            const SizedBox(height: 8),
+            getGenres(movie),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget card2(Movie movie) {
+    return FutureBuilder(
+      future: MovieService.getVideoId(movie),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          String videoId = snapshot.data as String;
+          print(videoId);
+          YoutubePlayerController _controller = YoutubePlayerController(
+            initialVideoId: videoId,
+            flags: const YoutubePlayerFlags(
+              enableCaption: true,
+              showLiveFullscreenButton: false,
+              autoPlay: false,
+              disableDragSeek: true,
+              mute: false,
+            ),
+          );
+          return Card(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Trailer',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Divider(
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(height: 8),
+                  YoutubePlayer(
+                    controller: _controller,
+                    showVideoProgressIndicator: true,
+                    bottomActions: [
+                      CurrentPosition(),
+                      const SizedBox(width: 8),
+                      ProgressBar(isExpanded: true),
+                      const SizedBox(width: 8),
+                      RemainingDuration(),
+                      const SizedBox(width: 8),
+                      // FullScreenButton(),
+                    ],
+                    progressColors: const ProgressBarColors(
+                      playedColor: Colors.red,
+                      handleColor: Colors.blueAccent,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        } else if (snapshot.hasError) {
+          debugPrint(snapshot.error.toString());
+
+          return const SizedBox();
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+
+  Widget card3(Movie movie) {
+    return Card(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Cast',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Divider(
+              color: Colors.grey,
+            ),
+            const SizedBox(height: 8),
+            FutureBuilder(
+              future: MovieService.getCastMembers(movie),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<Cast> cast = snapshot.data as List<Cast>;
+
+                  return Container(
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: cast.length,
+                      itemBuilder: (context, index) {
+                        return Row(
+                          children: [
+                            Column(
+                              children: [
+                                Image.network(
+                                  cast[index].profilePath != null
+                                      ? 'https://image.tmdb.org/t/p/w500' +
+                                          cast[index].profilePath.toString()
+                                      : 'https://www.diabetes.ie/wp-content/uploads/2017/02/no-image-available.png',
+
+                                  loadingBuilder: (context, child,
+                                          loadingProgress) =>
+                                      loadingProgress == null
+                                          ? child
+                                          : Center(
+                                              child: CircularProgressIndicator(
+                                                value: loadingProgress
+                                                            .expectedTotalBytes !=
+                                                        null
+                                                    ? loadingProgress
+                                                            .cumulativeBytesLoaded /
+                                                        loadingProgress
+                                                            .expectedTotalBytes!
+                                                            .toInt()
+                                                    : null,
+                                              ),
+                                            ),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.25,
+                                  // width: 100,
+                                ),
+                                Text(
+                                  cast[index].name.toString(),
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  cast[index].character.toString(),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  debugPrint(snapshot.error.toString());
+
+                  return const SizedBox();
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget card4(Movie movie) {
+    return Card(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Crew',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Divider(
+              color: Colors.grey,
+            ),
+            const SizedBox(height: 8),
+            FutureBuilder(
+              future: MovieService.getCrewMembers(movie),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<Crew> cast = snapshot.data as List<Crew>;
+
+                  return Container(
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: 3,
+                      itemBuilder: (context, index) {
+                        return Row(
+                          children: [
+                            Column(
+                              children: [
+                                Image.network(
+                                  cast[index].profilePath != null
+                                      ? 'https://image.tmdb.org/t/p/w500' +
+                                          cast[index].profilePath.toString()
+                                      : 'https://www.diabetes.ie/wp-content/uploads/2017/02/no-image-available.png',
+
+                                  loadingBuilder: (context, child,
+                                          loadingProgress) =>
+                                      loadingProgress == null
+                                          ? child
+                                          : Center(
+                                              child: CircularProgressIndicator(
+                                                value: loadingProgress
+                                                            .expectedTotalBytes !=
+                                                        null
+                                                    ? loadingProgress
+                                                            .cumulativeBytesLoaded /
+                                                        loadingProgress
+                                                            .expectedTotalBytes!
+                                                            .toInt()
+                                                    : null,
+                                              ),
+                                            ),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.25,
+                                  // width: 100,
+                                ),
+                                Text(
+                                  cast[index].name.toString(),
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  cast[index].job.toString(),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  debugPrint(snapshot.error.toString());
+
+                  return const SizedBox();
+                } else {
+                  return const Center(
+                    child: const CircularProgressIndicator(),
+                  );
+                }
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget card5(Movie movie) {
+    //similar movies
+    return Card(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Similar Movies',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Divider(
+              color: Colors.grey,
+            ),
+            const SizedBox(height: 8),
+            FutureBuilder(
+              future: MovieService.getSimilarMovies(movie),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<Movie> movies = snapshot.data as List<Movie>;
+
+                  return Container(
+                    height: MediaQuery.of(context).size.height * 0.38,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: 9,
+                      itemBuilder: (context, index) {
+                        return Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MovieDetail(
+                                        id: movies[index].id!.toInt()),
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                children: [
+                                  Image.network(
+                                    movies[index].posterPath != null
+                                        ? 'https://image.tmdb.org/t/p/w500' +
+                                            movies[index].posterPath.toString()
+                                        : 'https://www.diabetes.ie/wp-content/uploads/2017/02/no-image-available.png',
+
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) =>
+                                            loadingProgress == null
+                                                ? child
+                                                : Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      value: loadingProgress
+                                                                  .expectedTotalBytes !=
+                                                              null
+                                                          ? loadingProgress
+                                                                  .cumulativeBytesLoaded /
+                                                              loadingProgress
+                                                                  .expectedTotalBytes!
+                                                                  .toInt()
+                                                          : null,
+                                                    ),
+                                                  ),
+                                    height: MediaQuery.of(context).size.height *
+                                        0.3,
+                                    // width: 100,
+                                  ),
+                                  Text(
+                                    movies[index].title!.length > 18
+                                        ? movies[index]
+                                                .title!
+                                                .substring(0, 18) +
+                                            '...'
+                                        : movies[index].title.toString(),
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        movies[index]
+                                                .releaseDate!
+                                                .substring(0, 4) +
+                                            '   -',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            FontAwesomeIcons.imdb,
+                                            color: Color(0xfff5c518),
+                                          ),
+                                          const SizedBox(
+                                            width: 3,
+                                          ),
+                                          RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: movies[index]
+                                                      .voteAverage!
+                                                      .toStringAsFixed(1),
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                const TextSpan(
+                                                  text: '/10',
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.white70,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  debugPrint(snapshot.error.toString());
+
+                  return const SizedBox();
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget card6(Movie movie) {
+    //see on
+    return Card(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'See On',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Divider(
+              color: Colors.grey,
+            ),
+            const SizedBox(height: 8),
+            FutureBuilder(
+              future: MovieService.getMovieProviders(movie),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<MovieProvider> providers =
+                      snapshot.data as List<MovieProvider>;
+
+                  if (providers.isEmpty) {
+                    return Container(
+                      child: Column(
+                        children: [
+                          ListTile(
+                            onTap: () async {
+                              await launchUrl(Uri.parse(
+                                  'https://www.imdb.com/title/${movie.imdbId}/'));
+                            },
+                            title: Text(
+                              'IMDB',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            leading: Image.asset(
+                              'assets/icons/imdb_icon.png',
+                              width: MediaQuery.of(context).size.width * 0.1,
+                            ),
+                          ),
+                          ListTile(
+                            onTap: () async {
+                              String editedText = movie.title!
+                                  .replaceAll(RegExp(r'[^\w\s]+'), '');
+                              String editedText2 =
+                                  editedText.replaceAll(' ', '_');
+                              await launchUrl(Uri.parse(
+                                  'https://www.rottentomatoes.com/m/${editedText2}/'));
+                            },
+                            title: Text(
+                              'Rotten Tomatoes',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            leading: Image.asset(
+                              'assets/icons/tomato_icon.png',
+                              width: MediaQuery.of(context).size.width * 0.1,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  return Container(
+                    child: ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: providers.length + 2,
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return ListTile(
+                            onTap: () async {
+                              await launchUrl(Uri.parse(
+                                  'https://www.imdb.com/title/${movie.imdbId}/'));
+                            },
+                            title: Text(
+                              'IMDB',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            leading: Image.asset(
+                              'assets/icons/imdb_icon.png',
+                              width: MediaQuery.of(context).size.width * 0.1,
+                            ),
+                          );
+                        } else if (index == 1) {
+                          return ListTile(
+                            onTap: () async {
+                              String editedText = movie.title!
+                                  .replaceAll(new RegExp(r'[^\w\s]+'), '');
+                              String editedText2 =
+                                  editedText.replaceAll(' ', '_');
+                              await launchUrl(Uri.parse(
+                                  'https://www.rottentomatoes.com/m/${editedText2}/'));
+                            },
+                            title: Text(
+                              'Rotten Tomatoes',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            leading: Image.asset(
+                              'assets/icons/tomato_icon.png',
+                              width: MediaQuery.of(context).size.width * 0.1,
+                            ),
+                          );
+                        }
+                        return getListTile(providers, index - 2, movie);
+                      },
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  debugPrint(snapshot.error.toString());
+
+                  return const Text('No Providers');
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getListTile(List<MovieProvider> providers, int index, Movie movie) {
+    if (providers[index].providerName == 'YouTube') {
+      return ListTile(
+        onTap: () async {
+          String editedText = movie.title!.replaceAll(RegExp(r'[^\w\s]+'), '');
+          String editedText2 = editedText.replaceAll(' ', '+');
+          await launchUrl(Uri.parse(
+              'https://www.youtube.com/results?search_query=${editedText2}'));
+        },
+        title: Text(
+          providers[index].providerName.toString(),
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        leading: Image.asset(
+          'assets/icons/youtube_icon.png',
+          width: MediaQuery.of(context).size.width * 0.1,
+        ),
+      );
+    } else if (providers[index].providerName == 'Amazon Prime Video' ||
+        providers[index].providerName == 'Amazon Video') {
+      return ListTile(
+        onTap: () async {
+          String editedText = movie.title!.replaceAll(RegExp(r'[^\w\s]+'), '');
+          String editedText2 = editedText.replaceAll(' ', '+');
+          await launchUrl(Uri.parse(
+              'https://www.google.com/search?q=Amazon+Video+${editedText2}'));
+        },
+        title: Text(
+          providers[index].providerName.toString(),
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        leading: Image.asset(
+          'assets/icons/amazon_icon.png',
+          width: MediaQuery.of(context).size.width * 0.1,
+        ),
+      );
+    } else if (providers[index].providerName == 'Netflix') {
+      return ListTile(
+        onTap: () {},
+        title: Text(
+          providers[index].providerName.toString(),
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        leading: Image.asset(
+          'assets/icons/netflix_icon.png',
+          width: MediaQuery.of(context).size.width * 0.1,
+        ),
+      );
+    } else if (providers[index].providerName == 'Disney Plus') {
+      return ListTile(
+        onTap: () {},
+        title: Text(
+          providers[index].providerName.toString(),
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        leading: Image.asset(
+          'assets/icons/disney_icon.png',
+          width: MediaQuery.of(context).size.width * 0.1,
+        ),
+      );
+    } else if (providers[index].providerName == 'Google Play Movies') {
+      return ListTile(
+        onTap: () async {
+          String editedText = movie.title!.replaceAll(RegExp(r'[^\w\s]+'), '');
+          String editedText2 = editedText.replaceAll(' ', '%20');
+          await launchUrl(Uri.parse(
+              'https://play.google.com/store/search?q=$editedText2&c=movies'));
+        },
+        title: Text(
+          providers[index].providerName.toString(),
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        leading: Image.asset(
+          'assets/icons/google_play_icon.png',
+          width: MediaQuery.of(context).size.width * 0.1,
+        ),
+      );
+    } else {
+      return ListTile(
+        onTap: () {},
+        title: Text(
+          providers[index].providerName.toString(),
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    }
+    // else if(providers[index].providerName == 'HBO'){
+    //   return ListTile(
+    //     onTap: () {},
+    //     title: Text(
+    //       providers[index].providerName.toString(),
+    //       style: const TextStyle(
+    //         fontSize: 15,
+    //         fontWeight: FontWeight.bold,
+    //       ),
+    //     ),
+    //     leading: Image.asset(
+    //       'assets/icons/hbo_icon.png',
+    //     ),
+    //   );
+    // }
+  }
+
+  Widget getGenres(Movie movie) {
+    List<Widget> genres = [];
+
+    Widget genre1 = Row(
+      children: [
+        Icon(GetGenre.getGenreAndIcon(movie.genres![0].id!.toInt())[1]),
+        Text(
+          GetGenre.getGenreAndIcon(movie.genres![0].id!.toInt())[0],
+          style: const TextStyle(
+            fontSize: 15,
+          ),
+        ),
+      ],
+    );
+    Widget genre2 = Row();
+    if (movie.genres!.length > 1) {
+      genre2 = Row(
+        children: [
+          Icon(GetGenre.getGenreAndIcon(movie.genres![1].id!.toInt())[1]),
+          Text(
+            GetGenre.getGenreAndIcon(movie.genres![1].id!.toInt())[0],
+            style: const TextStyle(
+              fontSize: 15,
+            ),
+          ),
+        ],
+      );
+    }
+    genres.add(genre1);
+    if (movie.genres!.length > 1) genres.add(genre2);
+    // genres.add(genre3);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: genres,
     );
   }
 }

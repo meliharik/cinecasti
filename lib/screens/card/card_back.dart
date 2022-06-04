@@ -48,7 +48,7 @@ class _CardBackState extends ConsumerState<CardBack> {
             color: Colors.grey[400],
             image: DecorationImage(
               image: NetworkImage(
-                  'https://image.tmdb.org/t/p/original/${movie.posterPath}'),
+                  'https://image.tmdb.org/t/p/original/${movie.posterPath}&language=en-US'),
               fit: BoxFit.cover,
             ),
           ),

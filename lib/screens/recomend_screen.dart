@@ -249,7 +249,7 @@ class _MainScreenState extends ConsumerState<RecomendScreen> {
       randomNumber = Random().nextInt(99999);
       debugPrint("randomNumber: " + randomNumber.toString());
       final response = await http.get(Uri.parse(
-          "https://api.themoviedb.org/3/movie/$randomNumber?api_key=cb7c804a5ca858c46d783add66f4de13"));
+          "https://api.themoviedb.org/3/movie/$randomNumber?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US"));
       if (response.statusCode == 200) {
         var document = json.decode(response.body);
         if (document['success'] == false) {
