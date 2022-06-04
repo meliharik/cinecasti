@@ -5,7 +5,9 @@ import 'package:movie_suggestion/model/members.dart';
 import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/model/movie_provider.dart';
 import 'package:movie_suggestion/model/person.dart';
+import 'package:movie_suggestion/model/person_social.dart';
 import 'package:movie_suggestion/model/popular_movies.dart';
+import 'package:movie_suggestion/model/top_rated_movies.dart';
 import 'package:movie_suggestion/model/tv_serie.dart';
 
 class ApiService {
@@ -48,6 +50,43 @@ class ApiService {
           List tempList = document['results'];
           for (var i = 0; i < tempList.length; i++) {
             popMovies.add(PopularMovie.fromJson(tempList[i]));
+          }
+        } else {
+          Exception('Failed to load popular movies');
+          return [];
+        }
+      }
+      return popMovies;
+    }
+  }
+
+  static Future<List<TopRatedMovie>> getTopRatedMovies(int pageNumber) async {
+    if (pageNumber == 1) {
+      final response = await http.get(Uri.parse(
+          'https://api.themoviedb.org/3/movie/top_rated?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=$pageNumber'));
+      if (response.statusCode == 200) {
+        var document = json.decode(response.body);
+        List tempList = document['results'];
+        List<TopRatedMovie> popMovies = [];
+        for (var i = 0; i < tempList.length; i++) {
+          popMovies.add(TopRatedMovie.fromJson(tempList[i]));
+        }
+        return popMovies;
+      } else {
+        Exception('Failed to load popular movies');
+        return [];
+      }
+    } else {
+      List<TopRatedMovie> popMovies = [];
+
+      for (int i = 1; i < pageNumber; i++) {
+        final response = await http.get(Uri.parse(
+            'https://api.themoviedb.org/3/movie/popular?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=$i'));
+        if (response.statusCode == 200) {
+          var document = json.decode(response.body);
+          List tempList = document['results'];
+          for (var i = 0; i < tempList.length; i++) {
+            popMovies.add(TopRatedMovie.fromJson(tempList[i]));
           }
         } else {
           Exception('Failed to load popular movies');
@@ -125,6 +164,8 @@ class ApiService {
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['results']['US']['buy'] ?? [];
+      List results2 = jsonResponse['results']['US']['flatrate'] ?? [];
+      results.addAll(results2);
       List<MovieProvider> providers = [];
       List<MovieProvider> providers2 = [];
       for (var i = 0; i < results.length; i++) {
@@ -184,6 +225,17 @@ class ApiService {
         tvSeries.add(CastTvSeries.fromJson(results[i]));
       }
       return tvSeries;
+    } else {
+      throw Exception('Failed to load post');
+    }
+  }
+
+  static Future<PersonSocial> getPersonSocial(int id) async {
+    var response = await http.get(Uri.parse(
+        'https://api.themoviedb.org/3/person/$id/external_ids?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      return PersonSocial.fromJson(jsonResponse);
     } else {
       throw Exception('Failed to load post');
     }

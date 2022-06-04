@@ -80,6 +80,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                   card4(movie),
                   card5(movie),
                   card6(movie),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                 ],
               ),
             ),
@@ -92,7 +93,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
   Widget getAppBar(Movie movie) {
     return SliverAppBar(
       pinned: true,
-      collapsedHeight: MediaQuery.of(context).size.height * 0.2,
+      collapsedHeight: MediaQuery.of(context).size.height * 0.15,
       leading: IconButton(
         icon: const Icon(
           FontAwesomeIcons.angleLeft,
@@ -100,10 +101,6 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
         onPressed: () => Navigator.of(context).pop(),
       ),
       actions: [
-        // IconButton(
-        //   icon: const Icon(FontAwesomeIcons.solidHeart),
-        //   onPressed: () {},
-        // ),
         IconButton(
           icon: const Icon(FontAwesomeIcons.shareNodes),
           onPressed: () {},
@@ -747,6 +744,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                     return Column(
                       children: [
                         ListTile(
+                          trailing: const Icon(
+                            FontAwesomeIcons.angleRight,
+                            color: Colors.white54,
+                          ),
                           onTap: () async {
                             await launchUrl(Uri.parse(
                                 'https://www.imdb.com/title/${movie.imdbId}/'));
@@ -764,6 +765,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                           ),
                         ),
                         ListTile(
+                          trailing: const Icon(
+                            FontAwesomeIcons.angleRight,
+                            color: Colors.white54,
+                          ),
                           onTap: () async {
                             String editedText = movie.title!
                                 .replaceAll(RegExp(r'[^\w\s]+'), '');
@@ -795,6 +800,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         return ListTile(
+                          trailing: const Icon(
+                            FontAwesomeIcons.angleRight,
+                            color: Colors.white54,
+                          ),
                           onTap: () async {
                             await launchUrl(Uri.parse(
                                 'https://www.imdb.com/title/${movie.imdbId}/'));
@@ -813,6 +822,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                         );
                       } else if (index == 1) {
                         return ListTile(
+                          trailing: const Icon(
+                            FontAwesomeIcons.angleRight,
+                            color: Colors.white54,
+                          ),
                           onTap: () async {
                             String editedText = movie.title!
                                 .replaceAll(RegExp(r'[^\w\s]+'), '');
@@ -858,6 +871,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
   Widget getListTile(List<MovieProvider> providers, int index, Movie movie) {
     if (providers[index].providerName == 'YouTube') {
       return ListTile(
+        trailing: const Icon(
+          FontAwesomeIcons.angleRight,
+          color: Colors.white54,
+        ),
         onTap: () async {
           String editedText = movie.title!.replaceAll(RegExp(r'[^\w\s]+'), '');
           String editedText2 = editedText.replaceAll(' ', '+');
@@ -879,6 +896,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
     } else if (providers[index].providerName == 'Amazon Prime Video' ||
         providers[index].providerName == 'Amazon Video') {
       return ListTile(
+        trailing: const Icon(
+          FontAwesomeIcons.angleRight,
+          color: Colors.white54,
+        ),
         onTap: () async {
           String editedText = movie.title!.replaceAll(RegExp(r'[^\w\s]+'), '');
           String editedText2 = editedText.replaceAll(' ', '+');
@@ -899,7 +920,16 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
       );
     } else if (providers[index].providerName == 'Netflix') {
       return ListTile(
-        onTap: () {},
+        trailing: const Icon(
+          FontAwesomeIcons.angleRight,
+          color: Colors.white54,
+        ),
+        onTap: () async {
+          String editedText = movie.title!.replaceAll(RegExp(r'[^\w\s]+'), '');
+          String editedText2 = editedText.replaceAll(' ', '+');
+          await launchUrl(Uri.parse(
+              'https://www.google.com/search?q=Netflix+$editedText2'));
+        },
         title: Text(
           providers[index].providerName.toString(),
           style: const TextStyle(
@@ -914,6 +944,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
       );
     } else if (providers[index].providerName == 'Disney Plus') {
       return ListTile(
+        trailing: const Icon(
+          FontAwesomeIcons.angleRight,
+          color: Colors.white54,
+        ),
         onTap: () {},
         title: Text(
           providers[index].providerName.toString(),
@@ -929,6 +963,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
       );
     } else if (providers[index].providerName == 'Google Play Movies') {
       return ListTile(
+        trailing: const Icon(
+          FontAwesomeIcons.angleRight,
+          color: Colors.white54,
+        ),
         onTap: () async {
           String editedText = movie.title!.replaceAll(RegExp(r'[^\w\s]+'), '');
           String editedText2 = editedText.replaceAll(' ', '%20');
@@ -949,6 +987,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
       );
     } else {
       return ListTile(
+        trailing: const Icon(
+          FontAwesomeIcons.angleRight,
+          color: Colors.white54,
+        ),
         onTap: () {},
         title: Text(
           providers[index].providerName.toString(),

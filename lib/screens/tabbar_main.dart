@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:movie_suggestion/screens/popular_screen.dart';
+import 'package:movie_suggestion/screens/tabs/popular_screen.dart';
+import 'package:movie_suggestion/screens/tabs/top_rated_screen.dart';
 
 class TabBarMain extends ConsumerStatefulWidget {
   const TabBarMain({Key? key}) : super(key: key);
@@ -30,13 +31,13 @@ class _MainScreenState extends ConsumerState<TabBarMain> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Movie Suggestion'),
+          title: const Text('movieus'),
           bottom: tab,
         ),
         body: const TabBarView(
           children: [
             PopularScreen(),
-            Icon(Icons.directions_transit, size: 350),
+            TopRatedScreen(),
             Icon(Icons.directions_car, size: 350),
           ],
         ),

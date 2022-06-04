@@ -3,14 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
-import 'package:movie_suggestion/model/members.dart';
 import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/model/person.dart';
+import 'package:movie_suggestion/model/person_social.dart';
 import 'package:movie_suggestion/model/tv_serie.dart';
 import 'package:movie_suggestion/screens/movie_detail.dart';
 import 'package:movie_suggestion/screens/seeAll/person_movies.dart';
 import 'package:movie_suggestion/screens/seeAll/person_tv_series.dart';
 import 'package:movie_suggestion/service/movie_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PersonDetail extends ConsumerStatefulWidget {
   final int id;
@@ -48,6 +49,12 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
   Widget getPersonDetail(Person person) {
     return SafeArea(
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          child: const Icon(
+            FontAwesomeIcons.heart,
+          ),
+        ),
         body: CustomScrollView(
           slivers: [
             getAppBar(person),
@@ -57,7 +64,8 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                   card1(person),
                   card2(person),
                   card3(person),
-                  // card4(movie),
+                  card4(person),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                   // card5(movie),
                   // card6(movie),
                 ],
@@ -364,9 +372,10 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                                     ),
                                   ),
                                 ),
-                                Text(
+                                const SizedBox(height: 8),
+                                const Text(
                                   'SEE ALL MOVIES',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -575,9 +584,10 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                                     ),
                                   ),
                                 ),
-                                Text(
+                                const SizedBox(height: 8),
+                                const Text(
                                   'SEE ALL TV SERIES',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -710,6 +720,167 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                   debugPrint(snapshot.error.toString());
 
                   return const Text('error');
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget card4(Person person) {
+    return Card(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'See On',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Divider(
+              color: Colors.grey,
+            ),
+            const SizedBox(height: 8),
+            FutureBuilder(
+              future: ApiService.getPersonSocial(person.id!.toInt()),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  PersonSocial personSocial = snapshot.data as PersonSocial;
+
+                  return Column(
+                    children: [
+                      personSocial.facebookId != null
+                          ? ListTile(
+                              trailing: const Icon(
+                                FontAwesomeIcons.angleRight,
+                                color: Colors.white54,
+                              ),
+                              onTap: () async {
+                                await launchUrl(Uri.parse(
+                                    'https://www.facebook.com/${personSocial.facebookId}/'));
+                              },
+                              title: const Text(
+                                'Facebook',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              leading: Image.asset(
+                                'assets/icons/facebook_icon.png',
+                                width: MediaQuery.of(context).size.width * 0.1,
+                              ),
+                            )
+                          : const SizedBox(),
+                      personSocial.instagramId != null
+                          ? ListTile(
+                              trailing: const Icon(
+                                FontAwesomeIcons.angleRight,
+                                color: Colors.white54,
+                              ),
+                              onTap: () async {
+                                await launchUrl(Uri.parse(
+                                    'https://www.instagram.com/${personSocial.instagramId}/'));
+                              },
+                              title: const Text(
+                                'Instagram',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              leading: Image.asset(
+                                'assets/icons/instagram_icon.png',
+                                width: MediaQuery.of(context).size.width * 0.1,
+                              ),
+                            )
+                          : const SizedBox(),
+                      personSocial.twitterId != null
+                          ? ListTile(
+                              trailing: const Icon(
+                                FontAwesomeIcons.angleRight,
+                                color: Colors.white54,
+                              ),
+                              onTap: () async {
+                                await launchUrl(Uri.parse(
+                                    'https://twitter.com/${personSocial.twitterId}/'));
+                              },
+                              title: const Text(
+                                'Twitter',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              leading: Image.asset(
+                                'assets/icons/twitter_icon.png',
+                                width: MediaQuery.of(context).size.width * 0.1,
+                              ),
+                            )
+                          : const SizedBox(),
+                      ListTile(
+                        trailing: const Icon(
+                          FontAwesomeIcons.angleRight,
+                          color: Colors.white54,
+                        ),
+                        onTap: () async {
+                          await launchUrl(Uri.parse(
+                              'https://www.imdb.com/name/${person.imdbId}/'));
+                        },
+                        title: const Text(
+                          'IMDB',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        leading: Image.asset(
+                          'assets/icons/imdb_icon.png',
+                          width: MediaQuery.of(context).size.width * 0.1,
+                        ),
+                      ),
+                      ListTile(
+                        trailing: const Icon(
+                          FontAwesomeIcons.angleRight,
+                          color: Colors.white54,
+                        ),
+                        onTap: () async {
+                          String editedText =
+                              person.name!.replaceAll(RegExp(r'[^\w\s]+'), '');
+                          String editedText2 = editedText.replaceAll(' ', '+');
+                          await launchUrl(Uri.parse(
+                              'https://www.google.com/search?q=$editedText2'));
+                        },
+                        title: const Text(
+                          'Google',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        leading: Image.asset(
+                          'assets/icons/google_icon.png',
+                          width: MediaQuery.of(context).size.width * 0.1,
+                        ),
+                      ),
+                    ],
+                  );
+                } else if (snapshot.hasError) {
+                  debugPrint('error');
+                  debugPrint(snapshot.error.toString());
+
+                  return const Text('No Providers');
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),
