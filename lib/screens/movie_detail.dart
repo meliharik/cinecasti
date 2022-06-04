@@ -1,14 +1,13 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:movie_suggestion/data/genres.dart';
+import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/members.dart';
 import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/model/movie_provider.dart';
+import 'package:movie_suggestion/screens/person_detail.dart';
 import 'package:movie_suggestion/service/movie_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -29,10 +28,13 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
   void initState() {
     super.initState();
     controller.addListener(() {
-      debugPrint(controller.position.pixels.toString());
+      // debugPrint(controller.position.pixels.toString());
+      // debugPrint(controller.offset.toString());
+
       // listen to scroll events
       if (controller.position.pixels == controller.position.maxScrollExtent) {
         // load more data
+        debugPrint(controller.position.maxScrollExtent.toString());
         debugPrint('max scroll');
       }
     });
@@ -41,13 +43,15 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: MovieService.getMovieById(widget.id),
+      future: ApiService.getMovieById(widget.id),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           Movie movie = snapshot.data as Movie;
           return getMovieDetail(movie);
         } else if (snapshot.hasError) {
+          debugPrint('error');
           debugPrint(snapshot.error.toString());
+
           return const Scaffold(
             body: Center(child: Text('Error')),
           );
@@ -71,7 +75,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               delegate: SliverChildListDelegate(
                 [
                   card1(movie),
-                  // card2(movie),
+                  card2(movie),
                   card3(movie),
                   card4(movie),
                   card5(movie),
@@ -88,7 +92,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
   Widget getAppBar(Movie movie) {
     return SliverAppBar(
       pinned: true,
-      collapsedHeight: MediaQuery.of(context).size.height * 0.15,
+      collapsedHeight: MediaQuery.of(context).size.height * 0.2,
       leading: IconButton(
         icon: const Icon(
           FontAwesomeIcons.angleLeft,
@@ -105,17 +109,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
           onPressed: () {},
         ),
       ],
-      // shape: ShapeBorder.lerp(
-      //   BeveledRectangleBorder(
-      //     borderRadius: BorderRadius.circular(20),
-      //   ),
-      //   BeveledRectangleBorder(
-      //     borderRadius: BorderRadius.circular(20),
-      //   ),
-      //   0.5,
-      // ),
       expandedHeight: MediaQuery.of(context).size.height * 0.65,
-      // pinned: true,
       flexibleSpace: FlexibleSpaceBar(
         title: Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -151,7 +145,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: Image.network(
-                  'https://image.tmdb.org/t/p/original/${movie.posterPath}',
+                  movie.posterPath == null
+                      ? LinkHelper.posterEmptyLink
+                      : 'https://image.tmdb.org/t/p/original/${movie.posterPath}',
                   loadingBuilder: (context, child, loadingProgress) =>
                       loadingProgress == null
                           ? child
@@ -264,11 +260,11 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
 
   Widget card2(Movie movie) {
     return FutureBuilder(
-      future: MovieService.getVideoId(movie),
+      future: ApiService.getVideoId(movie),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           String videoId = snapshot.data as String;
-          print(videoId);
+          debugPrint(videoId);
           YoutubePlayerController _controller = YoutubePlayerController(
             initialVideoId: videoId,
             flags: const YoutubePlayerFlags(
@@ -319,9 +315,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
           );
         } else if (snapshot.hasError) {
+          debugPrint('error');
           debugPrint(snapshot.error.toString());
 
-          return const SizedBox();
+          return const Text('error');
         } else {
           return const Center(
             child: CircularProgressIndicator(),
@@ -351,13 +348,13 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: MovieService.getCastMembers(movie),
+              future: ApiService.getCastMembers(movie),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Cast> cast = snapshot.data as List<Cast>;
 
-                  return Container(
-                    height: MediaQuery.of(context).size.height * 0.3,
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.33,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
@@ -365,49 +362,61 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                       itemBuilder: (context, index) {
                         return Row(
                           children: [
-                            Column(
-                              children: [
-                                Image.network(
-                                  cast[index].profilePath != null
-                                      ? 'https://image.tmdb.org/t/p/w500' +
-                                          cast[index].profilePath.toString()
-                                      : 'https://www.diabetes.ie/wp-content/uploads/2017/02/no-image-available.png',
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PersonDetail(
+                                        id: cast[index].id!.toInt()),
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                children: [
+                                  Image.network(
+                                    cast[index].profilePath != null
+                                        ? 'https://image.tmdb.org/t/p/w500' +
+                                            cast[index].profilePath.toString()
+                                        : 'https://www.diabetes.ie/wp-content/uploads/2017/02/no-image-available.png',
 
-                                  loadingBuilder: (context, child,
-                                          loadingProgress) =>
-                                      loadingProgress == null
-                                          ? child
-                                          : Center(
-                                              child: CircularProgressIndicator(
-                                                value: loadingProgress
-                                                            .expectedTotalBytes !=
-                                                        null
-                                                    ? loadingProgress
-                                                            .cumulativeBytesLoaded /
-                                                        loadingProgress
-                                                            .expectedTotalBytes!
-                                                            .toInt()
-                                                    : null,
-                                              ),
-                                            ),
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.25,
-                                  // width: 100,
-                                ),
-                                Text(
-                                  cast[index].name.toString(),
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) =>
+                                            loadingProgress == null
+                                                ? child
+                                                : Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      value: loadingProgress
+                                                                  .expectedTotalBytes !=
+                                                              null
+                                                          ? loadingProgress
+                                                                  .cumulativeBytesLoaded /
+                                                              loadingProgress
+                                                                  .expectedTotalBytes!
+                                                                  .toInt()
+                                                          : null,
+                                                    ),
+                                                  ),
+                                    height: MediaQuery.of(context).size.height *
+                                        0.25,
+                                    // width: 100,
                                   ),
-                                ),
-                                Text(
-                                  cast[index].character.toString(),
-                                  style: const TextStyle(
-                                    fontSize: 12,
+                                  Text(
+                                    cast[index].name.toString(),
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  Text(
+                                    cast[index].character.toString(),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             const SizedBox(
                               width: 10,
@@ -418,9 +427,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                     ),
                   );
                 } else if (snapshot.hasError) {
+                  debugPrint('error');
                   debugPrint(snapshot.error.toString());
 
-                  return const SizedBox();
+                  return const Text('error');
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -454,13 +464,13 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: MovieService.getCrewMembers(movie),
+              future: ApiService.getCrewMembers(movie),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Crew> cast = snapshot.data as List<Crew>;
 
-                  return Container(
-                    height: MediaQuery.of(context).size.height * 0.3,
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.33,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
@@ -521,12 +531,13 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                     ),
                   );
                 } else if (snapshot.hasError) {
+                  debugPrint('error');
                   debugPrint(snapshot.error.toString());
 
-                  return const SizedBox();
+                  return const Text('error');
                 } else {
                   return const Center(
-                    child: const CircularProgressIndicator(),
+                    child: CircularProgressIndicator(),
                   );
                 }
               },
@@ -558,13 +569,13 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: MovieService.getSimilarMovies(movie),
+              future: ApiService.getSimilarMovies(movie),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Movie> movies = snapshot.data as List<Movie>;
 
-                  return Container(
-                    height: MediaQuery.of(context).size.height * 0.38,
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.41,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
@@ -664,7 +675,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                                                 ),
                                                 const TextSpan(
                                                   text: '/10',
-                                                  style: const TextStyle(
+                                                  style: TextStyle(
                                                     fontSize: 12,
                                                     color: Colors.white70,
                                                   ),
@@ -688,9 +699,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                     ),
                   );
                 } else if (snapshot.hasError) {
+                  debugPrint('error');
                   debugPrint(snapshot.error.toString());
 
-                  return const SizedBox();
+                  return const Text('error');
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -725,111 +737,108 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: MovieService.getMovieProviders(movie),
+              future: ApiService.getMovieProviders(movie),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<MovieProvider> providers =
                       snapshot.data as List<MovieProvider>;
 
                   if (providers.isEmpty) {
-                    return Container(
-                      child: Column(
-                        children: [
-                          ListTile(
-                            onTap: () async {
-                              await launchUrl(Uri.parse(
-                                  'https://www.imdb.com/title/${movie.imdbId}/'));
-                            },
-                            title: Text(
-                              'IMDB',
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            leading: Image.asset(
-                              'assets/icons/imdb_icon.png',
-                              width: MediaQuery.of(context).size.width * 0.1,
+                    return Column(
+                      children: [
+                        ListTile(
+                          onTap: () async {
+                            await launchUrl(Uri.parse(
+                                'https://www.imdb.com/title/${movie.imdbId}/'));
+                          },
+                          title: const Text(
+                            'IMDB',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          ListTile(
-                            onTap: () async {
-                              String editedText = movie.title!
-                                  .replaceAll(RegExp(r'[^\w\s]+'), '');
-                              String editedText2 =
-                                  editedText.replaceAll(' ', '_');
-                              await launchUrl(Uri.parse(
-                                  'https://www.rottentomatoes.com/m/${editedText2}/'));
-                            },
-                            title: Text(
-                              'Rotten Tomatoes',
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            leading: Image.asset(
-                              'assets/icons/tomato_icon.png',
-                              width: MediaQuery.of(context).size.width * 0.1,
+                          leading: Image.asset(
+                            'assets/icons/imdb_icon.png',
+                            width: MediaQuery.of(context).size.width * 0.1,
+                          ),
+                        ),
+                        ListTile(
+                          onTap: () async {
+                            String editedText = movie.title!
+                                .replaceAll(RegExp(r'[^\w\s]+'), '');
+                            String editedText2 =
+                                editedText.replaceAll(' ', '_');
+                            await launchUrl(Uri.parse(
+                                'https://www.rottentomatoes.com/m/$editedText2/'));
+                          },
+                          title: const Text(
+                            'Rotten Tomatoes',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ],
-                      ),
+                          leading: Image.asset(
+                            'assets/icons/tomato_icon.png',
+                            width: MediaQuery.of(context).size.width * 0.1,
+                          ),
+                        ),
+                      ],
                     );
                   }
 
-                  return Container(
-                    child: ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: providers.length + 2,
-                      itemBuilder: (context, index) {
-                        if (index == 0) {
-                          return ListTile(
-                            onTap: () async {
-                              await launchUrl(Uri.parse(
-                                  'https://www.imdb.com/title/${movie.imdbId}/'));
-                            },
-                            title: Text(
-                              'IMDB',
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
+                  return ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: providers.length + 2,
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return ListTile(
+                          onTap: () async {
+                            await launchUrl(Uri.parse(
+                                'https://www.imdb.com/title/${movie.imdbId}/'));
+                          },
+                          title: const Text(
+                            'IMDB',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
                             ),
-                            leading: Image.asset(
-                              'assets/icons/imdb_icon.png',
-                              width: MediaQuery.of(context).size.width * 0.1,
+                          ),
+                          leading: Image.asset(
+                            'assets/icons/imdb_icon.png',
+                            width: MediaQuery.of(context).size.width * 0.1,
+                          ),
+                        );
+                      } else if (index == 1) {
+                        return ListTile(
+                          onTap: () async {
+                            String editedText = movie.title!
+                                .replaceAll(RegExp(r'[^\w\s]+'), '');
+                            String editedText2 =
+                                editedText.replaceAll(' ', '_');
+                            await launchUrl(Uri.parse(
+                                'https://www.rottentomatoes.com/m/$editedText2/'));
+                          },
+                          title: const Text(
+                            'Rotten Tomatoes',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
                             ),
-                          );
-                        } else if (index == 1) {
-                          return ListTile(
-                            onTap: () async {
-                              String editedText = movie.title!
-                                  .replaceAll(new RegExp(r'[^\w\s]+'), '');
-                              String editedText2 =
-                                  editedText.replaceAll(' ', '_');
-                              await launchUrl(Uri.parse(
-                                  'https://www.rottentomatoes.com/m/${editedText2}/'));
-                            },
-                            title: Text(
-                              'Rotten Tomatoes',
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            leading: Image.asset(
-                              'assets/icons/tomato_icon.png',
-                              width: MediaQuery.of(context).size.width * 0.1,
-                            ),
-                          );
-                        }
-                        return getListTile(providers, index - 2, movie);
-                      },
-                    ),
+                          ),
+                          leading: Image.asset(
+                            'assets/icons/tomato_icon.png',
+                            width: MediaQuery.of(context).size.width * 0.1,
+                          ),
+                        );
+                      }
+                      return getListTile(providers, index - 2, movie);
+                    },
                   );
                 } else if (snapshot.hasError) {
+                  debugPrint('error');
                   debugPrint(snapshot.error.toString());
 
                   return const Text('No Providers');
@@ -853,7 +862,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
           String editedText = movie.title!.replaceAll(RegExp(r'[^\w\s]+'), '');
           String editedText2 = editedText.replaceAll(' ', '+');
           await launchUrl(Uri.parse(
-              'https://www.youtube.com/results?search_query=${editedText2}'));
+              'https://www.youtube.com/results?search_query=$editedText2'));
         },
         title: Text(
           providers[index].providerName.toString(),
@@ -874,7 +883,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
           String editedText = movie.title!.replaceAll(RegExp(r'[^\w\s]+'), '');
           String editedText2 = editedText.replaceAll(' ', '+');
           await launchUrl(Uri.parse(
-              'https://www.google.com/search?q=Amazon+Video+${editedText2}'));
+              'https://www.google.com/search?q=Amazon+Video+$editedText2'));
         },
         title: Text(
           providers[index].providerName.toString(),

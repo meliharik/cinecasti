@@ -1,16 +1,17 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:movie_suggestion/model/members.dart';
 import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/model/movie_provider.dart';
+import 'package:movie_suggestion/model/person.dart';
 import 'package:movie_suggestion/model/popular_movies.dart';
+import 'package:movie_suggestion/model/tv_serie.dart';
 
-class MovieService {
+class ApiService {
   static Future getMovieById(int id) async {
     final response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/movie/${id}?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/movie/$id?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
     if (response.statusCode == 200) {
       var document = json.decode(response.body);
       Movie movie = Movie.fromJson(document);
@@ -129,7 +130,7 @@ class MovieService {
       for (var i = 0; i < results.length; i++) {
         providers.add(MovieProvider.fromJson(results[i]));
       }
-      providers.forEach((MovieProvider provider) {
+      for (var provider in providers) {
         if (provider.providerName == 'Amazon Prime Video' ||
             provider.providerName == 'Netflix' ||
             provider.providerName == 'Amazon Video' ||
@@ -138,9 +139,52 @@ class MovieService {
             provider.providerName == 'Disney Plus') {
           providers2.add(provider);
         }
-      });
+      }
       return providers2;
-    } else{
+    } else {
+      throw Exception('Failed to load post');
+    }
+  }
+
+  static Future<Person> getPersonById(int id) async {
+    var response = await http.get(Uri.parse(
+        'https://api.themoviedb.org/3/person/$id?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      return Person.fromJson(jsonResponse);
+    } else {
+      throw Exception('Failed to load post');
+    }
+  }
+
+  static Future<List<Movie>> getPersonMovies(int id) async {
+    var response = await http.get(Uri.parse(
+        'https://api.themoviedb.org/3/person/$id/movie_credits?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      List results = jsonResponse['cast'];
+      List<Movie> movies = [];
+      for (var i = 0; i < results.length; i++) {
+        movies.add(Movie.fromJson(results[i]));
+      }
+      return movies;
+    } else {
+      throw Exception('Failed to load post');
+    }
+  }
+
+  static Future<List<CastTvSeries>> getPersonTvSeries(int id) async {
+    var response = await http.get(Uri.parse(
+        'https://api.themoviedb.org/3/person/$id/tv_credits?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      List results = jsonResponse['cast'];
+      List<CastTvSeries> tvSeries = [];
+      for (var i = 0; i < results.length; i++) {
+        tvSeries.add(CastTvSeries.fromJson(results[i]));
+      }
+      return tvSeries;
+    } else {
       throw Exception('Failed to load post');
     }
   }

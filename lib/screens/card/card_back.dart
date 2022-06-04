@@ -184,16 +184,16 @@ class _CardBackState extends ConsumerState<CardBack> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Text(
                       'Tap the card to see more details.',
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white54,
                         fontSize: 12,
                         fontWeight: FontWeight.bold,

@@ -1,8 +1,6 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/model/popular_movies.dart';
 import 'package:movie_suggestion/screens/movie_detail.dart';
@@ -23,14 +21,14 @@ class _PopularScreenState extends ConsumerState<PopularScreen> {
   void initState() {
     super.initState();
     ref.read(popularMoviesPageControllerIndexProvider.state).state = 1;
-    popularMovies = MovieService.getPopularMovies(1);
+    popularMovies = ApiService.getPopularMovies(1);
     controller.addListener(() {
       // listen to scroll events
       if (controller.position.pixels == controller.position.maxScrollExtent) {
         // load more data
         debugPrint('max scroll');
         ref.read(popularMoviesPageControllerIndexProvider.state).state++;
-        popularMovies = MovieService.getPopularMovies(
+        popularMovies = ApiService.getPopularMovies(
             ref.watch(popularMoviesPageControllerIndexProvider));
       }
     });
