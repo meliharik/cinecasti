@@ -91,27 +91,22 @@ class _PopularScreenState extends ConsumerState<PopularScreen> {
             ),
           );
         },
-        child: Stack(
-          children: [
-            Image.network(
-              movies[index].posterPath == null
-                  ? LinkHelper.posterEmptyLink
-                  : 'https://image.tmdb.org/t/p/w500/${movies[index].posterPath}',
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) =>
-                  loadingProgress == null
-                      ? child
-                      : Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!.toInt()
-                                : null,
-                          ),
-                        ),
-            ),
-            Text(index.toString() + ' ' + movies[index].id.toString()),
-          ],
+        child: Image.network(
+          movies[index].posterPath == null
+              ? LinkHelper.posterEmptyLink
+              : 'https://image.tmdb.org/t/p/w500/${movies[index].posterPath}',
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, loadingProgress) =>
+              loadingProgress == null
+                  ? child
+                  : Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!.toInt()
+                            : null,
+                      ),
+                    ),
         ),
       );
     }

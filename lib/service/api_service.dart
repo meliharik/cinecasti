@@ -84,6 +84,10 @@ class ApiService {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['results'];
 
+      if (results.isEmpty) {
+        return '';
+      }
+
       for (var i = 0; i < results.length; i++) {
         if (results[i]['type'] == 'Trailer') {
           return results[i]['key'].toString();
@@ -102,6 +106,9 @@ class ApiService {
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['results'];
+      if (results.isEmpty) {
+        return '';
+      }
 
       for (var i = 0; i < results.length; i++) {
         if (results[i]['type'] == 'Trailer') {
@@ -224,8 +231,14 @@ class ApiService {
         'https://api.themoviedb.org/3/movie/${movie.id}/watch/providers?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
-      List results = jsonResponse['results']['US']['buy'] ?? [];
-      List results2 = jsonResponse['results']['US']['flatrate'] ?? [];
+      var results = jsonResponse['results'];
+      if (results.isNotEmpty) {
+        results = jsonResponse['results']['US']['buy'] ?? [];
+      }
+      var results2 = jsonResponse['results'];
+      if (results2.isNotEmpty) {
+        results2 = jsonResponse['results']['US']['flatrate'] ?? [];
+      }
       results.addAll(results2);
       List<MovieAndTvSerieProvider> providers = [];
       List<MovieAndTvSerieProvider> providers2 = [];
@@ -254,8 +267,14 @@ class ApiService {
         'https://api.themoviedb.org/3/tv/${tvSerie.id}/watch/providers?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
-      List results = jsonResponse['results']['US']['buy'] ?? [];
-      List results2 = jsonResponse['results']['US']['flatrate'] ?? [];
+      var results = jsonResponse['results'];
+      if (results.isNotEmpty) {
+        results = jsonResponse['results']['US']['buy'] ?? [];
+      }
+      var results2 = jsonResponse['results'];
+      if (results2.isNotEmpty) {
+        results2 = jsonResponse['results']['US']['flatrate'] ?? [];
+      }
       results.addAll(results2);
       List<MovieAndTvSerieProvider> providers = [];
       List<MovieAndTvSerieProvider> providers2 = [];

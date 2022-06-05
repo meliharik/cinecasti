@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/top_rated_movies.dart';
 import 'package:movie_suggestion/screens/movie_detail.dart';
@@ -96,27 +95,22 @@ class _TopRatedScreenState extends ConsumerState<TopRatedScreen> {
             ),
           );
         },
-        child: Stack(
-          children: [
-            Image.network(
-              movies[index].posterPath == null
-                  ? LinkHelper.posterEmptyLink
-                  : 'https://image.tmdb.org/t/p/w500/${movies[index].posterPath}',
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) =>
-                  loadingProgress == null
-                      ? child
-                      : Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!.toInt()
-                                : null,
-                          ),
-                        ),
-            ),
-            Text(index.toString() + ' ' + movies[index].id.toString()),
-          ],
+        child: Image.network(
+          movies[index].posterPath == null
+              ? LinkHelper.posterEmptyLink
+              : 'https://image.tmdb.org/t/p/w500/${movies[index].posterPath}',
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, loadingProgress) =>
+              loadingProgress == null
+                  ? child
+                  : Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!.toInt()
+                            : null,
+                      ),
+                    ),
         ),
       );
     }

@@ -22,23 +22,35 @@ class MovieDetail extends ConsumerStatefulWidget {
 }
 
 class _MovieDetailState extends ConsumerState<MovieDetail> {
-  final controller = ScrollController();
   late YoutubePlayerController _controller = YoutubePlayerController(
     initialVideoId: '',
   );
+
+  final controller = ScrollController();
+  bool isTitleCentered = false;
 
   @override
   void initState() {
     super.initState();
     controller.addListener(() {
-      // debugPrint(controller.position.pixels.toString());
-      // debugPrint(controller.offset.toString());
-
-      // listen to scroll events
-      if (controller.position.pixels == controller.position.maxScrollExtent) {
-        // load more data
-        debugPrint(controller.position.maxScrollExtent.toString());
-        debugPrint('max scroll');
+      debugPrint("position: " + controller.position.pixels.toString());
+      debugPrint(
+          'hight / 3: ' + (MediaQuery.of(context).size.height / 3).toString());
+      if (controller.position.pixels >=
+          MediaQuery.of(context).size.height / 2) {
+        debugPrint('centered');
+        if (isTitleCentered == false) {
+          setState(() {
+            isTitleCentered = true;
+          });
+        }
+        debugPrint('isTitleCentered: $isTitleCentered');
+      } else {
+        if (isTitleCentered == true) {
+          setState(() {
+            isTitleCentered = false;
+          });
+        }
       }
     });
   }
@@ -102,8 +114,19 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
 
   Widget getAppBar(Movie movie) {
     return SliverAppBar(
+      centerTitle: true,
+      title: isTitleCentered
+          ? Text(
+              movie.title.toString(),
+              overflow: TextOverflow.clip,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            )
+          : const SizedBox(),
       pinned: true,
-      collapsedHeight: MediaQuery.of(context).size.height * 0.15,
+      automaticallyImplyLeading: false,
       leading: IconButton(
         icon: const Icon(
           FontAwesomeIcons.angleLeft,
@@ -118,33 +141,35 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
       ],
       expandedHeight: MediaQuery.of(context).size.height * 0.65,
       flexibleSpace: FlexibleSpaceBar(
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              movie.title.toString(),
-              overflow: TextOverflow.clip,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+        title: isTitleCentered
+            ? const SizedBox()
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    movie.title.toString(),
+                    overflow: TextOverflow.clip,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  Text(
+                    movie.tagline.toString(),
+                    overflow: TextOverflow.clip,
+                    style: const TextStyle(
+                      color: Colors.white60,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(
-              height: 6,
-            ),
-            Text(
-              movie.tagline.toString(),
-              overflow: TextOverflow.clip,
-              style: const TextStyle(
-                color: Colors.white60,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
         titlePadding: const EdgeInsets.all(16),
         background: Stack(
           children: [
@@ -246,8 +271,11 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               color: Colors.grey,
             ),
             const SizedBox(height: 8),
+            //TODO: buradaki idyi kaldır
             Text(
-              movie.overview.toString() + movie.id.toString(),
+              movie.overview!.isNotEmpty
+                  ? (movie.overview.toString() + movie.id.toString())
+                  : 'No overview',
               style: const TextStyle(
                 fontSize: 15,
               ),
@@ -271,6 +299,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           String videoId = snapshot.data as String;
+          if (videoId.isEmpty) {
+            return const SizedBox();
+          }
 
           _controller = YoutubePlayerController(
             initialVideoId: videoId,
@@ -282,6 +313,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               mute: false,
             ),
           );
+
           return Card(
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -359,6 +391,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Cast> cast = snapshot.data as List<Cast>;
+                  if (cast.isEmpty) {
+                    return const Text('No Cast Members Found');
+                  }
 
                   return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.33,
@@ -474,7 +509,11 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               future: ApiService.getMovieCrewMembers(movie),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  List<Crew> cast = snapshot.data as List<Crew>;
+                  List<Crew> crew = snapshot.data as List<Crew>;
+
+                  if (crew.isEmpty) {
+                    return const Text('No Crew Members Found');
+                  }
 
                   return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.33,
@@ -488,9 +527,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             Column(
                               children: [
                                 Image.network(
-                                  cast[index].profilePath != null
+                                  crew[index].profilePath != null
                                       ? 'https://image.tmdb.org/t/p/w500' +
-                                          cast[index].profilePath.toString()
+                                          crew[index].profilePath.toString()
                                       : 'https://www.diabetes.ie/wp-content/uploads/2017/02/no-image-available.png',
 
                                   loadingBuilder: (context, child,
@@ -515,14 +554,14 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                                   // width: 100,
                                 ),
                                 Text(
-                                  cast[index].name.toString(),
+                                  crew[index].name.toString(),
                                   style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
-                                  cast[index].job.toString(),
+                                  crew[index].job.toString(),
                                   style: const TextStyle(
                                     fontSize: 12,
                                   ),
@@ -580,6 +619,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Movie> movies = snapshot.data as List<Movie>;
+
+                  if (movies.isEmpty) {
+                    return const Text('No Similar Movies Found');
+                  }
 
                   return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.41,

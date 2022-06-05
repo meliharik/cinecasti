@@ -26,6 +26,35 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
     initialVideoId: '',
   );
 
+  final controller = ScrollController();
+  bool isTitleCentered = false;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(() {
+      debugPrint("position: " + controller.position.pixels.toString());
+      debugPrint(
+          'hight / 3: ' + (MediaQuery.of(context).size.height / 3).toString());
+      if (controller.position.pixels >=
+          MediaQuery.of(context).size.height / 2) {
+        debugPrint('centered');
+        if (isTitleCentered == false) {
+          setState(() {
+            isTitleCentered = true;
+          });
+        }
+        debugPrint('isTitleCentered: $isTitleCentered');
+      } else {
+        if (isTitleCentered == true) {
+          setState(() {
+            isTitleCentered = false;
+          });
+        }
+      }
+    });
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -60,6 +89,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
     return SafeArea(
       child: Scaffold(
         body: CustomScrollView(
+          controller: controller,
           slivers: [
             getAppBar(tvSerie),
             SliverList(
@@ -83,8 +113,19 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
 
   Widget getAppBar(TvSerie tvSerie) {
     return SliverAppBar(
+      centerTitle: true,
+      title: isTitleCentered
+          ? Text(
+              tvSerie.name.toString(),
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            )
+          : const SizedBox(),
+      automaticallyImplyLeading: false,
       pinned: true,
-      collapsedHeight: MediaQuery.of(context).size.height * 0.15,
       leading: IconButton(
         icon: const Icon(
           FontAwesomeIcons.angleLeft,
@@ -99,33 +140,35 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
       ],
       expandedHeight: MediaQuery.of(context).size.height * 0.65,
       flexibleSpace: FlexibleSpaceBar(
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              tvSerie.name.toString(),
-              overflow: TextOverflow.clip,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+        title: isTitleCentered
+            ? const SizedBox()
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    tvSerie.name.toString(),
+                    overflow: TextOverflow.clip,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  Text(
+                    tvSerie.tagline.toString(),
+                    overflow: TextOverflow.clip,
+                    style: const TextStyle(
+                      color: Colors.white60,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(
-              height: 6,
-            ),
-            Text(
-              tvSerie.tagline.toString(),
-              overflow: TextOverflow.clip,
-              style: const TextStyle(
-                color: Colors.white60,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
         titlePadding: const EdgeInsets.all(16),
         background: Stack(
           children: [
@@ -181,8 +224,8 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
   Widget card1(TvSerie tvSerie) {
     String formattedDate = DateFormat.yMMMd()
         .format(DateTime.parse(tvSerie.lastAirDate.toString()));
-    DateTime parsedDate = DateTime.parse(tvSerie.lastAirDate.toString());
-    DateTime now = DateTime.now();
+    // DateTime parsedDate = DateTime.parse(tvSerie.lastAirDate.toString());
+    // DateTime now = DateTime.now();
     return Card(
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -190,37 +233,35 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  now.isAfter(parsedDate)
-                      ? '$formattedDate (ended)'
-                      : formattedDate,
+                  '$formattedDate (${tvSerie.status})',
                   style: const TextStyle(
-                    fontSize: 15,
+                    fontSize: 13,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  tvSerie.lastAirDate.toString(),
+                  tvSerie.episodeRunTime![0].toString() + ' min',
                   style: const TextStyle(
-                    fontSize: 15,
+                    fontSize: 13,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 tvSerie.adult == true
                     ? const Text(
-                        '18+ ',
+                        '18+     ',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 13,
                           fontWeight: FontWeight.bold,
                           color: Colors.red,
                         ),
                       )
                     : const Text(
-                        'PG  ',
+                        'TV-MA     ',
                         style: TextStyle(
-                          fontSize: 15,
+                          fontSize: 13,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -231,8 +272,11 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
               color: Colors.grey,
             ),
             const SizedBox(height: 8),
+            //TODO: buradaki idyi kaldır
             Text(
-              tvSerie.overview.toString() + tvSerie.id.toString(),
+              tvSerie.overview!.isNotEmpty
+                  ? (tvSerie.overview.toString() + tvSerie.id.toString())
+                  : 'No overview',
               style: const TextStyle(
                 fontSize: 15,
               ),
@@ -256,6 +300,9 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           String videoId = snapshot.data as String;
+          if (videoId.isEmpty) {
+            return const SizedBox();
+          }
 
           _controller = YoutubePlayerController(
             initialVideoId: videoId,
@@ -344,6 +391,10 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Cast> cast = snapshot.data as List<Cast>;
+
+                  if (cast.isEmpty) {
+                    return const Text('No Cast Members Found');
+                  }
 
                   return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.33,
@@ -459,7 +510,10 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
               future: ApiService.getTvSerieCrewMembers(tvSerie),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  List<Crew> cast = snapshot.data as List<Crew>;
+                  List<Crew> crew = snapshot.data as List<Crew>;
+                  if (crew.isEmpty) {
+                    return const Text('No Crew Members Found');
+                  }
 
                   return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.33,
@@ -473,9 +527,9 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                             Column(
                               children: [
                                 Image.network(
-                                  cast[index].profilePath != null
+                                  crew[index].profilePath != null
                                       ? 'https://image.tmdb.org/t/p/w500' +
-                                          cast[index].profilePath.toString()
+                                          crew[index].profilePath.toString()
                                       : 'https://www.diabetes.ie/wp-content/uploads/2017/02/no-image-available.png',
 
                                   loadingBuilder: (context, child,
@@ -500,14 +554,14 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                                   // width: 100,
                                 ),
                                 Text(
-                                  cast[index].name.toString(),
+                                  crew[index].name.toString(),
                                   style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
-                                  cast[index].job.toString(),
+                                  crew[index].job.toString(),
                                   style: const TextStyle(
                                     fontSize: 12,
                                   ),
@@ -566,6 +620,10 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                 if (snapshot.hasData) {
                   List<SimilarTvSeries> tvSeries =
                       snapshot.data as List<SimilarTvSeries>;
+
+                  if (tvSeries.isEmpty) {
+                    return const Text('No Similar Tv Series Found');
+                  }
 
                   return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.41,

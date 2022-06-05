@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/model/person.dart';
@@ -23,6 +24,36 @@ class PersonDetail extends ConsumerStatefulWidget {
 }
 
 class _PersonDetailState extends ConsumerState<PersonDetail> {
+  final controller = ScrollController();
+  bool isTitleCentered = false;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(() {
+      debugPrint("position: " + controller.position.pixels.toString());
+      debugPrint(
+          'hight / 3: ' + (MediaQuery.of(context).size.height / 3).toString());
+      if (controller.position.pixels >=
+          MediaQuery.of(context).size.height / 2) {
+        debugPrint('centered');
+        if (isTitleCentered == false) {
+          setState(() {
+            isTitleCentered = true;
+          });
+        }
+        debugPrint('isTitleCentered: $isTitleCentered');
+      } else {
+        if (isTitleCentered == true) {
+          setState(() {
+            isTitleCentered = false;
+          });
+        }
+      }
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -57,6 +88,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
           ),
         ),
         body: CustomScrollView(
+          controller: controller,
           slivers: [
             getAppBar(person),
             SliverList(
@@ -82,8 +114,21 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
     String formattedDate =
         DateFormat.yMMMd().format(DateTime.parse(person.birthday.toString()));
     return SliverAppBar(
+      centerTitle: true,
+      elevation: 0,
+      title: isTitleCentered
+          ? Text(
+              person.name.toString(),
+              overflow: TextOverflow.clip,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            )
+          : const SizedBox(),
       pinned: true,
-      collapsedHeight: MediaQuery.of(context).size.height * 0.2,
+      // collapsedHeight: MediaQuery.of(context).size.height * 0.1,
+      automaticallyImplyLeading: false,
       leading: IconButton(
         icon: const Icon(
           FontAwesomeIcons.angleLeft,
@@ -102,33 +147,36 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
       ],
       expandedHeight: MediaQuery.of(context).size.height * 0.65,
       flexibleSpace: FlexibleSpaceBar(
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              person.name.toString(),
-              overflow: TextOverflow.clip,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+        centerTitle: false,
+        title: isTitleCentered
+            ? const SizedBox()
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    person.name.toString(),
+                    overflow: TextOverflow.clip,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 6,
+                  ),
+                  Text(
+                    "Born on " + formattedDate,
+                    overflow: TextOverflow.clip,
+                    style: const TextStyle(
+                      color: Colors.white60,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(
-              height: 6,
-            ),
-            Text(
-              "Born on " + formattedDate,
-              overflow: TextOverflow.clip,
-              style: const TextStyle(
-                color: Colors.white60,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
         titlePadding: const EdgeInsets.all(16),
         background: Stack(
           children: [
@@ -189,7 +237,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   '$age years old',
@@ -258,7 +306,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
               ),
             ),
             const SizedBox(height: 8),
-            ExpandableText(person.biography.toString()),
+            ExpandableText(person.biography.toString() + person.id.toString()),
             const SizedBox(height: 8),
             // const Divider(
             //   color: Colors.grey,
@@ -662,7 +710,9 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                                         tvSeries[index]
                                                 .episodeCount
                                                 .toString() +
-                                            ' Seasons',
+                                            (tvSeries[index].episodeCount == 1
+                                                ? ' Season'
+                                                : ' Seasons'),
                                         style: const TextStyle(
                                           fontSize: 12,
                                         ),

@@ -1,50 +1,65 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class GetGenre {
   static List getGenreAndIcon(int id) {
     switch (id) {
       case 10759:
-        return [' Action & Adventure', EvaIcons.alertTriangleOutline];
+        return ['   Action & Adventure', FontAwesomeIcons.gun];
       case 28:
-        return [' Action', EvaIcons.alertTriangleOutline];
+        return ['   Action', FontAwesomeIcons.gun];
       case 12:
-        return [' Adventure', EvaIcons.activityOutline];
+        return ['   Adventure', FontAwesomeIcons.map];
       case 16:
-        return [' Animation', EvaIcons.filmOutline];
+        return ['   Animation', FontAwesomeIcons.dog];
       case 35:
-        return [' Comedy', EvaIcons.headphonesOutline];
+        return ['   Comedy', FontAwesomeIcons.masksTheater];
       case 80:
-        return [' Crime', EvaIcons.alertCircleOutline];
+        return ['   Crime', FontAwesomeIcons.handcuffs];
       case 99:
-        return [' Documentary', EvaIcons.fileTextOutline];
+        return ['   Documentary', FontAwesomeIcons.fish];
       case 18:
-        return [' Drama', EvaIcons.headphonesOutline];
+        return ['   Drama', FontAwesomeIcons.heartCrack];
       case 10751:
-        return [' Family', EvaIcons.peopleOutline];
+        return ['   Family', FontAwesomeIcons.peopleRoof];
+      case 10762:
+        return ['   Kids', FontAwesomeIcons.baby];
+      case 10763:
+        return ['   News', FontAwesomeIcons.newspaper];
+      case 10764:
+        return ['   Reality', FontAwesomeIcons.tv];
+      case 10765:
+        return ['   Sci-Fi & Fantasy', EvaIcons.globe2];
+      case 10766:
+        return ['   Soap', FontAwesomeIcons.soap];
+      case 10767:
+        return ['   Talk', FontAwesomeIcons.comments];
+      case 10768:
+        return ['   War & Politics', FontAwesomeIcons.flagUsa];
       case 14:
-        return [' Fantasy', EvaIcons.starOutline];
+        return ['   Fantasy', FontAwesomeIcons.dungeon];
       case 36:
-        return [' History', EvaIcons.clockOutline];
+        return ['   History', FontAwesomeIcons.landmark];
       case 27:
-        return [' Horror', EvaIcons.alertCircleOutline];
+        return ['   Horror', FontAwesomeIcons.ghost];
       case 10402:
-        return [' Music', EvaIcons.musicOutline];
+        return ['   Music', FontAwesomeIcons.headphones];
       case 9648:
-        return [' Mystery', EvaIcons.questionMarkCircleOutline];
+        return ['   Mystery', FontAwesomeIcons.circleQuestion];
       case 10749:
-        return [' Romance', EvaIcons.heartOutline];
+        return ['   Romance', FontAwesomeIcons.solidHeart];
       case 878:
-        return [' Science Fiction', EvaIcons.flagOutline];
+        return ['   Science Fiction', FontAwesomeIcons.robot];
       case 10770:
-        return [' TV Movie', EvaIcons.tvOutline];
+        return ['   TV Movie', FontAwesomeIcons.tv];
       case 53:
-        return [' Thriller', EvaIcons.flashOutline];
+        return ['   Thriller', FontAwesomeIcons.skull];
       case 10752:
-        return [' War', EvaIcons.shieldOutline];
+        return ['   War', FontAwesomeIcons.personMilitaryRifle];
       case 37:
-        return [' Western', EvaIcons.shieldOutline];
+        return ['   Western', FontAwesomeIcons.hatCowboy];
       default:
-        return [' ', EvaIcons.alertCircleOutline];
+        return ['  ', EvaIcons.alertCircleOutline];
     }
   }
 }
