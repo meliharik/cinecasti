@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
-import 'package:movie_suggestion/model/tv_serie.dart';
+import 'package:movie_suggestion/model/tv_serie_credit.dart';
 
 class PersonAllTvSeries extends ConsumerStatefulWidget {
   final String personName;

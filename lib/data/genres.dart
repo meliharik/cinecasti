@@ -3,6 +3,8 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 class GetGenre {
   static List getGenreAndIcon(int id) {
     switch (id) {
+      case 10759:
+        return [' Action & Adventure', EvaIcons.alertTriangleOutline];
       case 28:
         return [' Action', EvaIcons.alertTriangleOutline];
       case 12:

@@ -6,7 +6,3 @@ final movieProvider = StateProvider<Movie>((ref) => Movie());
 final isLoadingProvider = StateProvider<bool>((ref) => false);
 
 final stopSearchingProvider = StateProvider<bool>((ref) => false);
-
-final popularMoviesPageControllerIndexProvider = StateProvider<int>((ref) => 1);
-
-final topRatedMoviesPageControllerIndexProvider = StateProvider<int>((ref) => 1);

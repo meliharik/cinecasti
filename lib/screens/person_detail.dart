@@ -6,11 +6,12 @@ import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/model/person.dart';
 import 'package:movie_suggestion/model/person_social.dart';
-import 'package:movie_suggestion/model/tv_serie.dart';
+import 'package:movie_suggestion/model/tv_serie_credit.dart';
 import 'package:movie_suggestion/screens/movie_detail.dart';
 import 'package:movie_suggestion/screens/seeAll/person_movies.dart';
 import 'package:movie_suggestion/screens/seeAll/person_tv_series.dart';
-import 'package:movie_suggestion/service/movie_service.dart';
+import 'package:movie_suggestion/screens/tv_serie_detail.dart';
+import 'package:movie_suggestion/service/api_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PersonDetail extends ConsumerStatefulWidget {
@@ -600,13 +601,13 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                           children: [
                             InkWell(
                               onTap: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) => MovieDetail(
-                                //         id: series[index].id!.toInt()),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => TvSerieDetail(
+                                        id: tvSeries[index].id!.toInt()),
+                                  ),
+                                );
                               },
                               child: Column(
                                 children: [

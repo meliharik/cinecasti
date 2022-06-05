@@ -1,51 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:movie_suggestion/data/genres.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/members.dart';
-import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/model/movie_provider.dart';
+import 'package:movie_suggestion/model/similar_tv_series.dart';
+import 'package:movie_suggestion/model/tv_serie.dart';
 import 'package:movie_suggestion/screens/person_detail.dart';
 import 'package:movie_suggestion/service/api_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class MovieDetail extends ConsumerStatefulWidget {
+class TvSerieDetail extends ConsumerStatefulWidget {
   final int id;
-
-  const MovieDetail({required this.id, Key? key}) : super(key: key);
+  const TvSerieDetail({required this.id, Key? key}) : super(key: key);
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _MovieDetailState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _TvSerieDetailState();
 }
 
-class _MovieDetailState extends ConsumerState<MovieDetail> {
-  final controller = ScrollController();
+class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
   late YoutubePlayerController _controller = YoutubePlayerController(
     initialVideoId: '',
   );
 
   @override
-  void initState() {
-    super.initState();
-    controller.addListener(() {
-      // debugPrint(controller.position.pixels.toString());
-      // debugPrint(controller.offset.toString());
-
-      // listen to scroll events
-      if (controller.position.pixels == controller.position.maxScrollExtent) {
-        // load more data
-        debugPrint(controller.position.maxScrollExtent.toString());
-        debugPrint('max scroll');
-      }
-    });
-  }
-
-  @override
   void dispose() {
-    controller.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -53,11 +35,11 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ApiService.getMovieById(widget.id),
+      future: ApiService.getTvSerieById(widget.id),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          Movie movie = snapshot.data as Movie;
-          return getMovieDetail(movie);
+          TvSerie tvSerie = snapshot.data as TvSerie;
+          return getTvSerieDetail(tvSerie);
         } else if (snapshot.hasError) {
           debugPrint('error');
           debugPrint(snapshot.error.toString());
@@ -74,22 +56,21 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
     );
   }
 
-  Widget getMovieDetail(Movie movie) {
+  Widget getTvSerieDetail(TvSerie tvSerie) {
     return SafeArea(
       child: Scaffold(
         body: CustomScrollView(
-          controller: controller,
           slivers: [
-            getAppBar(movie),
+            getAppBar(tvSerie),
             SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  card1(movie),
-                  card2(movie),
-                  card3(movie),
-                  card4(movie),
-                  card5(movie),
-                  card6(movie),
+                  card1(tvSerie),
+                  card2(tvSerie),
+                  card3(tvSerie),
+                  card4(tvSerie),
+                  card5(tvSerie),
+                  card6(tvSerie),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                 ],
               ),
@@ -100,7 +81,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
     );
   }
 
-  Widget getAppBar(Movie movie) {
+  Widget getAppBar(TvSerie tvSerie) {
     return SliverAppBar(
       pinned: true,
       collapsedHeight: MediaQuery.of(context).size.height * 0.15,
@@ -123,7 +104,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              movie.title.toString(),
+              tvSerie.name.toString(),
               overflow: TextOverflow.clip,
               style: const TextStyle(
                 color: Colors.white,
@@ -135,7 +116,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               height: 6,
             ),
             Text(
-              movie.tagline.toString(),
+              tvSerie.tagline.toString(),
               overflow: TextOverflow.clip,
               style: const TextStyle(
                 color: Colors.white60,
@@ -152,9 +133,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: Image.network(
-                  movie.posterPath == null
+                  tvSerie.posterPath == null
                       ? LinkHelper.posterEmptyLink
-                      : 'https://image.tmdb.org/t/p/original/${movie.posterPath}',
+                      : 'https://image.tmdb.org/t/p/original/${tvSerie.posterPath}',
                   loadingBuilder: (context, child, loadingProgress) =>
                       loadingProgress == null
                           ? child
@@ -197,9 +178,11 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
     );
   }
 
-  Widget card1(Movie movie) {
-    String formattedDate =
-        DateFormat.yMMMd().format(DateTime.parse(movie.releaseDate.toString()));
+  Widget card1(TvSerie tvSerie) {
+    String formattedDate = DateFormat.yMMMd()
+        .format(DateTime.parse(tvSerie.lastAirDate.toString()));
+    DateTime parsedDate = DateTime.parse(tvSerie.lastAirDate.toString());
+    DateTime now = DateTime.now();
     return Card(
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -210,20 +193,22 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text(
-                  formattedDate,
+                  now.isAfter(parsedDate)
+                      ? '$formattedDate (ended)'
+                      : formattedDate,
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  movie.runtime.toString() + ' min',
+                  tvSerie.lastAirDate.toString(),
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                movie.adult == true
+                tvSerie.adult == true
                     ? const Text(
                         '18+ ',
                         style: TextStyle(
@@ -247,7 +232,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             Text(
-              movie.overview.toString() + movie.id.toString(),
+              tvSerie.overview.toString() + tvSerie.id.toString(),
               style: const TextStyle(
                 fontSize: 15,
               ),
@@ -257,7 +242,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               color: Colors.grey,
             ),
             const SizedBox(height: 8),
-            getGenres(movie),
+            getGenres(tvSerie),
             const SizedBox(height: 8),
           ],
         ),
@@ -265,9 +250,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
     );
   }
 
-  Widget card2(Movie movie) {
+  Widget card2(TvSerie tvSerie) {
     return FutureBuilder(
-      future: ApiService.getMovieVideoId(movie),
+      future: ApiService.getTvSerieVideoId(tvSerie),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           String videoId = snapshot.data as String;
@@ -335,7 +320,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
     );
   }
 
-  Widget card3(Movie movie) {
+  Widget card3(TvSerie tvSerie) {
     return Card(
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -355,7 +340,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getMovieCastMembers(movie),
+              future: ApiService.getTvSerieCastMembers(tvSerie),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Cast> cast = snapshot.data as List<Cast>;
@@ -451,7 +436,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
     );
   }
 
-  Widget card4(Movie movie) {
+  Widget card4(TvSerie tvSerie) {
     return Card(
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -471,7 +456,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getMovieCrewMembers(movie),
+              future: ApiService.getTvSerieCrewMembers(tvSerie),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Crew> cast = snapshot.data as List<Crew>;
@@ -555,8 +540,8 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
     );
   }
 
-  Widget card5(Movie movie) {
-    //similar movies
+  Widget card5(TvSerie tvSerie) {
+    //similar tv series
     return Card(
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -564,7 +549,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Similar Movies',
+              'Similar Tv Series',
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -576,10 +561,11 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getSimilarMovies(movie),
+              future: ApiService.getSimilarTvSeries(tvSerie),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  List<Movie> movies = snapshot.data as List<Movie>;
+                  List<SimilarTvSeries> tvSeries =
+                      snapshot.data as List<SimilarTvSeries>;
 
                   return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.41,
@@ -595,17 +581,19 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => MovieDetail(
-                                        id: movies[index].id!.toInt()),
+                                    builder: (context) => TvSerieDetail(
+                                        id: tvSeries[index].id!.toInt()),
                                   ),
                                 );
                               },
                               child: Column(
                                 children: [
                                   Image.network(
-                                    movies[index].posterPath != null
+                                    tvSeries[index].posterPath != null
                                         ? 'https://image.tmdb.org/t/p/w500' +
-                                            movies[index].posterPath.toString()
+                                            tvSeries[index]
+                                                .posterPath
+                                                .toString()
                                         : 'https://www.diabetes.ie/wp-content/uploads/2017/02/no-image-available.png',
 
                                     loadingBuilder:
@@ -631,12 +619,12 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                                     // width: 100,
                                   ),
                                   Text(
-                                    movies[index].title!.length > 18
-                                        ? movies[index]
-                                                .title!
+                                    tvSeries[index].name!.length > 18
+                                        ? tvSeries[index]
+                                                .name!
                                                 .substring(0, 18) +
                                             '...'
-                                        : movies[index].title.toString(),
+                                        : tvSeries[index].name.toString(),
                                     style: const TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
@@ -648,10 +636,8 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                                   Row(
                                     children: [
                                       Text(
-                                        movies[index]
-                                                .releaseDate!
-                                                .substring(0, 4) +
-                                            '   -',
+                                        tvSerie.numberOfSeasons.toString() +
+                                            ' Seasons   - ',
                                         style: const TextStyle(
                                           fontSize: 12,
                                         ),
@@ -672,7 +658,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                                             text: TextSpan(
                                               children: [
                                                 TextSpan(
-                                                  text: movies[index]
+                                                  text: tvSeries[index]
                                                       .voteAverage!
                                                       .toStringAsFixed(1),
                                                   style: const TextStyle(
@@ -723,7 +709,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
     );
   }
 
-  Widget card6(Movie movie) {
+  Widget card6(TvSerie tvSerie) {
     //see on
     return Card(
       child: Container(
@@ -744,7 +730,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getMovieProviders(movie),
+              future: ApiService.getTvSerieProviders(tvSerie),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<MovieAndTvSerieProvider> providers =
@@ -759,28 +745,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             color: Colors.white54,
                           ),
                           onTap: () async {
-                            await launchUrl(Uri.parse(
-                                'https://www.imdb.com/title/${movie.imdbId}/'));
-                          },
-                          title: const Text(
-                            'IMDB',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          leading: Image.asset(
-                            'assets/icons/imdb_icon.png',
-                            width: MediaQuery.of(context).size.width * 0.1,
-                          ),
-                        ),
-                        ListTile(
-                          trailing: const Icon(
-                            FontAwesomeIcons.angleRight,
-                            color: Colors.white54,
-                          ),
-                          onTap: () async {
-                            String editedText = movie.title!
+                            String editedText = tvSerie.name!
                                 .replaceAll(RegExp(r'[^\w\s]+'), '');
                             String editedText2 =
                                 editedText.replaceAll(' ', '_');
@@ -806,38 +771,16 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                   return ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: providers.length + 2,
+                    itemCount: providers.length + 1,
                     itemBuilder: (context, index) {
-                      if (index == 0) {
+                      if (index == 1) {
                         return ListTile(
                           trailing: const Icon(
                             FontAwesomeIcons.angleRight,
                             color: Colors.white54,
                           ),
                           onTap: () async {
-                            await launchUrl(Uri.parse(
-                                'https://www.imdb.com/title/${movie.imdbId}/'));
-                          },
-                          title: const Text(
-                            'IMDB',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          leading: Image.asset(
-                            'assets/icons/imdb_icon.png',
-                            width: MediaQuery.of(context).size.width * 0.1,
-                          ),
-                        );
-                      } else if (index == 1) {
-                        return ListTile(
-                          trailing: const Icon(
-                            FontAwesomeIcons.angleRight,
-                            color: Colors.white54,
-                          ),
-                          onTap: () async {
-                            String editedText = movie.title!
+                            String editedText = tvSerie.name!
                                 .replaceAll(RegExp(r'[^\w\s]+'), '');
                             String editedText2 =
                                 editedText.replaceAll(' ', '_');
@@ -857,7 +800,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                           ),
                         );
                       }
-                      return getListTile(providers, index - 2, movie);
+                      return getListTile(providers, index, tvSerie);
                     },
                   );
                 } else if (snapshot.hasError) {
@@ -879,7 +822,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
   }
 
   Widget getListTile(
-      List<MovieAndTvSerieProvider> providers, int index, Movie movie) {
+      List<MovieAndTvSerieProvider> providers, int index, TvSerie tvSerie) {
     if (providers[index].providerName == 'YouTube') {
       return ListTile(
         trailing: const Icon(
@@ -887,7 +830,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
           color: Colors.white54,
         ),
         onTap: () async {
-          String editedText = movie.title!.replaceAll(RegExp(r'[^\w\s]+'), '');
+          String editedText = tvSerie.name!.replaceAll(RegExp(r'[^\w\s]+'), '');
           String editedText2 = editedText.replaceAll(' ', '+');
           await launchUrl(Uri.parse(
               'https://www.youtube.com/results?search_query=$editedText2'));
@@ -912,7 +855,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
           color: Colors.white54,
         ),
         onTap: () async {
-          String editedText = movie.title!.replaceAll(RegExp(r'[^\w\s]+'), '');
+          String editedText = tvSerie.name!.replaceAll(RegExp(r'[^\w\s]+'), '');
           String editedText2 = editedText.replaceAll(' ', '+');
           await launchUrl(Uri.parse(
               'https://www.google.com/search?q=Amazon+Video+$editedText2'));
@@ -936,7 +879,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
           color: Colors.white54,
         ),
         onTap: () async {
-          String editedText = movie.title!.replaceAll(RegExp(r'[^\w\s]+'), '');
+          String editedText = tvSerie.name!.replaceAll(RegExp(r'[^\w\s]+'), '');
           String editedText2 = editedText.replaceAll(' ', '+');
           await launchUrl(Uri.parse(
               'https://www.google.com/search?q=Netflix+$editedText2'));
@@ -979,7 +922,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
           color: Colors.white54,
         ),
         onTap: () async {
-          String editedText = movie.title!.replaceAll(RegExp(r'[^\w\s]+'), '');
+          String editedText = tvSerie.name!.replaceAll(RegExp(r'[^\w\s]+'), '');
           String editedText2 = editedText.replaceAll(' ', '%20');
           await launchUrl(Uri.parse(
               'https://play.google.com/store/search?q=$editedText2&c=movies'));
@@ -1014,14 +957,14 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
     }
   }
 
-  Widget getGenres(Movie movie) {
+  Widget getGenres(TvSerie tvSerie) {
     List<Widget> genres = [];
 
     Widget genre1 = Row(
       children: [
-        Icon(GetGenre.getGenreAndIcon(movie.genres![0].id!.toInt())[1]),
+        Icon(GetGenre.getGenreAndIcon(tvSerie.genres![0].id!.toInt())[1]),
         Text(
-          GetGenre.getGenreAndIcon(movie.genres![0].id!.toInt())[0],
+          GetGenre.getGenreAndIcon(tvSerie.genres![0].id!.toInt())[0],
           style: const TextStyle(
             fontSize: 15,
           ),
@@ -1029,12 +972,12 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
       ],
     );
     Widget genre2 = Row();
-    if (movie.genres!.length > 1) {
+    if (tvSerie.genres!.length > 1) {
       genre2 = Row(
         children: [
-          Icon(GetGenre.getGenreAndIcon(movie.genres![1].id!.toInt())[1]),
+          Icon(GetGenre.getGenreAndIcon(tvSerie.genres![1].id!.toInt())[1]),
           Text(
-            GetGenre.getGenreAndIcon(movie.genres![1].id!.toInt())[0],
+            GetGenre.getGenreAndIcon(tvSerie.genres![1].id!.toInt())[0],
             style: const TextStyle(
               fontSize: 15,
             ),
@@ -1043,7 +986,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
       );
     }
     genres.add(genre1);
-    if (movie.genres!.length > 1) genres.add(genre2);
+    if (tvSerie.genres!.length > 1) genres.add(genre2);
     // genres.add(genre3);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

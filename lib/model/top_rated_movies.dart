@@ -11,7 +11,7 @@ class TopRatedMovies {
     if (json['results'] != null) {
       results = <TopRatedMovie>[];
       json['results'].forEach((v) {
-        results!.add( TopRatedMovie.fromJson(v));
+        results!.add(TopRatedMovie.fromJson(v));
       });
     }
     totalPages = json['total_pages'];
@@ -59,7 +59,7 @@ class TopRatedMovie {
     originalLanguage = json['original_language'];
     originalTitle = json['original_title'];
     overview = json['overview'];
-    popularity = json['popularity'];
+    popularity = double.parse(json['popularity'].toString());
     posterPath = json['poster_path'];
     releaseDate = json['release_date'];
     title = json['title'];

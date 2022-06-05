@@ -4,7 +4,7 @@ import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/top_rated_movies.dart';
 import 'package:movie_suggestion/screens/movie_detail.dart';
-import 'package:movie_suggestion/service/movie_service.dart';
+import 'package:movie_suggestion/service/api_service.dart';
 
 class TopRatedScreen extends ConsumerStatefulWidget {
   const TopRatedScreen({Key? key}) : super(key: key);
@@ -14,72 +14,57 @@ class TopRatedScreen extends ConsumerStatefulWidget {
 }
 
 class _TopRatedScreenState extends ConsumerState<TopRatedScreen> {
-  late Future<List<dynamic>> topRatedMovies;
+  late Future<List<dynamic>> topRatedMoviesFuture;
+  List<TopRatedMovie> topRatedMovies = [];
+
   final controller = ScrollController();
+  int page = 1;
 
   @override
   void initState() {
     super.initState();
-    ref.read(topRatedMoviesPageControllerIndexProvider.state).state = 1;
-    topRatedMovies = ApiService.getTopRatedMovies(1);
+    topRatedMoviesFuture = ApiService.getTopRatedMovies(page);
+
     controller.addListener(() {
-      // listen to scroll events
       if (controller.position.pixels == controller.position.maxScrollExtent) {
-        // load more data
         debugPrint('max scroll');
-        ref.read(topRatedMoviesPageControllerIndexProvider.state).state++;
-        topRatedMovies = ApiService.getTopRatedMovies(
-            ref.watch(topRatedMoviesPageControllerIndexProvider));
+        setState(() {
+          page++;
+        });
+        debugPrint('page: $page');
+        topRatedMoviesFuture = ApiService.getTopRatedMovies(page);
       }
     });
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: topRatedMovies,
-      builder: (context, snapshot) {
+      future: topRatedMoviesFuture,
+      builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          List<TopRatedMovie> topRatedMovies =
-              snapshot.data as List<TopRatedMovie>;
-//https://image.tmdb.org/t/p/original/${movie.posterPath}
+          for (var i = 0; i < snapshot.data.length; i++) {
+            topRatedMovies.add(snapshot.data[i]);
+          }
+
+          List<TopRatedMovie> topRatedMoviesNew =
+              topRatedMovies.toSet().toList();
+          debugPrint('snapshot.data.length: ${snapshot.data.length}');
+          debugPrint('topRatedMovies.length: ${topRatedMovies.length}');
+          debugPrint('topRatedMoviesNew.length: ${topRatedMoviesNew.length}');
           return GridView.count(
             controller: controller,
             childAspectRatio: 0.69,
             crossAxisCount: 3,
             children: [
-              for (var i = 0; i < topRatedMovies.length; i++)
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MovieDetail(
-                          id: topRatedMovies[i].id!.toInt(),
-                        ),
-                      ),
-                    );
-                  },
-                  child: Image.network(
-                    topRatedMovies[i].posterPath == null
-                        ? LinkHelper.posterEmptyLink
-                        : 'https://image.tmdb.org/t/p/w500/${topRatedMovies[i].posterPath}',
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) =>
-                        loadingProgress == null
-                            ? child
-                            : Center(
-                                child: CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes !=
-                                          null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                          loadingProgress.expectedTotalBytes!
-                                              .toInt()
-                                      : null,
-                                ),
-                              ),
-                  ),
-                ),
+              for (var i = 0; i < topRatedMoviesNew.length; i++)
+                loadMovie(topRatedMoviesNew, i),
             ],
           );
         } else if (snapshot.hasError) {
@@ -92,5 +77,48 @@ class _TopRatedScreenState extends ConsumerState<TopRatedScreen> {
         );
       },
     );
+  }
+
+  Widget loadMovie(List<TopRatedMovie> movies, int index) {
+    if (index == movies.length) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      return InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MovieDetail(
+                id: movies[index].id!.toInt(),
+              ),
+            ),
+          );
+        },
+        child: Stack(
+          children: [
+            Image.network(
+              movies[index].posterPath == null
+                  ? LinkHelper.posterEmptyLink
+                  : 'https://image.tmdb.org/t/p/w500/${movies[index].posterPath}',
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) =>
+                  loadingProgress == null
+                      ? child
+                      : Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!.toInt()
+                                : null,
+                          ),
+                        ),
+            ),
+            Text(index.toString() + ' ' + movies[index].id.toString()),
+          ],
+        ),
+      );
+    }
   }
 }
