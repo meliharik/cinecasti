@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/movie.dart';
-import 'package:movie_suggestion/screens/movie_detail.dart';
+import 'package:movie_suggestion/screens/details/movie_detail.dart';
 
 class PersonAllMovies extends ConsumerStatefulWidget {
   final String personName;

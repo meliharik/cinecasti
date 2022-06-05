@@ -7,7 +7,7 @@ import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/members.dart';
 import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/model/movie_provider.dart';
-import 'package:movie_suggestion/screens/person_detail.dart';
+import 'package:movie_suggestion/screens/details/person_detail.dart';
 import 'package:movie_suggestion/service/api_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -33,9 +33,6 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
   void initState() {
     super.initState();
     controller.addListener(() {
-      debugPrint("position: " + controller.position.pixels.toString());
-      debugPrint(
-          'hight / 3: ' + (MediaQuery.of(context).size.height / 3).toString());
       if (controller.position.pixels >=
           MediaQuery.of(context).size.height / 2) {
         debugPrint('centered');

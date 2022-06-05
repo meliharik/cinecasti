@@ -31,7 +31,7 @@ class Person {
       this.homepage});
 
   Person.fromJson(Map<String, dynamic> json) {
-    birthday = json['birthday'];
+    birthday = json['birthday'] ?? '';
     knownForDepartment = json['known_for_department'];
     deathday = json['deathday'];
     id = json['id'];

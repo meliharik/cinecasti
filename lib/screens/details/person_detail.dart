@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/model/person.dart';
 import 'package:movie_suggestion/model/person_social.dart';
 import 'package:movie_suggestion/model/tv_serie_credit.dart';
-import 'package:movie_suggestion/screens/movie_detail.dart';
+import 'package:movie_suggestion/screens/details/movie_detail.dart';
+import 'package:movie_suggestion/screens/details/tv_serie_detail.dart';
 import 'package:movie_suggestion/screens/seeAll/person_movies.dart';
 import 'package:movie_suggestion/screens/seeAll/person_tv_series.dart';
-import 'package:movie_suggestion/screens/tv_serie_detail.dart';
 import 'package:movie_suggestion/service/api_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -31,9 +30,6 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
   void initState() {
     super.initState();
     controller.addListener(() {
-      debugPrint("position: " + controller.position.pixels.toString());
-      debugPrint(
-          'hight / 3: ' + (MediaQuery.of(context).size.height / 3).toString());
       if (controller.position.pixels >=
           MediaQuery.of(context).size.height / 2) {
         debugPrint('centered');
@@ -53,7 +49,6 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -61,6 +56,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           Person person = snapshot.data as Person;
+
           return getPersonDetail(person);
         } else if (snapshot.hasError) {
           debugPrint('error');
@@ -111,8 +107,12 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
   }
 
   Widget getAppBar(Person person) {
-    String formattedDate =
-        DateFormat.yMMMd().format(DateTime.parse(person.birthday.toString()));
+    String formattedDateBirth = person.birthday!.isNotEmpty
+        ? DateFormat.yMMMd().format(DateTime.parse(person.birthday.toString()))
+        : '';
+    String formattedDateDeath = person.deathday != null
+        ? DateFormat.yMMMd().format(DateTime.parse(person.birthday.toString()))
+        : '';
     return SliverAppBar(
       centerTitle: true,
       elevation: 0,
@@ -166,15 +166,31 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                   const SizedBox(
                     height: 6,
                   ),
-                  Text(
-                    "Born on " + formattedDate,
-                    overflow: TextOverflow.clip,
-                    style: const TextStyle(
-                      color: Colors.white60,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  person.birthday!.isNotEmpty
+                      ? Text(
+                          "Born on " + formattedDateBirth,
+                          overflow: TextOverflow.clip,
+                          style: const TextStyle(
+                            color: Colors.white60,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      : const SizedBox(),
+                  const SizedBox(
+                    height: 6,
                   ),
+                  person.deathday != null
+                      ? Text(
+                          "Died on " + formattedDateDeath,
+                          overflow: TextOverflow.clip,
+                          style: const TextStyle(
+                            color: Colors.white60,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      : const SizedBox(),
                 ],
               ),
         titlePadding: const EdgeInsets.all(16),
@@ -225,10 +241,21 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
   }
 
   Widget card1(Person person) {
-    DateTime birthday = DateTime.parse(person.birthday.toString());
+    DateTime birthday = DateTime.now();
+    if (person.birthday!.isNotEmpty) {
+      birthday = DateTime.parse(person.birthday.toString());
+    }
+    DateTime deathday = DateTime.now();
+    if (person.deathday != null) {
+      deathday = DateTime.parse(person.deathday.toString());
+    }
+
     DateTime now = DateTime.now();
 
     int age = now.year - birthday.year;
+    if (person.deathday != null) {
+      age = deathday.year - birthday.year;
+    }
 
     return Card(
       child: Container(
@@ -239,13 +266,21 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '$age years old',
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                person.birthday!.isNotEmpty
+                    ? Text(
+                        '$age years old',
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    : const Text(
+                        'Unknown birthday',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                 FutureBuilder(
                   future: ApiService.getPersonMovies(person.id!.toInt()),
                   builder: (context, snapshot) {
@@ -308,51 +343,6 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
             const SizedBox(height: 8),
             ExpandableText(person.biography.toString() + person.id.toString()),
             const SizedBox(height: 8),
-            // const Divider(
-            //   color: Colors.grey,
-            // ),
-            // const SizedBox(height: 8),
-            // Text(
-            //   'Birthday',
-            //   style: const TextStyle(
-            //     fontSize: 15,
-            //     fontWeight: FontWeight.bold,
-            //   ),
-            // ),
-            // const SizedBox(height: 8),
-            // Text(
-            //   DateFormat.yMMMd()
-            //       .format(DateTime.parse(person.birthday.toString())),
-            //   style: const TextStyle(
-            //     fontSize: 15,
-            //     fontWeight: FontWeight.bold,
-            //   ),
-            // ),
-            // const SizedBox(height: 8),
-            // const Divider(
-            //   color: Colors.grey,
-            // ),
-            // const SizedBox(height: 8),
-            // Text(
-            //   'Place of birth',
-            //   style: const TextStyle(
-            //     fontSize: 15,
-            //     fontWeight: FontWeight.bold,
-            //   ),
-            // ),
-            // const SizedBox(height: 8),
-            // Text(
-            //   person.placeOfBirth.toString(),
-            //   style: const TextStyle(
-            //     fontSize: 15,
-            //     fontWeight: FontWeight.bold,
-            //   ),
-            // ),
-            // const SizedBox(height: 8),
-            // const Divider(
-            //   color: Colors.grey,
-            // ),
-            // const SizedBox(height: 8),
           ],
         ),
       ),
@@ -384,6 +374,10 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Movie> movies = snapshot.data as List<Movie>;
+
+                  if (movies.isEmpty) {
+                    return const Text('No movies found');
+                  }
 
                   return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.41,
@@ -596,6 +590,9 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                 if (snapshot.hasData) {
                   List<CastTvSeries> tvSeries =
                       snapshot.data as List<CastTvSeries>;
+                  if (tvSeries.isEmpty) {
+                    return const Text('No TV Series');
+                  }
 
                   return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.41,
@@ -880,27 +877,29 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                               ),
                             )
                           : const SizedBox(),
-                      ListTile(
-                        trailing: const Icon(
-                          FontAwesomeIcons.angleRight,
-                          color: Colors.white54,
-                        ),
-                        onTap: () async {
-                          await launchUrl(Uri.parse(
-                              'https://www.imdb.com/name/${person.imdbId}/'));
-                        },
-                        title: const Text(
-                          'IMDB',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        leading: Image.asset(
-                          'assets/icons/imdb_icon.png',
-                          width: MediaQuery.of(context).size.width * 0.1,
-                        ),
-                      ),
+                      person.imdbId != null
+                          ? ListTile(
+                              trailing: const Icon(
+                                FontAwesomeIcons.angleRight,
+                                color: Colors.white54,
+                              ),
+                              onTap: () async {
+                                await launchUrl(Uri.parse(
+                                    'https://www.imdb.com/name/${person.imdbId}/'));
+                              },
+                              title: const Text(
+                                'IMDB',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              leading: Image.asset(
+                                'assets/icons/imdb_icon.png',
+                                width: MediaQuery.of(context).size.width * 0.1,
+                              ),
+                            )
+                          : const SizedBox(),
                       ListTile(
                         trailing: const Icon(
                           FontAwesomeIcons.angleRight,

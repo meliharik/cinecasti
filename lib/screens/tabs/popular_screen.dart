@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/popular_movies.dart';
-import 'package:movie_suggestion/screens/movie_detail.dart';
+import 'package:movie_suggestion/screens/details/movie_detail.dart';
 import 'package:movie_suggestion/service/api_service.dart';
 
 class PopularScreen extends ConsumerStatefulWidget {

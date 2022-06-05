@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/tv_serie_credit.dart';
+import 'package:movie_suggestion/screens/details/tv_serie_detail.dart';
 
 class PersonAllTvSeries extends ConsumerStatefulWidget {
   final String personName;
@@ -37,18 +38,18 @@ class _PersonAllTvSeriesState extends ConsumerState<PersonAllTvSeries> {
           for (var i = 0; i < widget.series.length; i++)
             InkWell(
               onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => MovieDetail(
-                //       id: widget.series[i].id!.toInt(),
-                //     ),
-                //   ),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TvSerieDetail(
+                      id: widget.series[i].id!.toInt(),
+                    ),
+                  ),
+                );
               },
               child: Image.network(
                 widget.series[i].posterPath == null
-                    ?LinkHelper.posterEmptyLink
+                    ? LinkHelper.posterEmptyLink
                     : 'https://image.tmdb.org/t/p/w500/${widget.series[i].posterPath}',
                 fit: BoxFit.cover,
               ),
