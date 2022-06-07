@@ -9,6 +9,7 @@ import 'package:movie_suggestion/model/movie_provider.dart';
 import 'package:movie_suggestion/model/similar_tv_series.dart';
 import 'package:movie_suggestion/model/tv_serie.dart';
 import 'package:movie_suggestion/screens/details/person_detail.dart';
+import 'package:movie_suggestion/screens/details/season_detail.dart';
 import 'package:movie_suggestion/service/api_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -65,6 +66,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           TvSerie tvSerie = snapshot.data as TvSerie;
+
           return getTvSerieDetail(tvSerie);
         } else if (snapshot.hasError) {
           debugPrint('error');
@@ -94,6 +96,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                 [
                   card1(tvSerie),
                   card2(tvSerie),
+                  seasonsListTile(tvSerie),
                   card3(tvSerie),
                   card4(tvSerie),
                   card5(tvSerie),
@@ -364,6 +367,72 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
     );
   }
 
+  Widget seasonsListTile(TvSerie tvSerie) {
+    return Card(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: ExpansionTile(
+          title: Text(
+            'Seasons (${tvSerie.seasons!.length})',
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          children: [
+            SizedBox(
+              height: (tvSerie.seasons!.length * 50) +
+                  MediaQuery.of(context).size.height * 0.05,
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: tvSerie.seasons!.length,
+                itemBuilder: (context, index) {
+                  return SizedBox(
+                    height: 50,
+                    child: ListTile(
+                      title: Text(
+                        tvSerie.seasons![index].name.toString(),
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(
+                        tvSerie.seasons![index].airDate.toString(),
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      trailing: const Icon(
+                        FontAwesomeIcons.angleRight,
+                        size: 15,
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: ((context) => SeasonDetail(
+                                  seasonNumber: tvSerie
+                                      .seasons![index].seasonNumber!
+                                      .toInt(),
+                                  tvSerieId: tvSerie.id!.toInt(),
+                                  tvSerieName: tvSerie.name.toString(),
+                                )),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget card3(TvSerie tvSerie) {
     return Card(
       child: Container(
@@ -517,7 +586,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
-                      itemCount: 3,
+                      itemCount: crew.length > 4 ? 4 : crew.length,
                       itemBuilder: (context, index) {
                         return Row(
                           children: [
@@ -790,10 +859,46 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                 if (snapshot.hasData) {
                   List<MovieAndTvSerieProvider> providers =
                       snapshot.data as List<MovieAndTvSerieProvider>;
+                  List<MovieAndTvSerieProvider> providers2 = [];
+                  for (int i = 0; i < providers.length; i++) {
+                    if (providers[i].providerName == 'Netflix' ||
+                        providers[i].providerName == 'Amazon Prime Video' ||
+                        providers[i].providerName == 'Amazon Video' ||
+                        providers[i].providerName == 'Google Play Movies' ||
+                        providers[i].providerName == 'Disney Plus' ||
+                        providers[i].providerName == 'YouTube') {
+                      providers2.add(providers[i]);
+                    }
+                  }
 
-                  if (providers.isEmpty) {
+                  if (providers2.isEmpty) {
                     return Column(
                       children: [
+                        ListTile(
+                          trailing: const Icon(
+                            FontAwesomeIcons.angleRight,
+                            color: Colors.white54,
+                          ),
+                          onTap: () async {
+                            String editedText = tvSerie.name!
+                                .replaceAll(RegExp(r'[^\w\s]+'), '');
+                            String editedText2 =
+                                editedText.replaceAll(' ', '+');
+                            await launchUrl(Uri.parse(
+                                'https://www.google.com/search?q=$editedText2'));
+                          },
+                          title: const Text(
+                            'Google',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          leading: Image.asset(
+                            'assets/icons/google_icon.png',
+                            width: MediaQuery.of(context).size.width * 0.1,
+                          ),
+                        ),
                         ListTile(
                           trailing: const Icon(
                             FontAwesomeIcons.angleRight,
@@ -826,9 +931,9 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                   return ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: providers.length + 1,
+                    itemCount: providers2.length + 2,
                     itemBuilder: (context, index) {
-                      if (index == 1) {
+                      if (index == 0) {
                         return ListTile(
                           trailing: const Icon(
                             FontAwesomeIcons.angleRight,
@@ -854,8 +959,35 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                             width: MediaQuery.of(context).size.width * 0.1,
                           ),
                         );
+                      } else if (index == 1) {
+                        return ListTile(
+                          trailing: const Icon(
+                            FontAwesomeIcons.angleRight,
+                            color: Colors.white54,
+                          ),
+                          onTap: () async {
+                            String editedText = tvSerie.name!
+                                .replaceAll(RegExp(r'[^\w\s]+'), '');
+                            String editedText2 =
+                                editedText.replaceAll(' ', '+');
+                            await launchUrl(Uri.parse(
+                                'https://www.google.com/search?q=$editedText2'));
+                          },
+                          title: const Text(
+                            'Google',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          leading: Image.asset(
+                            'assets/icons/google_icon.png',
+                            width: MediaQuery.of(context).size.width * 0.1,
+                          ),
+                        );
                       }
-                      return getListTile(providers, index, tvSerie);
+                      // return Text(index.toString());
+                      return getListTile(providers2, index - 2, tvSerie);
                     },
                   );
                 } else if (snapshot.hasError) {
@@ -1014,6 +1146,10 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
 
   Widget getGenres(TvSerie tvSerie) {
     List<Widget> genres = [];
+
+    if (tvSerie.genres!.isEmpty) {
+      return const SizedBox();
+    }
 
     Widget genre1 = Row(
       children: [

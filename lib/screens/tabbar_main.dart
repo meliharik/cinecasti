@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:movie_suggestion/screens/tabs/popular_screen.dart';
-import 'package:movie_suggestion/screens/tabs/top_rated_screen.dart';
+import 'package:movie_suggestion/screens/tabs/popular_screen_movie.dart';
+import 'package:movie_suggestion/screens/tabs/top_rated_screen_movie.dart';
 
-class TabBarMain extends ConsumerStatefulWidget {
-  const TabBarMain({Key? key}) : super(key: key);
+class TabBarMainMovie extends ConsumerStatefulWidget {
+  const TabBarMainMovie({Key? key}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends ConsumerState<TabBarMain> {
+class _MainScreenState extends ConsumerState<TabBarMainMovie> {
   @override
   Widget build(BuildContext context) {
     const tab = TabBar(

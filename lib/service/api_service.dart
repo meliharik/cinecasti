@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:movie_suggestion/model/episode.dart';
 import 'package:movie_suggestion/model/members.dart';
 import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/model/movie_provider.dart';
 import 'package:movie_suggestion/model/person.dart';
 import 'package:movie_suggestion/model/person_social.dart';
 import 'package:movie_suggestion/model/popular_movies.dart';
+import 'package:movie_suggestion/model/season.dart';
 import 'package:movie_suggestion/model/similar_tv_series.dart';
 import 'package:movie_suggestion/model/top_rated_movies.dart';
 import 'package:movie_suggestion/model/tv_serie.dart';
@@ -232,11 +234,16 @@ class ApiService {
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       var results = jsonResponse['results'];
+      if ((results['US']['buy'] == null && results['US']['flatrate'] == null) ||
+          results.isEmpty ||
+          results == null) {
+        return [];
+      }
       if (results.isNotEmpty) {
         results = jsonResponse['results']['US']['buy'] ?? [];
       }
       var results2 = jsonResponse['results'];
-      if (results2.isNotEmpty) {
+      if (results2.isNotEmpty || results2 != null) {
         results2 = jsonResponse['results']['US']['flatrate'] ?? [];
       }
       results.addAll(results2);
@@ -268,11 +275,22 @@ class ApiService {
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       var results = jsonResponse['results'];
-      if (results.isNotEmpty) {
+      if (results['US'] == null ||
+          results['US'].isEmpty ||
+          results['US']['buy'] == null ||
+          results['US']['buy'].isEmpty) {
+        return [];
+      }
+      if ((results['US']['buy'] == null && results['US']['flatrate'] == null) ||
+          results.isEmpty ||
+          results == null) {
+        return [];
+      }
+      if (results.isNotEmpty || results != null) {
         results = jsonResponse['results']['US']['buy'] ?? [];
       }
       var results2 = jsonResponse['results'];
-      if (results2.isNotEmpty) {
+      if (results2.isNotEmpty || results2 != null) {
         results2 = jsonResponse['results']['US']['flatrate'] ?? [];
       }
       results.addAll(results2);
@@ -354,5 +372,34 @@ class ApiService {
     } else {
       throw Exception('Failed to load post');
     }
+  }
+
+  static Future<Season> getSeasonById(
+      {required int seasonNumber, required int tvSerieId}) async {
+    var response = await http.get(Uri.parse(
+        'https://api.themoviedb.org/3/tv/$tvSerieId/season/$seasonNumber?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      return Season.fromJson(jsonResponse);
+    } else {
+      throw Exception('Failed to load post');
+    }
+  }
+
+  static Future<Episode> getEpisodeById(
+      {required int episodeNumber,
+      required int seasonNumber,
+      required int tvserieId}) {
+    return http
+        .get(Uri.parse(
+            'https://api.themoviedb.org/3/tv/$tvserieId/season/$seasonNumber/episode/$episodeNumber?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'))
+        .then((response) {
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+        return Episode.fromJson(jsonResponse);
+      } else {
+        throw Exception('Failed to load post');
+      }
+    });
   }
 }

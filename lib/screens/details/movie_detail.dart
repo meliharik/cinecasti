@@ -517,7 +517,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
-                      itemCount: 3,
+                      itemCount: crew.length > 4 ? 4 : crew.length,
                       itemBuilder: (context, index) {
                         return Row(
                           children: [
@@ -839,6 +839,31 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             width: MediaQuery.of(context).size.width * 0.1,
                           ),
                         ),
+                        ListTile(
+                          trailing: const Icon(
+                            FontAwesomeIcons.angleRight,
+                            color: Colors.white54,
+                          ),
+                          onTap: () async {
+                            String editedText = movie.title!
+                                .replaceAll(RegExp(r'[^\w\s]+'), '');
+                            String editedText2 =
+                                editedText.replaceAll(' ', '+');
+                            await launchUrl(Uri.parse(
+                                'https://www.google.com/search?q=$editedText2'));
+                          },
+                          title: const Text(
+                            'Google',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          leading: Image.asset(
+                            'assets/icons/google_icon.png',
+                            width: MediaQuery.of(context).size.width * 0.1,
+                          ),
+                        ),
                       ],
                     );
                   }
@@ -846,7 +871,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                   return ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: providers.length + 2,
+                    itemCount: providers.length + 3,
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         return ListTile(
@@ -896,8 +921,34 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             width: MediaQuery.of(context).size.width * 0.1,
                           ),
                         );
+                      } else if (index == 2) {
+                        return ListTile(
+                          trailing: const Icon(
+                            FontAwesomeIcons.angleRight,
+                            color: Colors.white54,
+                          ),
+                          onTap: () async {
+                            String editedText = movie.title!
+                                .replaceAll(RegExp(r'[^\w\s]+'), '');
+                            String editedText2 =
+                                editedText.replaceAll(' ', '+');
+                            await launchUrl(Uri.parse(
+                                'https://www.google.com/search?q=$editedText2'));
+                          },
+                          title: const Text(
+                            'Google',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          leading: Image.asset(
+                            'assets/icons/google_icon.png',
+                            width: MediaQuery.of(context).size.width * 0.1,
+                          ),
+                        );
                       }
-                      return getListTile(providers, index - 2, movie);
+                      return getListTile(providers, index - 3, movie);
                     },
                   );
                 } else if (snapshot.hasError) {
@@ -1056,6 +1107,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
 
   Widget getGenres(Movie movie) {
     List<Widget> genres = [];
+
+    if (movie.genres!.isEmpty) {
+      return const SizedBox();
+    }
 
     Widget genre1 = Row(
       children: [

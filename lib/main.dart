@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const TabBarMain(),
+      home: const TabBarMainMovie(),
       theme: FlexThemeData.dark(
         scheme: FlexScheme.blumineBlue,
         surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,

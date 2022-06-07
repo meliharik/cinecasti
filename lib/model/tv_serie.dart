@@ -139,8 +139,6 @@ class TvSerie {
     voteAverage = json['vote_average'];
     voteCount = json['vote_count'];
   }
-
-
 }
 
 class CreatedBy {
@@ -159,7 +157,6 @@ class CreatedBy {
     gender = json['gender'];
     profilePath = json['profile_path'];
   }
-
 }
 
 class Genres {
@@ -172,8 +169,6 @@ class Genres {
     id = json['id'];
     name = json['name'];
   }
-
-
 }
 
 class LastEpisodeToAir {
@@ -215,7 +210,6 @@ class LastEpisodeToAir {
     voteAverage = json['vote_average'];
     voteCount = json['vote_count'];
   }
-
 }
 
 class Networks {
@@ -232,7 +226,6 @@ class Networks {
     logoPath = json['logo_path'];
     originCountry = json['origin_country'];
   }
-
 }
 
 class ProductionCountries {
@@ -245,7 +238,6 @@ class ProductionCountries {
     iso31661 = json['iso_3166_1'];
     name = json['name'];
   }
-
 }
 
 class Seasons {
@@ -283,9 +275,7 @@ class Seasons {
       });
     }
   }
-
 }
-
 
 class Logo {
   String? path;
@@ -297,7 +287,6 @@ class Logo {
     path = json['path'];
     aspectRatio = json['aspect_ratio'];
   }
-
 }
 
 class SpokenLanguages {
@@ -312,5 +301,4 @@ class SpokenLanguages {
     iso6391 = json['iso_639_1'];
     name = json['name'];
   }
-
 }

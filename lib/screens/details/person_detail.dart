@@ -111,7 +111,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
         ? DateFormat.yMMMd().format(DateTime.parse(person.birthday.toString()))
         : '';
     String formattedDateDeath = person.deathday != null
-        ? DateFormat.yMMMd().format(DateTime.parse(person.birthday.toString()))
+        ? DateFormat.yMMMd().format(DateTime.parse(person.deathday.toString()))
         : '';
     return SliverAppBar(
       centerTitle: true,
