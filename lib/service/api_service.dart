@@ -8,6 +8,7 @@ import 'package:movie_suggestion/model/movie_provider.dart';
 import 'package:movie_suggestion/model/person.dart';
 import 'package:movie_suggestion/model/person_social.dart';
 import 'package:movie_suggestion/model/popular_movies.dart';
+import 'package:movie_suggestion/model/popular_tv_serie.dart';
 import 'package:movie_suggestion/model/season.dart';
 import 'package:movie_suggestion/model/similar_tv_series.dart';
 import 'package:movie_suggestion/model/top_rated_movies.dart';
@@ -50,6 +51,26 @@ class ApiService {
         num rating = results[i]['vote_average'];
         if (rating != 0.0) {
           popMovies.add(PopularMovie.fromJson(results[i]));
+        }
+      }
+      return popMovies;
+    } else {
+      Exception('Failed to load popular movies');
+      return [];
+    }
+  }
+
+  static Future<List<PopularTvSerie>> getPopularTvSeries(int pageNumber) async {
+    final response = await http.get(Uri.parse(
+        'https://api.themoviedb.org/3/tv/popular?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=$pageNumber'));
+    if (response.statusCode == 200) {
+      var document = json.decode(response.body);
+      List results = document['results'];
+      List<PopularTvSerie> popMovies = [];
+      for (var i = 0; i < results.length; i++) {
+        num rating = results[i]['vote_average'];
+        if (rating != 0.0) {
+          popMovies.add(PopularTvSerie.fromJson(results[i]));
         }
       }
       return popMovies;
@@ -234,6 +255,12 @@ class ApiService {
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       var results = jsonResponse['results'];
+      if (results['US'] == null ||
+          results['US'].isEmpty ||
+          results['US']['buy'] == null ||
+          results['US']['buy'].isEmpty) {
+        return [];
+      }
       if ((results['US']['buy'] == null && results['US']['flatrate'] == null) ||
           results.isEmpty ||
           results == null) {

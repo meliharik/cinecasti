@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
-import 'package:movie_suggestion/model/popular_movies.dart';
-import 'package:movie_suggestion/screens/details/movie_detail.dart';
+import 'package:movie_suggestion/model/popular_tv_serie.dart';
+import 'package:movie_suggestion/screens/details/tv_serie_detail.dart';
 import 'package:movie_suggestion/service/api_service.dart';
 
-class PopularScreenMovie extends ConsumerStatefulWidget {
-  const PopularScreenMovie({Key? key}) : super(key: key);
+class PopularScreenTvSerie extends ConsumerStatefulWidget {
+  const PopularScreenTvSerie({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _PopularScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _PopularScreenTvSerieState();
 }
 
-class _PopularScreenState extends ConsumerState<PopularScreenMovie> {
-  late Future<List<dynamic>> popularMoviesFuture;
-  List<PopularMovie> popularMovies = [];
+class _PopularScreenTvSerieState extends ConsumerState<PopularScreenTvSerie> {
+  late Future<List<dynamic>> popularTvSeriesFuture;
+  List<PopularTvSerie> popularTvSeries = [];
   final controller = ScrollController();
   int page = 1;
 
   @override
   void initState() {
     super.initState();
-    popularMoviesFuture = ApiService.getPopularMovies(page);
+    popularTvSeriesFuture = ApiService.getPopularTvSeries(page);
 
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
@@ -30,7 +31,7 @@ class _PopularScreenState extends ConsumerState<PopularScreenMovie> {
           page++;
         });
         debugPrint('page: $page');
-        popularMoviesFuture = ApiService.getPopularMovies(page);
+        popularTvSeriesFuture = ApiService.getPopularTvSeries(page);
       }
     });
   }
@@ -44,24 +45,22 @@ class _PopularScreenState extends ConsumerState<PopularScreenMovie> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: popularMoviesFuture,
+      future: popularTvSeriesFuture,
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           for (var i = 0; i < snapshot.data.length; i++) {
-            popularMovies.add(snapshot.data[i]);
+            popularTvSeries.add(snapshot.data[i]);
           }
 
-          List<PopularMovie> popularMoviesNew = popularMovies.toSet().toList();
-          debugPrint('snapshot.data.length: ${snapshot.data.length}');
-          debugPrint('poopularMovies.length: ${popularMovies.length}');
-          debugPrint('popularMoviesNew.length: ${popularMoviesNew.length}');
+          List<PopularTvSerie> popularTvSeriesNew =
+              popularTvSeries.toSet().toList();
           return GridView.count(
             controller: controller,
             childAspectRatio: 0.69,
             crossAxisCount: 3,
             children: [
-              for (var i = 0; i < popularMoviesNew.length + 1; i++)
-                loadMovie(popularMoviesNew, i)
+              for (var i = 0; i < popularTvSeriesNew.length + 1; i++)
+                loadTvSerie(popularTvSeriesNew, i)
             ],
           );
         } else if (snapshot.hasError) {
@@ -74,8 +73,8 @@ class _PopularScreenState extends ConsumerState<PopularScreenMovie> {
     );
   }
 
-  Widget loadMovie(List<PopularMovie> movies, int index) {
-    if (index == movies.length) {
+  Widget loadTvSerie(List<PopularTvSerie> tvSeries, int index) {
+    if (index == tvSeries.length) {
       return const Center(
         child: CircularProgressIndicator(),
       );
@@ -85,16 +84,16 @@ class _PopularScreenState extends ConsumerState<PopularScreenMovie> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => MovieDetail(
-                id: movies[index].id!.toInt(),
+              builder: (context) => TvSerieDetail(
+                id: tvSeries[index].id!.toInt(),
               ),
             ),
           );
         },
         child: Image.network(
-          movies[index].posterPath == null
+          tvSeries[index].posterPath == null
               ? LinkHelper.posterEmptyLink
-              : 'https://image.tmdb.org/t/p/w500/${movies[index].posterPath}',
+              : 'https://image.tmdb.org/t/p/w500/${tvSeries[index].posterPath}',
           fit: BoxFit.cover,
           loadingBuilder: (context, child, loadingProgress) =>
               loadingProgress == null

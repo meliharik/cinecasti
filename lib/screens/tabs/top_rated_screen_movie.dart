@@ -5,14 +5,14 @@ import 'package:movie_suggestion/model/top_rated_movies.dart';
 import 'package:movie_suggestion/screens/details/movie_detail.dart';
 import 'package:movie_suggestion/service/api_service.dart';
 
-class TopRatedScreen extends ConsumerStatefulWidget {
-  const TopRatedScreen({Key? key}) : super(key: key);
+class TopRatedScreenMovie extends ConsumerStatefulWidget {
+  const TopRatedScreenMovie({Key? key}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _TopRatedScreenState();
 }
 
-class _TopRatedScreenState extends ConsumerState<TopRatedScreen> {
+class _TopRatedScreenState extends ConsumerState<TopRatedScreenMovie> {
   late Future<List<dynamic>> topRatedMoviesFuture;
   List<TopRatedMovie> topRatedMovies = [];
 

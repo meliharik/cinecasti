@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/model/movie.dart';
-import 'package:movie_suggestion/screens/card/card_back.dart';
-import 'package:movie_suggestion/screens/card/card_front.dart';
+import 'package:movie_suggestion/screens/old/card/card_back.dart';
+import 'package:movie_suggestion/screens/old/card/card_front.dart';
 
 class RecomendScreen extends ConsumerStatefulWidget {
   const RecomendScreen({Key? key}) : super(key: key);
