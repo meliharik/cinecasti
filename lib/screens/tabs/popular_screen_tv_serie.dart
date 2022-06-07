@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
-import 'package:movie_suggestion/model/popular_tv_serie.dart';
+import 'package:movie_suggestion/model/tv_serie.dart';
 import 'package:movie_suggestion/screens/details/tv_serie_detail.dart';
 import 'package:movie_suggestion/service/api_service.dart';
 
@@ -15,7 +15,7 @@ class PopularScreenTvSerie extends ConsumerStatefulWidget {
 
 class _PopularScreenTvSerieState extends ConsumerState<PopularScreenTvSerie> {
   late Future<List<dynamic>> popularTvSeriesFuture;
-  List<PopularTvSerie> popularTvSeries = [];
+  List<TvSerie> popularTvSeries = [];
   final controller = ScrollController();
   int page = 1;
 
@@ -52,7 +52,7 @@ class _PopularScreenTvSerieState extends ConsumerState<PopularScreenTvSerie> {
             popularTvSeries.add(snapshot.data[i]);
           }
 
-          List<PopularTvSerie> popularTvSeriesNew =
+          List<TvSerie> popularTvSeriesNew =
               popularTvSeries.toSet().toList();
           return GridView.count(
             controller: controller,
@@ -73,7 +73,7 @@ class _PopularScreenTvSerieState extends ConsumerState<PopularScreenTvSerie> {
     );
   }
 
-  Widget loadTvSerie(List<PopularTvSerie> tvSeries, int index) {
+  Widget loadTvSerie(List<TvSerie> tvSeries, int index) {
     if (index == tvSeries.length) {
       return const Center(
         child: CircularProgressIndicator(),

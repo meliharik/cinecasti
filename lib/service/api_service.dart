@@ -7,11 +7,8 @@ import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/model/movie_provider.dart';
 import 'package:movie_suggestion/model/person.dart';
 import 'package:movie_suggestion/model/person_social.dart';
-import 'package:movie_suggestion/model/popular_movies.dart';
-import 'package:movie_suggestion/model/popular_tv_serie.dart';
 import 'package:movie_suggestion/model/season.dart';
 import 'package:movie_suggestion/model/similar_tv_series.dart';
-import 'package:movie_suggestion/model/top_rated_movies.dart';
 import 'package:movie_suggestion/model/tv_serie.dart';
 import 'package:movie_suggestion/model/tv_serie_credit.dart';
 
@@ -40,17 +37,17 @@ class ApiService {
     }
   }
 
-  static Future<List<PopularMovie>> getPopularMovies(int pageNumber) async {
+  static Future<List<Movie>> getPopularMovies(int pageNumber) async {
     final response = await http.get(Uri.parse(
         'https://api.themoviedb.org/3/movie/popular?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=$pageNumber'));
     if (response.statusCode == 200) {
       var document = json.decode(response.body);
       List results = document['results'];
-      List<PopularMovie> popMovies = [];
+      List<Movie> popMovies = [];
       for (var i = 0; i < results.length; i++) {
         num rating = results[i]['vote_average'];
         if (rating != 0.0) {
-          popMovies.add(PopularMovie.fromJson(results[i]));
+          popMovies.add(Movie.fromJson(results[i]));
         }
       }
       return popMovies;
@@ -60,17 +57,17 @@ class ApiService {
     }
   }
 
-  static Future<List<PopularTvSerie>> getPopularTvSeries(int pageNumber) async {
+  static Future<List<TvSerie>> getPopularTvSeries(int pageNumber) async {
     final response = await http.get(Uri.parse(
         'https://api.themoviedb.org/3/tv/popular?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=$pageNumber'));
     if (response.statusCode == 200) {
       var document = json.decode(response.body);
       List results = document['results'];
-      List<PopularTvSerie> popMovies = [];
+      List<TvSerie> popMovies = [];
       for (var i = 0; i < results.length; i++) {
         num rating = results[i]['vote_average'];
         if (rating != 0.0) {
-          popMovies.add(PopularTvSerie.fromJson(results[i]));
+          popMovies.add(TvSerie.fromJson(results[i]));
         }
       }
       return popMovies;
@@ -80,17 +77,37 @@ class ApiService {
     }
   }
 
-  static Future<List<TopRatedMovie>> getTopRatedMovies(int pageNumber) async {
+  static Future<List<Movie>> getTopRatedMovies(int pageNumber) async {
     final response = await http.get(Uri.parse(
         'https://api.themoviedb.org/3/movie/top_rated?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=$pageNumber'));
     if (response.statusCode == 200) {
       var document = json.decode(response.body);
       List results = document['results'];
-      List<TopRatedMovie> popMovies = [];
+      List<Movie> popMovies = [];
       for (var i = 0; i < results.length; i++) {
         double rating = results[i]['vote_average'];
         if (rating != 0.0) {
-          popMovies.add(TopRatedMovie.fromJson(results[i]));
+          popMovies.add(Movie.fromJson(results[i]));
+        }
+      }
+      return popMovies;
+    } else {
+      Exception('Failed to load top rated movies');
+      return [];
+    }
+  }
+
+  static Future<List<TvSerie>> getTopRatedTvSeries(int pageNumber) async {
+    final response = await http.get(Uri.parse(
+        'https://api.themoviedb.org/3/tv/top_rated?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=$pageNumber'));
+    if (response.statusCode == 200) {
+      var document = json.decode(response.body);
+      List results = document['results'];
+      List<TvSerie> popMovies = [];
+      for (var i = 0; i < results.length; i++) {
+        num rating = results[i]['vote_average'];
+        if (rating != 0.0) {
+          popMovies.add(TvSerie.fromJson(results[i]));
         }
       }
       return popMovies;

@@ -77,7 +77,7 @@ class TvSerie {
         createdBy!.add(CreatedBy.fromJson(v));
       });
     }
-    episodeRunTime = json['episode_run_time'].cast<int>();
+    episodeRunTime = json['episode_run_time']?.cast<int>();
     firstAirDate = json['first_air_date'];
     if (json['genres'] != null) {
       genres = <Genres>[];
@@ -88,7 +88,7 @@ class TvSerie {
     homepage = json['homepage'];
     id = json['id'];
     inProduction = json['in_production'];
-    languages = json['languages'].cast<String>();
+    languages = json['languages']?.cast<String>();
     lastAirDate = json['last_air_date'];
     lastEpisodeToAir = json['last_episode_to_air'] != null
         ? LastEpisodeToAir.fromJson(json['last_episode_to_air'])
@@ -103,7 +103,7 @@ class TvSerie {
     }
     numberOfEpisodes = json['number_of_episodes'];
     numberOfSeasons = json['number_of_seasons'];
-    originCountry = json['origin_country'].cast<String>();
+    originCountry = json['origin_country']?.cast<String>();
     originalLanguage = json['original_language'];
     originalName = json['original_name'];
     overview = json['overview'];
@@ -136,7 +136,7 @@ class TvSerie {
     status = json['status'];
     tagline = json['tagline'];
     type = json['type'];
-    voteAverage = json['vote_average'];
+    voteAverage = double.parse(json['vote_average'].toString());
     voteCount = json['vote_count'];
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
-import 'package:movie_suggestion/model/popular_movies.dart';
+import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/screens/details/movie_detail.dart';
 import 'package:movie_suggestion/service/api_service.dart';
 
@@ -14,7 +14,7 @@ class PopularScreenMovie extends ConsumerStatefulWidget {
 
 class _PopularScreenState extends ConsumerState<PopularScreenMovie> {
   late Future<List<dynamic>> popularMoviesFuture;
-  List<PopularMovie> popularMovies = [];
+  List<Movie> popularMovies = [];
   final controller = ScrollController();
   int page = 1;
 
@@ -51,7 +51,7 @@ class _PopularScreenState extends ConsumerState<PopularScreenMovie> {
             popularMovies.add(snapshot.data[i]);
           }
 
-          List<PopularMovie> popularMoviesNew = popularMovies.toSet().toList();
+          List<Movie> popularMoviesNew = popularMovies.toSet().toList();
           debugPrint('snapshot.data.length: ${snapshot.data.length}');
           debugPrint('poopularMovies.length: ${popularMovies.length}');
           debugPrint('popularMoviesNew.length: ${popularMoviesNew.length}');
@@ -74,7 +74,7 @@ class _PopularScreenState extends ConsumerState<PopularScreenMovie> {
     );
   }
 
-  Widget loadMovie(List<PopularMovie> movies, int index) {
+  Widget loadMovie(List<Movie> movies, int index) {
     if (index == movies.length) {
       return const Center(
         child: CircularProgressIndicator(),

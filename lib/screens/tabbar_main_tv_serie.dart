@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:movie_suggestion/screens/tabbar_main_movie.dart';
 import 'package:movie_suggestion/screens/tabs/popular_screen_tv_serie.dart';
+import 'package:movie_suggestion/screens/tabs/top_rated_screen_tv_serie.dart';
 
 class TabBarMainTvSerie extends ConsumerStatefulWidget {
   const TabBarMainTvSerie({Key? key}) : super(key: key);
@@ -32,6 +33,7 @@ class _TabBarMainTvSerieState extends ConsumerState<TabBarMainTvSerie> {
       length: 3,
       child: Scaffold(
         drawer: Drawer(
+          
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
@@ -75,14 +77,14 @@ class _TabBarMainTvSerieState extends ConsumerState<TabBarMainTvSerie> {
           ),
         ),
         appBar: AppBar(
-          title: const Text('movieus'),
+          title: const Text('TV Series'),
           bottom: tab,
         ),
         body: const TabBarView(
           children: [
             PopularScreenTvSerie(),
-            // TopRatedScreenTvSerie(),
-            Icon(Icons.directions_car, size: 350),
+            TopRatedScreenTvSerie(),
+            // Icon(Icons.directions_car, size: 350),
 
             Icon(Icons.directions_car, size: 350),
           ],

@@ -43,7 +43,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
                     fontSize: 24,
                   ),
                 ),
-                decoration:  BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.blue,
                 ),
               ),
@@ -75,7 +75,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
           ),
         ),
         appBar: AppBar(
-          title: const Text('movieus'),
+          title: const Text('Movies'),
           bottom: tab,
         ),
         body: const TabBarView(
