@@ -1,4 +1,4 @@
-package com.example.movie_suggestion
+package com.cinecasti.mobile
 
 import io.flutter.embedding.android.FlutterActivity
 
