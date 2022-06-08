@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:movie_suggestion/auth/login.dart';
+import 'package:movie_suggestion/auth/register.dart';
 import 'package:movie_suggestion/screens/tabbar_main_movie.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,9 +31,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'CineCasti',
       debugShowCheckedModeBanner: false,
-      home: const TabBarMainMovie(),
+      home: const LoginScreen(),
       theme: FlexThemeData.dark(
-        scheme: FlexScheme.blumineBlue,
+        scheme: FlexScheme.ebonyClay,
         surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
         blendLevel: 20,
         appBarOpacity: 0.95,

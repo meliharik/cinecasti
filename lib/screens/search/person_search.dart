@@ -126,7 +126,7 @@ class _PersonSearchScreenState extends ConsumerState<PersonSearchScreen>
                 child: Text(
                   persons[index].name.toString(),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),

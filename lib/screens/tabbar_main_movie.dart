@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:movie_suggestion/auth/login.dart';
 import 'package:movie_suggestion/screens/search/movie_search.dart';
 import 'package:movie_suggestion/screens/search/person_search.dart';
 import 'package:movie_suggestion/screens/search/tv_serie_search.dart';
 import 'package:movie_suggestion/screens/tabbar_main_tv_serie.dart';
 import 'package:movie_suggestion/screens/tabs/popular_screen_movie.dart';
 import 'package:movie_suggestion/screens/tabs/top_rated_screen_movie.dart';
+import 'package:movie_suggestion/service/auth_service.dart';
 
 class TabBarMainMovie extends ConsumerStatefulWidget {
   const TabBarMainMovie({Key? key}) : super(key: key);
@@ -76,7 +78,8 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
                 setState(() {
                   searchQuery = value;
                 });
-                print(value);
+                //TODO: search
+                debugPrint(value);
               },
               decoration: InputDecoration(
                 focusColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -157,6 +160,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
                   );
                 },
               ),
+              _cikisYap()
             ],
           ),
         ),
@@ -189,5 +193,85 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
         ),
       ),
     );
+  }
+
+  Widget _cikisYap() {
+    return InkWell(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(
+              'Hoop Hemşerim Nereye?',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            content: Text(
+              'Çıkış yapıyorsun. Devam etmek istediğine emin misin?',
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Vazgeç gönül',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: _cikisYapFonk,
+                child: Text(
+                  'Çık',
+                  style: TextStyle(
+                    color: Theme.of(context).errorColor,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      child: ListTile(
+        minVerticalPadding: 0,
+        horizontalTitleGap: 0,
+        leading: Icon(
+          FontAwesomeIcons.signOutAlt,
+          color: Theme.of(context).primaryColor,
+        ),
+        title: Text('Çıkış Yap',
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+            )),
+        trailing: Icon(
+          FontAwesomeIcons.angleRight,
+          color: Theme.of(context).primaryColor,
+        ),
+      ),
+    );
+  }
+
+  void _cikisYapFonk() async {
+    try {
+      await AuthService().cikisYap();
+      //TODO: notifications
+      //await NotificationService().cancelAllNotifications();
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()));
+    } catch (hata) {
+      debugPrint("hata");
+      debugPrint(hata.hashCode.toString());
+      debugPrint(hata.toString());
+      var snackBar = SnackBar(content: Text('Bir hata oluştu: $hata'));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }
   }
 }

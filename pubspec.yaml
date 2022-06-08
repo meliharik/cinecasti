@@ -51,6 +51,10 @@ dependencies:
   firebase_core:
   firebase_auth:
   firebase_performance:
+  connectivity:
+  firebase_messaging:
+  cloud_firestore:
+  google_sign_in:
 
 dev_dependencies:
   flutter_test:
