@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "31809723964",
+    "project_id": "cinecasti",
+    "storage_bucket": "cinecasti.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:31809723964:android:33c98e6814428b4f5eed39",
+        "android_client_info": {
+          "package_name": "com.cinecasti.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "31809723964-4suos5jgbousp2o1uokor264gb0tm2lq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBln7ZA3ozx8KCJzm6dCZOOp6tdGU7hO5Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "31809723964-4suos5jgbousp2o1uokor264gb0tm2lq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
