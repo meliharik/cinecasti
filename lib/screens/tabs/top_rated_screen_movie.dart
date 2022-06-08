@@ -12,7 +12,9 @@ class TopRatedScreenMovie extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _TopRatedScreenState();
 }
 
-class _TopRatedScreenState extends ConsumerState<TopRatedScreenMovie> {
+class _TopRatedScreenState extends ConsumerState<TopRatedScreenMovie>     with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   late Future<List<dynamic>> moviesFuture;
   List<Movie> movies = [];
 

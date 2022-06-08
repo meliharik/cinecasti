@@ -12,7 +12,10 @@ class PopularScreenMovie extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _PopularScreenState();
 }
 
-class _PopularScreenState extends ConsumerState<PopularScreenMovie> {
+class _PopularScreenState extends ConsumerState<PopularScreenMovie>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   late Future<List<dynamic>> popularMoviesFuture;
   List<Movie> popularMovies = [];
   final controller = ScrollController();
@@ -65,6 +68,8 @@ class _PopularScreenState extends ConsumerState<PopularScreenMovie> {
             ],
           );
         } else if (snapshot.hasError) {
+          debugPrint('error');
+          debugPrint(snapshot.error.toString());
           return Text('${snapshot.error}');
         }
         return const Center(

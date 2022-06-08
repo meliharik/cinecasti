@@ -13,7 +13,9 @@ class PopularScreenTvSerie extends ConsumerStatefulWidget {
       _PopularScreenTvSerieState();
 }
 
-class _PopularScreenTvSerieState extends ConsumerState<PopularScreenTvSerie> {
+class _PopularScreenTvSerieState extends ConsumerState<PopularScreenTvSerie>     with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   late Future<List<dynamic>> popularTvSeriesFuture;
   List<TvSerie> popularTvSeries = [];
   final controller = ScrollController();

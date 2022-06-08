@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +8,12 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
+  // final String defaultLocale = Platform.localeName; // en_US
+  // print("defaultLocale: " + defaultLocale);
+  // print(defaultLocale.substring(0, 2));
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
   SystemChrome.setPreferredOrientations(
@@ -20,6 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'CineCasti',
       debugShowCheckedModeBanner: false,
       home: const TabBarMainMovie(),
       theme: FlexThemeData.dark(

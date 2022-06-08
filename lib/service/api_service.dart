@@ -446,4 +446,56 @@ class ApiService {
       }
     });
   }
+
+  ////////////////// search ///////////////////////
+  static Future<List<Movie>> getMovieBySearch(
+      {required String query, required int page}) async {
+    var response = await http.get(Uri.parse(
+        'https://api.themoviedb.org/3/search/movie?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&query=$query&page=$page'));
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      List results = jsonResponse['results'];
+      List<Movie> movies = [];
+      for (var i = 0; i < results.length; i++) {
+        movies.add(Movie.fromJson(results[i]));
+      }
+      return movies;
+    } else {
+      throw Exception('Failed to load post');
+    }
+  }
+
+  static Future<List<TvSerie>> getTvSerieBySearch(
+      {required String query, required int page}) async {
+    var response = await http.get(Uri.parse(
+        'https://api.themoviedb.org/3/search/tv?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&query=$query&page=$page'));
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      List results = jsonResponse['results'];
+      List<TvSerie> tvSeries = [];
+      for (var i = 0; i < results.length; i++) {
+        tvSeries.add(TvSerie.fromJson(results[i]));
+      }
+      return tvSeries;
+    } else {
+      throw Exception('Failed to load post');
+    }
+  }
+
+    static Future<List<Person>> getPersonBySearch(
+      {required String query, required int page}) async {
+    var response = await http.get(Uri.parse(
+        'https://api.themoviedb.org/3/search/person?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&query=$query&page=$page'));
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      List results = jsonResponse['results'];
+      List<Person> persons = [];
+      for (var i = 0; i < results.length; i++) {
+        persons.add(Person.fromJson(results[i]));
+      }
+      return persons;
+    } else {
+      throw Exception('Failed to load post');
+    }
+  }
 }

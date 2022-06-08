@@ -36,7 +36,7 @@ class Person {
     deathday = json['deathday'];
     id = json['id'];
     name = json['name'];
-    alsoKnownAs = json['also_known_as'].cast<String>();
+    alsoKnownAs = json['also_known_as']?.cast<String>();
     gender = json['gender'];
     biography = json['biography'];
     popularity = json['popularity'];

@@ -13,7 +13,10 @@ class TopRatedScreenTvSerie extends ConsumerStatefulWidget {
       _TopRatedScreenTvSerieState();
 }
 
-class _TopRatedScreenTvSerieState extends ConsumerState<TopRatedScreenTvSerie> {
+class _TopRatedScreenTvSerieState extends ConsumerState<TopRatedScreenTvSerie>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   late Future<List<dynamic>> tvSeriesFuture;
   List<TvSerie> tvSeries = [];
 
