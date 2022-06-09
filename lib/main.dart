@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,18 +8,41 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_suggestion/yonlendirme.dart';
 
-void main() async {
-  // final String defaultLocale = Platform.localeName; // en_US
-  // print("defaultLocale: " + defaultLocale);
-  // print(defaultLocale.substring(0, 2));
+Future<void> main() async {
+  String defaultLocale = Platform.localeName; // en_US
+  print("defaultLocale: " + defaultLocale);
+  print(defaultLocale.substring(0, 2));
 
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp();
-  WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(
+    ProviderScope(
+      child: EasyLocalization(
+        supportedLocales: const [
+          Locale('en', 'US'),
+          Locale('tr', 'TR'),
+          // Locale('ru', 'RU'),
+          // Locale('de', 'DE'),
+          // Locale('fr', 'FR'),
+          // Locale('es', 'ES'),
+          // Locale('it', 'IT'),
+          // Locale('pt', 'PT'),
+          // Locale('zh', 'CN'),
+          // Locale('ja', 'JP'),
+          // Locale('ko', 'KR'),
+          // Locale('hi', 'IN'),
+        ],
+        fallbackLocale:
+            Locale(defaultLocale.substring(0, 2), defaultLocale.substring(3)),
+        path: 'assets/translations',
+        child: const MyApp(),
+      ),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -27,6 +51,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       title: 'CineCasti',
       debugShowCheckedModeBanner: false,
       home: const Yonlendirme(),

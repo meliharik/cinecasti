@@ -192,7 +192,7 @@ class _TabBarMainTvSerieState extends ConsumerState<TabBarMainTvSerie> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SettingsScreen(),
+                        builder: (context) =>const SettingsScreen(),
                       ));
                 },
               ),

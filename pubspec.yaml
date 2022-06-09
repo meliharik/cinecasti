@@ -59,6 +59,7 @@ dependencies:
   image_picker:
   firebase_storage:
   uuid:
+  easy_localization: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -88,6 +89,7 @@ flutter:
     - assets/json/
     - assets/icons/
     - assets/svg/
+    - assets/translations/
     
   # assets:
   #   - images/a_dot_burr.jpeg

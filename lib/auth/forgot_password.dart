@@ -226,7 +226,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   Widget get _bottomSheetBasarili => Text(
         'Success!',
         style: TextStyle(
-            color: const Color(0xff4B4B4B),
             fontWeight: FontWeight.w700,
             fontSize: MediaQuery.of(context).size.height * 0.03),
       );
@@ -237,7 +236,6 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           'We have sent a link to your email address to reset your password. If you don\'t see the email, be sure to check your spam box.',
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: const Color(0xff4B4B4B),
             fontWeight: FontWeight.w400,
             fontSize: MediaQuery.of(context).size.height * 0.018,
           ),
@@ -251,8 +249,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         }));
       },
       style: ElevatedButton.styleFrom(
-        primary: const Color(0xff6c62fe),
+        fixedSize: Size(MediaQuery.of(context).size.width * 0.4,
+            MediaQuery.of(context).size.height * 0.05),
         elevation: 5,
       ),
-      child: const Text('Tamam'));
+      child: const Text('Ok'));
 }

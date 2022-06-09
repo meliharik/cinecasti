@@ -1,0 +1,22 @@
+{
+   "settings": "Settings",
+   "language": "Langugage",
+   "edit_profile": "Edit Profile",
+   "change_password": "Change Password",
+
+   "edit_profile_title": "Edit Profile",
+   "change_profile_picture": "Change Profile Picture",
+   "name_surname": "Name Surname",
+   "cant_be_empty_name": "Name can't be empty",
+   "dont_use_special_chars": "Don't use special characters!",
+   "email": "E-Mail",
+   "email_replacement_inactive": "Email replacement is not active at the moment.",
+   "save": "Save",
+   "successfully_updated": "Success",
+   "successfully_updated_description_profile": "Profile successfully updated!",
+   "ok": "Ok",
+   "cancel": "Cancel",
+   "select_language": "Select Language"
+
+   
+}

@@ -1,0 +1,21 @@
+{
+   "settings": "Ayarlar",
+   "language": "Dil",
+   "edit_profile": "Profili Düzenle",
+   "change_password": "Şifreyi Değiştir",
+
+   "edit_profile_title": "Profil Düzenle",
+   "change_profile_picture": "Profil Resmini Değiştir",
+   "name_surname": "Ad Soyad",
+   "cant_be_empty_name": "Ad Soyad alanı boş bırakılamaz!",
+   "dont_use_special_chars": "Özel karakterler kullanmayın!",
+   "email": "E-posta",
+   "email_replacement_inactive": "E-posta değiştirme işlemi şu anlık aktif değil.",
+   "save": "Kaydet",
+   "successfully_updated": "Başarılı",
+   "successfully_updated_description_profile": "Profil başarıyla güncellendi.",
+   "ok": "Tamam",
+   "cancel": "İptal",
+   "select_language": "Dil Seç"
+   
+}

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,7 +43,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           icon: const Icon(FontAwesomeIcons.angleLeft),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Edit Profile'),
+        title: Text('edit_profile'.tr().toString()),
       ),
       body: Stack(children: [
         _sayfaElemanlari(),
@@ -119,8 +120,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   Widget get _fotoyuDegistirText => TextButton(
       onPressed: _galeridenSec,
-      child: const Text(
-        'Change Profile Picture',
+      child: Text(
+        'change_profile_picture'.tr().toString(),
         style: TextStyle(
           fontWeight: FontWeight.w500,
           color: Colors.white,
@@ -138,7 +139,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.all(15),
               border: const OutlineInputBorder(),
-              hintText: 'Ad Soyad',
+              hintText: 'name_surname'.tr().toString(),
               hintStyle: const TextStyle(),
               errorStyle: const TextStyle(
                 fontFamily: 'Manrope',
@@ -170,12 +171,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             validator: (input) {
               if (input!.isEmpty) {
                 debugPrint(input.toString());
-                return 'Ad Soyad alanı boş bırakılamaz!';
+                return 'cant_be_empty_name'.tr().toString();
               } else if (input.contains(',') ||
                   input.contains('.') ||
                   input.contains('*')) {
                 debugPrint(input.toString());
-                return 'Lütfen noktalama işareti kullanmayın.';
+                return 'dont_use_special_characters'.tr().toString();
               }
               return null;
             },
@@ -199,7 +200,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.all(15),
             border: const OutlineInputBorder(),
-            hintText: 'Email',
+            hintText: 'email'.tr().toString(),
             hintStyle: const TextStyle(),
             errorStyle: const TextStyle(
               fontFamily: 'Manrope',
@@ -229,7 +230,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   Widget get _emailDegismezText => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Text(
-          'Email replacement is currently inactive.',
+          'email_replacement_inactive'.tr().toString(),
           textAlign: TextAlign.center,
           style: TextStyle(
               fontWeight: FontWeight.w400,
@@ -239,8 +240,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   Widget get _kaydetBtn => ElevatedButton(
         onPressed: _kaydet,
-        child: const Text(
-          'Save',
+        child: Text(
+          'save'.tr().toString(),
           style: TextStyle(),
         ),
         style: ElevatedButton.styleFrom(
@@ -300,7 +301,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget get _bottomSheetBasarili => Text(
-        'Successfully updated!',
+        'successfully_updated'.tr().toString(),
         style: TextStyle(
           fontSize: MediaQuery.of(context).size.height * 0.03,
           fontWeight: FontWeight.w500,
@@ -310,7 +311,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   Widget get _bottomSheetAciklama => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
         child: Text(
-          'Your profile looks much better now.',
+          'successfully_updated_description_profile'.tr().toString(),
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.height * 0.02,
@@ -331,5 +332,5 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           elevation: 5,
           fixedSize: Size(MediaQuery.of(context).size.width * 0.6,
               MediaQuery.of(context).size.height * 0.06)),
-      child: const Text('Ok'));
+      child: Text('ok'.tr().toString()));
 }

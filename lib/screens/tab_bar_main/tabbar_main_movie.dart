@@ -192,7 +192,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SettingsScreen(),
+                        builder: (context) =>const SettingsScreen(),
                       ));
                 },
               ),
