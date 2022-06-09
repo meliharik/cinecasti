@@ -7,11 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_suggestion/yonlendirme.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 Future<void> main() async {
   String defaultLocale = Platform.localeName; // en_US
-  print("defaultLocale: " + defaultLocale);
-  print(defaultLocale.substring(0, 2));
+  debugPrint("defaultLocale: " + defaultLocale);
+  debugPrint(defaultLocale.substring(0, 2));
 
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
@@ -27,19 +28,19 @@ Future<void> main() async {
           Locale('tr', 'TR'),
           Locale('ru', 'RU'),
           Locale('de', 'DE'),
-          // Locale('fr', 'FR'),
-          // Locale('es', 'ES'),
-          // Locale('it', 'IT'),
-          // Locale('pt', 'PT'),
-          // Locale('zh', 'CN'),
-          // Locale('ja', 'JP'),
-          // Locale('ko', 'KR'),
-          // Locale('hi', 'IN'),
+          Locale('fr', 'FR'),
+          Locale('es', 'ES'),
+          Locale('it', 'IT'),
+          Locale('pt', 'PT'),
+          Locale('zh', 'CN'),
+          Locale('ja', 'JP'),
+          Locale('ko', 'KR'),
+          Locale('hi', 'IN'),
         ],
         fallbackLocale:
             Locale(defaultLocale.substring(0, 2), defaultLocale.substring(3)),
         path: 'assets/translations',
-        child: const MyApp(),
+        child: Phoenix(child: const MyApp()),
       ),
     ),
   );
@@ -50,7 +51,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return MaterialApp(
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,

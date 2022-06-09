@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_suggestion/auth/login.dart';
 import 'package:movie_suggestion/auth/model/kullanici.dart';
-import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/internet_warning_screen.dart';
 import 'package:movie_suggestion/screens/tab_bar_main/tabbar_main_movie.dart';
 import 'package:movie_suggestion/service/auth_service.dart';
@@ -28,7 +27,6 @@ class _YonlendirmeState extends ConsumerState<Yonlendirme> {
 
   @override
   Widget build(BuildContext context) {
-
     return StreamBuilder(
       stream: AuthService().durumTakipcisi,
       builder: (context, snapshot) {
@@ -76,7 +74,7 @@ class _YonlendirmeState extends ConsumerState<Yonlendirme> {
     final prefs = await SharedPreferences.getInstance();
     final String languageCode = context.locale.languageCode;
     prefs.setString('languageCode', languageCode);
-    print("dil: ");
-    print(prefs.getString('languageCode'));
+    debugPrint("dil: ");
+    debugPrint(prefs.getString('languageCode'));
   }
 }

@@ -26,7 +26,6 @@ class _TopRatedScreenTvSerieState extends ConsumerState<TopRatedScreenTvSerie>
   @override
   void initState() {
     super.initState();
-    tvSeriesFuture = ApiService.getTopRatedTvSeries(page, context);
 
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
@@ -48,6 +47,8 @@ class _TopRatedScreenTvSerieState extends ConsumerState<TopRatedScreenTvSerie>
 
   @override
   Widget build(BuildContext context) {
+    tvSeriesFuture = ApiService.getTopRatedTvSeries(page, context);
+
     return FutureBuilder(
       future: tvSeriesFuture,
       builder: (context, AsyncSnapshot snapshot) {

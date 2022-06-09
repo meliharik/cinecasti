@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:movie_suggestion/data/genres.dart';
+import 'package:movie_suggestion/helper/height_width.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/members.dart';
 import 'package:movie_suggestion/model/movie_provider.dart';
@@ -62,7 +63,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ApiService.getTvSerieById(widget.id,context),
+      future: ApiService.getTvSerieById(widget.id, context),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           TvSerie tvSerie = snapshot.data as TvSerie;
@@ -296,7 +297,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
 
   Widget card2(TvSerie tvSerie) {
     return FutureBuilder(
-      future: ApiService.getTvSerieVideoId(tvSerie,context),
+      future: ApiService.getTvSerieVideoId(tvSerie, context),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           String videoId = snapshot.data as String;
@@ -453,7 +454,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getTvSerieCastMembers(tvSerie,context),
+              future: ApiService.getTvSerieCastMembers(tvSerie, context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Cast> cast = snapshot.data as List<Cast>;
@@ -573,7 +574,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getTvSerieCrewMembers(tvSerie,context),
+              future: ApiService.getTvSerieCrewMembers(tvSerie, context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Crew> crew = snapshot.data as List<Crew>;
@@ -681,7 +682,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getSimilarTvSeries(tvSerie,context),
+              future: ApiService.getSimilarTvSeries(tvSerie, context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<SimilarTvSeries> tvSeries =
@@ -854,7 +855,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getTvSerieProviders(tvSerie,context),
+              future: ApiService.getTvSerieProviders(tvSerie, context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<MovieAndTvSerieProvider> providers =
@@ -1153,9 +1154,11 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
 
     Widget genre1 = Row(
       children: [
-        Icon(GetGenre.getGenreAndIcon(tvSerie.genres![0].id!.toInt())[1]),
+        Icon(GetGenre.getGenreAndIcon(
+            tvSerie.genres![0].id!.toInt(), context)[1]),
+        boslukWidth(context, 0.03),
         Text(
-          GetGenre.getGenreAndIcon(tvSerie.genres![0].id!.toInt())[0],
+          GetGenre.getGenreAndIcon(tvSerie.genres![0].id!.toInt(), context)[0],
           style: const TextStyle(
             fontSize: 15,
           ),
@@ -1166,9 +1169,12 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
     if (tvSerie.genres!.length > 1) {
       genre2 = Row(
         children: [
-          Icon(GetGenre.getGenreAndIcon(tvSerie.genres![1].id!.toInt())[1]),
+          Icon(GetGenre.getGenreAndIcon(
+              tvSerie.genres![1].id!.toInt(), context)[1]),
+          boslukWidth(context, 0.03),
           Text(
-            GetGenre.getGenreAndIcon(tvSerie.genres![1].id!.toInt())[0],
+            GetGenre.getGenreAndIcon(
+                tvSerie.genres![1].id!.toInt(), context)[0],
             style: const TextStyle(
               fontSize: 15,
             ),

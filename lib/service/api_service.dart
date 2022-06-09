@@ -42,7 +42,7 @@ class ApiService {
   static Future<List<Movie>> getPopularMovies(
       int pageNumber, BuildContext context) async {
     final response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/movie/popular?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=$pageNumber'));
+        'https://api.themoviedb.org/3/movie/popular?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}&page=$pageNumber'));
     if (response.statusCode == 200) {
       var document = json.decode(response.body);
       List results = document['results'];
@@ -63,7 +63,7 @@ class ApiService {
   static Future<List<TvSerie>> getPopularTvSeries(
       int pageNumber, BuildContext context) async {
     final response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/tv/popular?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=$pageNumber'));
+        'https://api.themoviedb.org/3/tv/popular?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}&page=$pageNumber'));
     if (response.statusCode == 200) {
       var document = json.decode(response.body);
       List results = document['results'];
@@ -81,10 +81,52 @@ class ApiService {
     }
   }
 
+  static Future<List<TvSerie>> getTodayTvSeries(
+      int pageNumber, BuildContext context) async {
+    final response = await http.get(Uri.parse(
+        'https://api.themoviedb.org/3/tv/airing_today?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}&page=$pageNumber'));
+    if (response.statusCode == 200) {
+      var document = json.decode(response.body);
+      List results = document['results'];
+      List<TvSerie> popMovies = [];
+      for (var i = 0; i < results.length; i++) {
+        num rating = results[i]['vote_average'];
+        if (rating != 0.0) {
+          popMovies.add(TvSerie.fromJson(results[i]));
+        }
+      }
+      return popMovies;
+    } else {
+      Exception('Failed to load popular movies');
+      return [];
+    }
+  }
+
+  static Future<List<Movie>> getNowPlayingMovies(
+      int pageNumber, BuildContext context) async {
+    final response = await http.get(Uri.parse(
+        'https://api.themoviedb.org/3/movie/now_playing?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}&page=$pageNumber'));
+    if (response.statusCode == 200) {
+      var document = json.decode(response.body);
+      List results = document['results'];
+      List<Movie> popMovies = [];
+      for (var i = 0; i < results.length; i++) {
+        num rating = results[i]['vote_average'];
+        if (rating != 0.0) {
+          popMovies.add(Movie.fromJson(results[i]));
+        }
+      }
+      return popMovies;
+    } else {
+      Exception('Failed to load popular movies');
+      return [];
+    }
+  }
+
   static Future<List<Movie>> getTopRatedMovies(
       int pageNumber, BuildContext context) async {
     final response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/movie/top_rated?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=$pageNumber'));
+        'https://api.themoviedb.org/3/movie/top_rated?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}&page=$pageNumber'));
     if (response.statusCode == 200) {
       var document = json.decode(response.body);
       List results = document['results'];
@@ -105,7 +147,7 @@ class ApiService {
   static Future<List<TvSerie>> getTopRatedTvSeries(
       int pageNumber, BuildContext context) async {
     final response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/tv/top_rated?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=$pageNumber'));
+        'https://api.themoviedb.org/3/tv/top_rated?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}&page=$pageNumber'));
     if (response.statusCode == 200) {
       var document = json.decode(response.body);
       List results = document['results'];

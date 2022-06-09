@@ -5,20 +5,21 @@ import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/screens/details/movie_detail.dart';
 import 'package:movie_suggestion/service/api_service.dart';
 
-class PopularScreenMovie extends ConsumerStatefulWidget {
-  const PopularScreenMovie({Key? key}) : super(key: key);
+class PlayingScreenMovie extends ConsumerStatefulWidget {
+  const PlayingScreenMovie({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _PopularScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _PlayingScreenMovieState();
 }
 
-class _PopularScreenState extends ConsumerState<PopularScreenMovie>
+class _PlayingScreenMovieState extends ConsumerState<PlayingScreenMovie>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
-  late Future<List<dynamic>> popularMoviesFuture;
-  List<Movie> popularMovies = [];
+  late Future<List<dynamic>> playingMoviesFuture;
+  List<Movie> playingMovies = [];
   final controller = ScrollController();
   int page = 1;
 
@@ -33,7 +34,7 @@ class _PopularScreenState extends ConsumerState<PopularScreenMovie>
           page++;
         });
         debugPrint('page: $page');
-        popularMoviesFuture = ApiService.getPopularMovies(page, context);
+        playingMoviesFuture = ApiService.getNowPlayingMovies(page, context);
       }
     });
   }
@@ -46,27 +47,27 @@ class _PopularScreenState extends ConsumerState<PopularScreenMovie>
 
   @override
   Widget build(BuildContext context) {
-    popularMoviesFuture = ApiService.getPopularMovies(page, context);
+    playingMoviesFuture = ApiService.getNowPlayingMovies(page, context);
 
     return FutureBuilder(
-      future: popularMoviesFuture,
+      future: playingMoviesFuture,
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           for (var i = 0; i < snapshot.data.length; i++) {
-            popularMovies.add(snapshot.data[i]);
+            playingMovies.add(snapshot.data[i]);
           }
 
-          List<Movie> popularMoviesNew = popularMovies.toSet().toList();
+          List<Movie> playingMoviesNew = playingMovies.toSet().toList();
           debugPrint('snapshot.data.length: ${snapshot.data.length}');
-          debugPrint('poopularMovies.length: ${popularMovies.length}');
-          debugPrint('popularMoviesNew.length: ${popularMoviesNew.length}');
+          debugPrint('poopularMovies.length: ${playingMovies.length}');
+          debugPrint('popularMoviesNew.length: ${playingMoviesNew.length}');
           return GridView.count(
             controller: controller,
             childAspectRatio: 0.69,
             crossAxisCount: 3,
             children: [
-              for (var i = 0; i < popularMoviesNew.length + 1; i++)
-                loadMovie(popularMoviesNew, i)
+              for (var i = 0; i < playingMoviesNew.length + 1; i++)
+                loadMovie(playingMoviesNew, i)
             ],
           );
         } else if (snapshot.hasError) {

@@ -24,7 +24,6 @@ class _TopRatedScreenState extends ConsumerState<TopRatedScreenMovie>     with A
   @override
   void initState() {
     super.initState();
-    moviesFuture = ApiService.getTopRatedMovies(page,context);
 
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
@@ -46,6 +45,8 @@ class _TopRatedScreenState extends ConsumerState<TopRatedScreenMovie>     with A
 
   @override
   Widget build(BuildContext context) {
+    moviesFuture = ApiService.getTopRatedMovies(page,context);
+
     return FutureBuilder(
       future: moviesFuture,
       builder: (context, AsyncSnapshot snapshot) {

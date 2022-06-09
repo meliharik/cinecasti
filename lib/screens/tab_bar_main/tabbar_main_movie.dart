@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,7 @@ import 'package:movie_suggestion/screens/search/movie_search.dart';
 import 'package:movie_suggestion/screens/search/person_search.dart';
 import 'package:movie_suggestion/screens/search/tv_serie_search.dart';
 import 'package:movie_suggestion/screens/tab_bar_main/tabbar_main_tv_serie.dart';
+import 'package:movie_suggestion/screens/tabs/playing_screen_movie.dart';
 import 'package:movie_suggestion/screens/tabs/popular_screen_movie.dart';
 import 'package:movie_suggestion/screens/tabs/top_rated_screen_movie.dart';
 import 'package:movie_suggestion/service/auth_service.dart';
@@ -33,29 +35,29 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
 
   @override
   Widget build(BuildContext context) {
-    const tab = TabBar(
+    final tab = TabBar(
       tabs: <Tab>[
         Tab(
-          text: 'Popular',
+          text: 'popular'.tr().toString(),
         ),
         Tab(
-          text: 'Top Rated',
+          text: 'top_rated'.tr().toString(),
         ),
         Tab(
-          text: 'My List',
+          text: 'playing'.tr().toString(),
         ),
       ],
     );
-    const tab2 = TabBar(
+    final tab2 = TabBar(
       tabs: <Tab>[
         Tab(
-          text: 'Movies',
+          text: 'movies'.tr().toString(),
         ),
         Tab(
-          text: 'Tv Series',
+          text: 'tv_series'.tr().toString(),
         ),
         Tab(
-          text: 'People',
+          text: 'people'.tr().toString(),
         ),
       ],
     );
@@ -87,7 +89,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
               decoration: InputDecoration(
                 focusColor: Theme.of(context).appBarTheme.backgroundColor,
                 fillColor: Theme.of(context).appBarTheme.backgroundColor,
-                hintText: 'Search',
+                hintText: 'search'.tr().toString(),
                 border: InputBorder.none,
                 disabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
@@ -163,7 +165,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
                 leading: const Icon(
                   FontAwesomeIcons.house,
                 ),
-                title: const Text('Home'),
+                title: Text('home'.tr().toString()),
                 onTap: () {
                   Navigator.pushNamed(context, '/');
                 },
@@ -173,7 +175,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
                   FontAwesomeIcons.tv,
                   // color: Colors.blue,
                 ),
-                title: const Text('TV Series'),
+                title: Text('tv_series'.tr().toString()),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -187,12 +189,12 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
                 leading: const Icon(
                   FontAwesomeIcons.gear,
                 ),
-                title: const Text('Settings'),
+                title: Text('settings'.tr().toString()),
                 onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>const SettingsScreen(),
+                        builder: (context) => const SettingsScreen(),
                       ));
                 },
               ),
@@ -200,7 +202,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
                 leading: const Icon(
                   FontAwesomeIcons.solidHeart,
                 ),
-                title: const Text('Recommend CineCasti'),
+                title: Text('recommend_cinecasti'.tr().toString()),
                 onTap: () {
                   // Navigator.pushNamed(context, '/');
                 },
@@ -210,7 +212,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
           ),
         ),
         appBar: AppBar(
-          title: const Text('Movies'),
+          title: Text('movies'.tr().toString()),
           bottom: tab,
           actions: [
             IconButton(
@@ -227,7 +229,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
           children: [
             PopularScreenMovie(),
             TopRatedScreenMovie(),
-            Icon(Icons.directions_car, size: 350),
+            PlayingScreenMovie(),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -249,7 +251,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
               FontAwesomeIcons.list,
               color: Colors.blueAccent,
             ),
-            title: const Text('Watch List'),
+            title: Text('watch_list'.tr().toString()),
             onTap: () {
               // Navigator.pushNamed(context, '/lists');
             },
@@ -259,7 +261,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
               FontAwesomeIcons.check,
               color: Colors.greenAccent,
             ),
-            title: const Text('Watched List'),
+            title: Text('watched_list'.tr().toString()),
             onTap: () {
               // Navigator.pushNamed(context, '/lists');
             },
@@ -269,7 +271,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
               FontAwesomeIcons.bookmark,
               color: Colors.redAccent,
             ),
-            title: const Text('My Collection'),
+            title: Text('my_collection'.tr().toString()),
             onTap: () {
               // Navigator.pushNamed(context, '/lists');
             },
@@ -288,15 +290,15 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text(
-              'Hoop Hemşerim Nereye?',
-              style: TextStyle(
+            title: Text(
+              'sign_out'.tr().toString(),
+              style: const TextStyle(
                 fontWeight: FontWeight.w600,
               ),
             ),
-            content: const Text(
-              'Çıkış yapıyorsun. Devam etmek istediğine emin misin?',
-              style: TextStyle(
+            content: Text(
+              'are_you_sure'.tr().toString(),
+              style: const TextStyle(
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -304,7 +306,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  'Vazgeç gönül',
+                  'cancel'.tr().toString(),
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.w400,
@@ -314,7 +316,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
               TextButton(
                 onPressed: _cikisYapFonk,
                 child: Text(
-                  'Çık',
+                  'sign_out'.tr().toString(),
                   style: TextStyle(
                     color: Theme.of(context).errorColor,
                     fontWeight: FontWeight.w400,
@@ -325,15 +327,15 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
           ),
         );
       },
-      child: const ListTile(
+      child: ListTile(
         minVerticalPadding: 0,
         horizontalTitleGap: 0,
-        leading: Icon(
+        leading: const Icon(
           FontAwesomeIcons.rightFromBracket,
           // color: Theme.of(context).primaryColor,
         ),
-        title: Text('Çıkış Yap',
-            style: TextStyle(
+        title: Text('sign_out'.tr().toString(),
+            style: const TextStyle(
               fontWeight: FontWeight.w400,
             )),
         // trailing: Icon(
@@ -355,7 +357,8 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
       debugPrint("hata");
       debugPrint(hata.hashCode.toString());
       debugPrint(hata.toString());
-      var snackBar = SnackBar(content: Text('Bir hata oluştu: $hata'));
+      var snackBar = SnackBar(
+          content: Text('${'an_error_accured'.tr().toString()}: $hata'));
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }

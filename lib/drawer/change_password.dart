@@ -224,7 +224,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
         onPressed: _sifreDegistir,
         child: Text(
           'change'.tr().toString(),
-          style: TextStyle(),
+          style: const TextStyle(),
         ),
         style: ElevatedButton.styleFrom(
             elevation: 5,
@@ -333,11 +333,11 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
       );
 
   Widget get _bottomSheetAciklama => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
         child: Text(
           'password_changed'.tr().toString(),
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w400,
           ),
@@ -350,6 +350,6 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
           return const TabBarMainMovie();
         }));
       },
-      child: Text('ok'.tr().toString(), style: TextStyle()),
+      child: Text('ok'.tr().toString(), style: const TextStyle()),
       style: ElevatedButton.styleFrom(elevation: 5));
 }

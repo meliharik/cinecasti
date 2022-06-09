@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:movie_suggestion/data/genres.dart';
+import 'package:movie_suggestion/helper/height_width.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/members.dart';
 import 'package:movie_suggestion/model/movie.dart';
@@ -62,7 +63,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ApiService.getMovieById(widget.id,context),
+      future: ApiService.getMovieById(widget.id, context),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           Movie movie = snapshot.data as Movie;
@@ -292,7 +293,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
 
   Widget card2(Movie movie) {
     return FutureBuilder(
-      future: ApiService.getMovieVideoId(movie,context),
+      future: ApiService.getMovieVideoId(movie, context),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           String videoId = snapshot.data as String;
@@ -384,7 +385,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getMovieCastMembers(movie,context),
+              future: ApiService.getMovieCastMembers(movie, context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Cast> cast = snapshot.data as List<Cast>;
@@ -503,7 +504,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getMovieCrewMembers(movie,context),
+              future: ApiService.getMovieCrewMembers(movie, context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Crew> crew = snapshot.data as List<Crew>;
@@ -612,7 +613,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getSimilarMovies(movie,context),
+              future: ApiService.getSimilarMovies(movie, context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Movie> movies = snapshot.data as List<Movie>;
@@ -784,7 +785,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getMovieProviders(movie,context),
+              future: ApiService.getMovieProviders(movie, context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<MovieAndTvSerieProvider> providers =
@@ -1114,9 +1115,11 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
 
     Widget genre1 = Row(
       children: [
-        Icon(GetGenre.getGenreAndIcon(movie.genres![0].id!.toInt())[1]),
+        Icon(
+            GetGenre.getGenreAndIcon(movie.genres![0].id!.toInt(), context)[1]),
+        boslukWidth(context, 0.03),
         Text(
-          GetGenre.getGenreAndIcon(movie.genres![0].id!.toInt())[0],
+          GetGenre.getGenreAndIcon(movie.genres![0].id!.toInt(), context)[0],
           style: const TextStyle(
             fontSize: 15,
           ),
@@ -1127,9 +1130,11 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
     if (movie.genres!.length > 1) {
       genre2 = Row(
         children: [
-          Icon(GetGenre.getGenreAndIcon(movie.genres![1].id!.toInt())[1]),
+          Icon(GetGenre.getGenreAndIcon(
+              movie.genres![1].id!.toInt(), context)[1]),
+          boslukWidth(context, 0.03),
           Text(
-            GetGenre.getGenreAndIcon(movie.genres![1].id!.toInt())[0],
+            GetGenre.getGenreAndIcon(movie.genres![1].id!.toInt(), context)[0],
             style: const TextStyle(
               fontSize: 15,
             ),

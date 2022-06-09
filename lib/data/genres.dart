@@ -1,65 +1,67 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class GetGenre {
-  static List getGenreAndIcon(int id) {
+  static List getGenreAndIcon(int id, BuildContext context) {
     switch (id) {
       case 10759:
-        return ['   Action & Adventure', FontAwesomeIcons.gun];
+        return ['action_and_adventure'.tr().toString(), FontAwesomeIcons.gun];
       case 28:
-        return ['   Action', FontAwesomeIcons.gun];
+        return ['action'.tr().toString(), FontAwesomeIcons.gun];
       case 12:
-        return ['   Adventure', FontAwesomeIcons.map];
+        return ['adventure'.tr().toString(), FontAwesomeIcons.map];
       case 16:
-        return ['   Animation', FontAwesomeIcons.dog];
+        return ['animation'.tr().toString(), FontAwesomeIcons.dog];
       case 35:
-        return ['   Comedy', FontAwesomeIcons.masksTheater];
+        return ['comedy'.tr().toString(), FontAwesomeIcons.masksTheater];
       case 80:
-        return ['   Crime', FontAwesomeIcons.handcuffs];
+        return ['crime'.tr().toString(), FontAwesomeIcons.handcuffs];
       case 99:
-        return ['   Documentary', FontAwesomeIcons.fish];
+        return ['documentary'.tr().toString(), FontAwesomeIcons.fish];
       case 18:
-        return ['   Drama', FontAwesomeIcons.heartCrack];
+        return ['drama'.tr().toString(), FontAwesomeIcons.heartCrack];
       case 10751:
-        return ['   Family', FontAwesomeIcons.peopleRoof];
+        return ['family'.tr().toString(), FontAwesomeIcons.peopleRoof];
       case 10762:
-        return ['   Kids', FontAwesomeIcons.baby];
+        return ['kids'.tr().toString(), FontAwesomeIcons.baby];
       case 10763:
-        return ['   News', FontAwesomeIcons.newspaper];
+        return ['news'.tr().toString(), FontAwesomeIcons.newspaper];
       case 10764:
-        return ['   Reality', FontAwesomeIcons.tv];
+        return ['reality'.tr().toString(), FontAwesomeIcons.tv];
       case 10765:
-        return ['   Sci-Fi & Fantasy', EvaIcons.globe2];
+        return ['sci-Fi_and_fantasy'.tr().toString(), EvaIcons.globe2];
       case 10766:
-        return ['   Soap', FontAwesomeIcons.soap];
+        return ['soap'.tr().toString(), FontAwesomeIcons.soap];
       case 10767:
-        return ['   Talk', FontAwesomeIcons.comments];
+        return ['talk'.tr().toString(), FontAwesomeIcons.comments];
       case 10768:
-        return ['   War & Politics', FontAwesomeIcons.flagUsa];
+        return ['war_and_politics'.tr().toString(), FontAwesomeIcons.flagUsa];
       case 14:
-        return ['   Fantasy', FontAwesomeIcons.dungeon];
+        return ['fantasy'.tr().toString(), FontAwesomeIcons.dungeon];
       case 36:
-        return ['   History', FontAwesomeIcons.landmark];
+        return ['history'.tr().toString(), FontAwesomeIcons.landmark];
       case 27:
-        return ['   Horror', FontAwesomeIcons.ghost];
+        return ['horror'.tr().toString(), FontAwesomeIcons.ghost];
       case 10402:
-        return ['   Music', FontAwesomeIcons.headphones];
+        return ['music'.tr().toString(), FontAwesomeIcons.headphones];
       case 9648:
-        return ['   Mystery', FontAwesomeIcons.circleQuestion];
+        return ['mystery'.tr().toString(), FontAwesomeIcons.circleQuestion];
       case 10749:
-        return ['   Romance', FontAwesomeIcons.solidHeart];
+        return ['romance'.tr().toString(), FontAwesomeIcons.solidHeart];
       case 878:
-        return ['   Science Fiction', FontAwesomeIcons.robot];
+        return ['sci-fi'.tr().toString(), FontAwesomeIcons.robot];
       case 10770:
-        return ['   TV Movie', FontAwesomeIcons.tv];
+        return ['tv_serie'.tr().toString(), FontAwesomeIcons.tv];
       case 53:
-        return ['   Thriller', FontAwesomeIcons.skull];
+        return ['thriller'.tr().toString(), FontAwesomeIcons.skull];
       case 10752:
-        return ['   War', FontAwesomeIcons.personMilitaryRifle];
+        return ['war'.tr().toString(), FontAwesomeIcons.personMilitaryRifle];
       case 37:
-        return ['   Western', FontAwesomeIcons.hatCowboy];
+        return ['western'.tr().toString(), FontAwesomeIcons.hatCowboy];
       default:
-        return ['  ', EvaIcons.alertCircleOutline];
+        return ['null'.tr().toString(), EvaIcons.alertCircleOutline];
     }
   }
 }

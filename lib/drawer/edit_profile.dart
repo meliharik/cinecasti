@@ -122,7 +122,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       onPressed: _galeridenSec,
       child: Text(
         'change_profile_picture'.tr().toString(),
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.w500,
           color: Colors.white,
         ),
@@ -242,7 +242,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         onPressed: _kaydet,
         child: Text(
           'save'.tr().toString(),
-          style: TextStyle(),
+          style: const TextStyle(),
         ),
         style: ElevatedButton.styleFrom(
             elevation: 5,
