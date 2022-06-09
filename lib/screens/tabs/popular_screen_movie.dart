@@ -24,7 +24,7 @@ class _PopularScreenState extends ConsumerState<PopularScreenMovie>
   @override
   void initState() {
     super.initState();
-    popularMoviesFuture = ApiService.getPopularMovies(page);
+    popularMoviesFuture = ApiService.getPopularMovies(page,context);
 
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
@@ -33,7 +33,7 @@ class _PopularScreenState extends ConsumerState<PopularScreenMovie>
           page++;
         });
         debugPrint('page: $page');
-        popularMoviesFuture = ApiService.getPopularMovies(page);
+        popularMoviesFuture = ApiService.getPopularMovies(page,context);
       }
     });
   }

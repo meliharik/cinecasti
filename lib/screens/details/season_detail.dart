@@ -26,7 +26,7 @@ class _SeasonDetailState extends ConsumerState<SeasonDetail> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ApiService.getSeasonById(
+      future: ApiService.getSeasonById(context: context,
           seasonNumber: widget.seasonNumber, tvSerieId: widget.tvSerieId),
       builder: (context, snapshot) {
         if (snapshot.hasData) {

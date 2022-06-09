@@ -4,7 +4,6 @@
    "edit_profile": "Profili Düzenle",
    "change_password": "Şifreyi Değiştir",
 
-   "edit_profile_title": "Profil Düzenle",
    "change_profile_picture": "Profil Resmini Değiştir",
    "name_surname": "Ad Soyad",
    "cant_be_empty_name": "Ad Soyad alanı boş bırakılamaz!",
@@ -16,6 +15,19 @@
    "successfully_updated_description_profile": "Profil başarıyla güncellendi.",
    "ok": "Tamam",
    "cancel": "İptal",
-   "select_language": "Dil Seç"
+   "select_language": "Dil Seç",
+
+   "current_password": "Mevcut Şifre",
+   "new_password": "Yeni Şifre",
+   "cant_be_empty_password": "Şifre alanı boş bırakılamaz!",
+   "password_must_be_at_least_4_characters": "Şifre en az 4 karakter olmalıdır!",
+   "password_must_be_different": "Yeni şifre eski şifrenin farkında olmalıdır!",
+   "change": "Değiştir",
+   "tried_too_often": "Çok fazla denediniz. Lütfen bir süre bekleyip tekrar deneyin.",
+   "current_password_incorrect": "Mevcut şifre yanlış!",
+   "harder_password": "Daha zor bir şifre tercih edin.",
+   "same_password": "Yeni şifre eski şifreniz ile farklı olmalıdır.",
+   "an_error_occurred": "Bir hata oluştu. Birkaç dakika içinde tekrar deneyin.",
+   "password_changed": "Şifre başarıyla değiştirildi."
    
 }

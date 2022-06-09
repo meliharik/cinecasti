@@ -1,0 +1,33 @@
+{
+   "settings": "Настройки",
+   "language": "Язык",
+   "edit_profile": "Редактировать профиль",
+   "change_password": "Сменить пароль",
+
+   "change_profile_picture": "Изменить аватар",
+   "name_surname": "Имя Фамилия",
+   "cant_be_empty_name": "Имя не может быть пустым",
+   "dont_use_special_chars": "Имя не может содержать специальные символы",
+   "email": "Электронная почта",
+   "email_replacement_inactive": "Электронная почта не может быть изменена, пока ваш аккаунт не активирован",
+   "save": "Сохранить",
+   "successfully_updated": "Успешно обновлено",
+   "successfully_updated_description_profile": "Ваш профиль был успешно обновлен",
+   "ok": "Ок",
+   "cancel": "Отмена",
+   "select_language": "Выберите язык",
+
+   "current_password": "Текущий пароль",
+   "new_password": "Новый пароль",
+   "cant_be_empty_password": "Пароль не может быть пустым",
+   "password_must_be_at_least_4_characters": "Пароль должен быть не менее 4 символов",
+   "password_must_be_different": "Пароль должен быть отличательным от текущего",
+   "change": "Изменить",
+   "tried_too_often": "Вы слишком часто пытаетесь ввести неверный пароль",
+   "current_password_incorrect": "Текущий пароль неверный",
+   "harder_password": "Выберите более сложный пароль.",
+   "same_password": "Пароль должен быть отличательным от текущего",
+   "an_error_occurred": "Произошла ошибка",
+   "password_changed": "Пароль изменен"
+   
+}

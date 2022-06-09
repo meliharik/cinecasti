@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:movie_suggestion/model/episode.dart';
 import 'package:movie_suggestion/model/members.dart';
@@ -13,9 +15,9 @@ import 'package:movie_suggestion/model/tv_serie.dart';
 import 'package:movie_suggestion/model/tv_serie_credit.dart';
 
 class ApiService {
-  static Future getMovieById(int id) async {
+  static Future getMovieById(int id, BuildContext context) async {
     final response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/movie/$id?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/movie/$id?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'));
     if (response.statusCode == 200) {
       var document = json.decode(response.body);
       Movie movie = Movie.fromJson(document);
@@ -25,9 +27,9 @@ class ApiService {
     }
   }
 
-  static Future getTvSerieById(int id) async {
+  static Future getTvSerieById(int id, BuildContext context) async {
     final response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/tv/$id?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/tv/$id?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'));
     if (response.statusCode == 200) {
       var document = json.decode(response.body);
       TvSerie tvSerie = TvSerie.fromJson(document);
@@ -37,7 +39,8 @@ class ApiService {
     }
   }
 
-  static Future<List<Movie>> getPopularMovies(int pageNumber) async {
+  static Future<List<Movie>> getPopularMovies(
+      int pageNumber, BuildContext context) async {
     final response = await http.get(Uri.parse(
         'https://api.themoviedb.org/3/movie/popular?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=$pageNumber'));
     if (response.statusCode == 200) {
@@ -57,7 +60,8 @@ class ApiService {
     }
   }
 
-  static Future<List<TvSerie>> getPopularTvSeries(int pageNumber) async {
+  static Future<List<TvSerie>> getPopularTvSeries(
+      int pageNumber, BuildContext context) async {
     final response = await http.get(Uri.parse(
         'https://api.themoviedb.org/3/tv/popular?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=$pageNumber'));
     if (response.statusCode == 200) {
@@ -77,7 +81,8 @@ class ApiService {
     }
   }
 
-  static Future<List<Movie>> getTopRatedMovies(int pageNumber) async {
+  static Future<List<Movie>> getTopRatedMovies(
+      int pageNumber, BuildContext context) async {
     final response = await http.get(Uri.parse(
         'https://api.themoviedb.org/3/movie/top_rated?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=$pageNumber'));
     if (response.statusCode == 200) {
@@ -97,7 +102,8 @@ class ApiService {
     }
   }
 
-  static Future<List<TvSerie>> getTopRatedTvSeries(int pageNumber) async {
+  static Future<List<TvSerie>> getTopRatedTvSeries(
+      int pageNumber, BuildContext context) async {
     final response = await http.get(Uri.parse(
         'https://api.themoviedb.org/3/tv/top_rated?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=$pageNumber'));
     if (response.statusCode == 200) {
@@ -117,9 +123,10 @@ class ApiService {
     }
   }
 
-  static Future<String> getMovieVideoId(Movie movie) async {
+  static Future<String> getMovieVideoId(
+      Movie movie, BuildContext context) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/movie/${movie.id}/videos?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/movie/${movie.id}/videos?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['results'];
@@ -140,9 +147,10 @@ class ApiService {
     }
   }
 
-  static Future<String> getTvSerieVideoId(TvSerie tvSerie) async {
+  static Future<String> getTvSerieVideoId(
+      TvSerie tvSerie, BuildContext context) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/tv/${tvSerie.id}/videos?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/tv/${tvSerie.id}/videos?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['results'];
@@ -162,9 +170,10 @@ class ApiService {
     }
   }
 
-  static Future<List<Cast>> getMovieCastMembers(Movie movie) async {
+  static Future<List<Cast>> getMovieCastMembers(
+      Movie movie, BuildContext context) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/movie/${movie.id}/credits?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/movie/${movie.id}/credits?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['cast'];
@@ -178,9 +187,10 @@ class ApiService {
     }
   }
 
-  static Future<List<Cast>> getTvSerieCastMembers(TvSerie tvSerie) async {
+  static Future<List<Cast>> getTvSerieCastMembers(
+      TvSerie tvSerie, BuildContext context) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/tv/${tvSerie.id}/credits?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/tv/${tvSerie.id}/credits?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['cast'];
@@ -194,9 +204,10 @@ class ApiService {
     }
   }
 
-  static Future<List<Crew>> getMovieCrewMembers(Movie movie) async {
+  static Future<List<Crew>> getMovieCrewMembers(
+      Movie movie, BuildContext context) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/movie/${movie.id}/credits?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/movie/${movie.id}/credits?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['crew'];
@@ -210,9 +221,10 @@ class ApiService {
     }
   }
 
-  static Future<List<Crew>> getTvSerieCrewMembers(TvSerie tvSerie) async {
+  static Future<List<Crew>> getTvSerieCrewMembers(
+      TvSerie tvSerie, BuildContext context) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/tv/${tvSerie.id}/credits?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/tv/${tvSerie.id}/credits?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['crew'];
@@ -226,9 +238,10 @@ class ApiService {
     }
   }
 
-  static Future<List<Movie>> getSimilarMovies(Movie movie) async {
+  static Future<List<Movie>> getSimilarMovies(
+      Movie movie, BuildContext context) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/movie/${movie.id}/similar?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=1'));
+        'https://api.themoviedb.org/3/movie/${movie.id}/similar?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}&page=1'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['results'];
@@ -246,9 +259,9 @@ class ApiService {
   }
 
   static Future<List<SimilarTvSeries>> getSimilarTvSeries(
-      TvSerie tvSerie) async {
+      TvSerie tvSerie, BuildContext context) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/tv/${tvSerie.id}/similar?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&page=1'));
+        'https://api.themoviedb.org/3/tv/${tvSerie.id}/similar?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}&page=1'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['results'];
@@ -266,9 +279,9 @@ class ApiService {
   }
 
   static Future<List<MovieAndTvSerieProvider>> getMovieProviders(
-      Movie movie) async {
+      Movie movie, BuildContext context) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/movie/${movie.id}/watch/providers?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/movie/${movie.id}/watch/providers?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       var results = jsonResponse['results'];
@@ -313,9 +326,9 @@ class ApiService {
   }
 
   static Future<List<MovieAndTvSerieProvider>> getTvSerieProviders(
-      TvSerie tvSerie) async {
+      TvSerie tvSerie, BuildContext context) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/tv/${tvSerie.id}/watch/providers?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/tv/${tvSerie.id}/watch/providers?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       var results = jsonResponse['results'];
@@ -359,9 +372,9 @@ class ApiService {
     }
   }
 
-  static Future<Person> getPersonById(int id) async {
+  static Future<Person> getPersonById(int id, BuildContext context) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/person/$id?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/person/$id?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       return Person.fromJson(jsonResponse);
@@ -370,9 +383,10 @@ class ApiService {
     }
   }
 
-  static Future<List<Movie>> getPersonMovies(int id) async {
+  static Future<List<Movie>> getPersonMovies(
+      int id, BuildContext context) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/person/$id/movie_credits?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/person/$id/movie_credits?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['cast'];
@@ -391,9 +405,10 @@ class ApiService {
     }
   }
 
-  static Future<List<CastTvSeries>> getPersonTvSeries(int id) async {
+  static Future<List<CastTvSeries>> getPersonTvSeries(
+      int id, BuildContext context) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/person/$id/tv_credits?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/person/$id/tv_credits?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['cast'];
@@ -407,9 +422,10 @@ class ApiService {
     }
   }
 
-  static Future<PersonSocial> getPersonSocial(int id) async {
+  static Future<PersonSocial> getPersonSocial(
+      int id, BuildContext context) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/person/$id/external_ids?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/person/$id/external_ids?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       return PersonSocial.fromJson(jsonResponse);
@@ -419,9 +435,11 @@ class ApiService {
   }
 
   static Future<Season> getSeasonById(
-      {required int seasonNumber, required int tvSerieId}) async {
+      {required int seasonNumber,
+      required int tvSerieId,
+      required BuildContext context}) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/tv/$tvSerieId/season/$seasonNumber?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'));
+        'https://api.themoviedb.org/3/tv/$tvSerieId/season/$seasonNumber?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       return Season.fromJson(jsonResponse);
@@ -433,10 +451,11 @@ class ApiService {
   static Future<Episode> getEpisodeById(
       {required int episodeNumber,
       required int seasonNumber,
-      required int tvserieId}) {
+      required int tvserieId,
+      required BuildContext context}) {
     return http
         .get(Uri.parse(
-            'https://api.themoviedb.org/3/tv/$tvserieId/season/$seasonNumber/episode/$episodeNumber?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US'))
+            'https://api.themoviedb.org/3/tv/$tvserieId/season/$seasonNumber/episode/$episodeNumber?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}'))
         .then((response) {
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(response.body);
@@ -449,9 +468,11 @@ class ApiService {
 
   ////////////////// search ///////////////////////
   static Future<List<Movie>> getMovieBySearch(
-      {required String query, required int page}) async {
+      {required String query,
+      required int page,
+      required BuildContext context}) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/search/movie?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&query=$query&page=$page'));
+        'https://api.themoviedb.org/3/search/movie?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}&query=$query&page=$page'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['results'];
@@ -466,9 +487,11 @@ class ApiService {
   }
 
   static Future<List<TvSerie>> getTvSerieBySearch(
-      {required String query, required int page}) async {
+      {required String query,
+      required int page,
+      required BuildContext context}) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/search/tv?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&query=$query&page=$page'));
+        'https://api.themoviedb.org/3/search/tv?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}&query=$query&page=$page'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['results'];
@@ -482,10 +505,12 @@ class ApiService {
     }
   }
 
-    static Future<List<Person>> getPersonBySearch(
-      {required String query, required int page}) async {
+  static Future<List<Person>> getPersonBySearch(
+      {required String query,
+      required int page,
+      required BuildContext context}) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/search/person?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&query=$query&page=$page'));
+        'https://api.themoviedb.org/3/search/person?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}&query=$query&page=$page'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['results'];

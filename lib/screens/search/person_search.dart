@@ -28,7 +28,7 @@ class _PersonSearchScreenState extends ConsumerState<PersonSearchScreen>
   void initState() {
     super.initState();
     searchedPersonsFuture =
-        ApiService.getPersonBySearch(page: page, query: widget.query);
+        ApiService.getPersonBySearch(page: page, query: widget.query,context: context);
 
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
@@ -38,7 +38,7 @@ class _PersonSearchScreenState extends ConsumerState<PersonSearchScreen>
         });
         debugPrint('page: $page');
         searchedPersonsFuture =
-            ApiService.getPersonBySearch(page: page, query: widget.query);
+            ApiService.getPersonBySearch(page: page, query: widget.query,context: context);
       }
     });
   }

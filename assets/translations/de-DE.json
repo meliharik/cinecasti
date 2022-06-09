@@ -1,0 +1,33 @@
+{
+   "settings": "die Einstellungen",
+   "language": "die Sprache",
+   "edit_profile": "Profil bearbeiten",
+   "change_password": "Passwort ändern",
+
+   "change_profile_picture": "Profilbild ändern",
+   "name_surname": "Name Surname",
+   "cant_be_empty_name": "Name darf nicht leer sein",
+   "dont_use_special_chars": "Sie können keine Sonderzeichen verwenden",
+   "email": "E-Mail",
+   "email_replacement_inactive": "E-Mail-Adresse wird ersetzt, sobald Sie Ihre E-Mail-Adresse bestätigen.",
+   "save": "Speichern",
+   "successfully_updated": "Erfolgreich aktualisiert",
+   "successfully_updated_description_profile": "Ihr Profil wurde erfolgreich aktualisiert",
+   "ok": "OK",
+   "cancel": "Abbrechen",
+   "select_language": "Sprache auswählen",
+
+   "current_password": "Aktuelles Passwort",
+   "new_password": "Neues Passwort",
+   "cant_be_empty_password": "Passwort darf nicht leer sein",
+   "password_must_be_at_least_4_characters": "Passwort muss mindestens 4 Zeichen lang sein",
+   "password_must_be_different": "Passwort muss unterschiedlich sein",
+   "change": "Ändern",
+   "tried_too_often": "Sie haben zu oft versucht, Ihr Passwort zu ändern. Bitte warten Sie einen Moment.",
+   "current_password_incorrect": "Aktuelles Passwort ist falsch",
+   "harder_password": "Passwort muss schwerer sein",
+   "same_password": "Passwort muss unterschiedlich sein",
+   "an_error_occurred": "Ein Fehler ist aufgetreten",
+   "password_changed": "Passwort geändert"
+   
+}

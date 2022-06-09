@@ -62,7 +62,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ApiService.getTvSerieById(widget.id),
+      future: ApiService.getTvSerieById(widget.id,context),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           TvSerie tvSerie = snapshot.data as TvSerie;
@@ -296,7 +296,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
 
   Widget card2(TvSerie tvSerie) {
     return FutureBuilder(
-      future: ApiService.getTvSerieVideoId(tvSerie),
+      future: ApiService.getTvSerieVideoId(tvSerie,context),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           String videoId = snapshot.data as String;
@@ -453,7 +453,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getTvSerieCastMembers(tvSerie),
+              future: ApiService.getTvSerieCastMembers(tvSerie,context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Cast> cast = snapshot.data as List<Cast>;
@@ -573,7 +573,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getTvSerieCrewMembers(tvSerie),
+              future: ApiService.getTvSerieCrewMembers(tvSerie,context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Crew> crew = snapshot.data as List<Crew>;
@@ -681,7 +681,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getSimilarTvSeries(tvSerie),
+              future: ApiService.getSimilarTvSeries(tvSerie,context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<SimilarTvSeries> tvSeries =
@@ -854,7 +854,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getTvSerieProviders(tvSerie),
+              future: ApiService.getTvSerieProviders(tvSerie,context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<MovieAndTvSerieProvider> providers =

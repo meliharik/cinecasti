@@ -24,7 +24,7 @@ class _TopRatedScreenState extends ConsumerState<TopRatedScreenMovie>     with A
   @override
   void initState() {
     super.initState();
-    moviesFuture = ApiService.getTopRatedMovies(page);
+    moviesFuture = ApiService.getTopRatedMovies(page,context);
 
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
@@ -33,7 +33,7 @@ class _TopRatedScreenState extends ConsumerState<TopRatedScreenMovie>     with A
           page++;
         });
         debugPrint('page: $page');
-        moviesFuture = ApiService.getTopRatedMovies(page);
+        moviesFuture = ApiService.getTopRatedMovies(page,context);
       }
     });
   }

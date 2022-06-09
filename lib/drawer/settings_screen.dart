@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:movie_suggestion/data/languages.dart';
 import 'package:movie_suggestion/drawer/change_password.dart';
 import 'package:movie_suggestion/drawer/edit_profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -129,9 +130,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           : Colors.white70,
                     ),
                   ),
-                  onTap: () {
+                  onTap: () async {
                     context.locale = Locale(languages[index].substring(0, 2),
                         languages[index].substring(3));
+                    final prefs = await SharedPreferences.getInstance();
+
+                    prefs.setString(
+                        'languageCode', context.locale.languageCode);
+                    print("dil: ");
+
+                    print(prefs.getString('languageCode'));
 
                     Navigator.pop(context);
                   },

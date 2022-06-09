@@ -28,8 +28,8 @@ class _TvSerieSearchScreenState extends ConsumerState<TvSerieSearchScreen>
   @override
   void initState() {
     super.initState();
-    searchedTvSeriesFuture =
-        ApiService.getTvSerieBySearch(page: page, query: widget.query);
+    searchedTvSeriesFuture = ApiService.getTvSerieBySearch(
+        page: page, query: widget.query, context: context);
 
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
@@ -38,8 +38,8 @@ class _TvSerieSearchScreenState extends ConsumerState<TvSerieSearchScreen>
           page++;
         });
         debugPrint('page: $page');
-        searchedTvSeriesFuture =
-            ApiService.getTvSerieBySearch(page: page, query: widget.query);
+        searchedTvSeriesFuture = ApiService.getTvSerieBySearch(
+            page: page, query: widget.query, context: context);
       }
     });
   }

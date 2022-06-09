@@ -1,30 +1,33 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movie_suggestion/auth/login.dart';
 import 'package:movie_suggestion/auth/model/kullanici.dart';
+import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/internet_warning_screen.dart';
 import 'package:movie_suggestion/screens/tab_bar_main/tabbar_main_movie.dart';
 import 'package:movie_suggestion/service/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Yonlendirme extends StatefulWidget {
+class Yonlendirme extends ConsumerStatefulWidget {
   const Yonlendirme({Key? key}) : super(key: key);
 
   @override
-  _YonlendirmeState createState() => _YonlendirmeState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _YonlendirmeState();
 }
 
-class _YonlendirmeState extends State<Yonlendirme> {
+class _YonlendirmeState extends ConsumerState<Yonlendirme> {
   bool interneteBagliMi = true;
   @override
   void initState() {
     super.initState();
+    saveLanguage();
     internetKontrol();
   }
 
   @override
   Widget build(BuildContext context) {
-    // final _yetkilendirmeServisi =
-    //     Provider.of<AuthService>(context, listen: false);
 
     return StreamBuilder(
       stream: AuthService().durumTakipcisi,
@@ -67,5 +70,13 @@ class _YonlendirmeState extends State<Yonlendirme> {
     } else if (connectivityResult != ConnectivityResult.none) {
       interneteBagliMi = true;
     }
+  }
+
+  void saveLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String languageCode = context.locale.languageCode;
+    prefs.setString('languageCode', languageCode);
+    print("dil: ");
+    print(prefs.getString('languageCode'));
   }
 }

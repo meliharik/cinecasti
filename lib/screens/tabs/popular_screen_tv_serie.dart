@@ -24,7 +24,7 @@ class _PopularScreenTvSerieState extends ConsumerState<PopularScreenTvSerie>    
   @override
   void initState() {
     super.initState();
-    popularTvSeriesFuture = ApiService.getPopularTvSeries(page);
+    popularTvSeriesFuture = ApiService.getPopularTvSeries(page,context);
 
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
@@ -33,7 +33,7 @@ class _PopularScreenTvSerieState extends ConsumerState<PopularScreenTvSerie>    
           page++;
         });
         debugPrint('page: $page');
-        popularTvSeriesFuture = ApiService.getPopularTvSeries(page);
+        popularTvSeriesFuture = ApiService.getPopularTvSeries(page,context);
       }
     });
   }

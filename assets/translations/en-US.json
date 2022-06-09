@@ -4,7 +4,6 @@
    "edit_profile": "Edit Profile",
    "change_password": "Change Password",
 
-   "edit_profile_title": "Edit Profile",
    "change_profile_picture": "Change Profile Picture",
    "name_surname": "Name Surname",
    "cant_be_empty_name": "Name can't be empty",
@@ -16,7 +15,20 @@
    "successfully_updated_description_profile": "Profile successfully updated!",
    "ok": "Ok",
    "cancel": "Cancel",
-   "select_language": "Select Language"
+   "select_language": "Select Language",
+
+   "current_password": "Current Password",
+   "new_password": "New Password",
+   "cant_be_empty_password": "Password can't be empty",
+   "password_must_be_at_least_4_characters": "Password must be at least 4 characters",
+   "password_must_be_different": "Password must be different",
+   "change": "Change",
+   "tried_too_often": "You tried too often. Please try again in a few minutes.",
+   "current_password_incorrect": "Current password is incorrect",
+   "harder_password": "Harder password",
+   "same_password": "Password can't be the same as current one",
+   "an_error_occurred": "An error occurred. Please try again later.",
+   "password_changed": "Password changed successfully."
 
    
 }

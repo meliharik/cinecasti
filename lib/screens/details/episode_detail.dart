@@ -63,6 +63,7 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
       future: ApiService.getEpisodeById(
           episodeNumber: widget.episodeNumber,
           seasonNumber: widget.seasonNumber,
+          context: context,
           tvserieId: widget.tvSerieId),
       builder: (context, snapshot) {
         if (snapshot.hasData) {

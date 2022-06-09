@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,7 +36,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
           icon: const Icon(FontAwesomeIcons.angleLeft),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Change Password'),
+        title: Text('change_password'.tr().toString()),
       ),
       body: Stack(
         children: [
@@ -113,7 +114,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
             ),
             contentPadding: const EdgeInsets.all(15),
             border: const OutlineInputBorder(),
-            hintText: 'Current password',
+            hintText: 'current_password'.tr().toString(),
             hintStyle: const TextStyle(fontWeight: FontWeight.w400),
             errorStyle: const TextStyle(
               fontFamily: 'Manrope',
@@ -141,9 +142,9 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
           ),
           validator: (input) {
             if (input!.isEmpty) {
-              return 'Mevcut şifre alanı boş bırakılamaz!';
+              return 'cant_be_empty_password'.tr().toString();
             } else if (input.trim().length <= 4) {
-              return 'Mevcut şifre 4 karakterden az olamaz';
+              return 'password_must_be_at_least_4_characters'.tr().toString();
             }
             return null;
           },
@@ -179,7 +180,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
             ),
             contentPadding: const EdgeInsets.all(15),
             border: const OutlineInputBorder(),
-            hintText: 'New password',
+            hintText: 'new_password'.tr().toString(),
             hintStyle: const TextStyle(fontWeight: FontWeight.w400),
             errorStyle: const TextStyle(
               fontFamily: 'Manrope',
@@ -207,9 +208,9 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
           ),
           validator: (input) {
             if (input!.isEmpty) {
-              return 'Yeni şifre alanı boş bırakılamaz!';
+              return 'cant_be_empty_password'.tr().toString();
             } else if (input.trim().length <= 4) {
-              return 'Yeni şifre 4 karakterden az olamaz';
+              return 'password_must_be_at_least_4_characters'.tr().toString();
             }
             return null;
           },
@@ -221,8 +222,8 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
 
   Widget get _kaydetBtn => ElevatedButton(
         onPressed: _sifreDegistir,
-        child: const Text(
-          'Change',
+        child: Text(
+          'change'.tr().toString(),
           style: TextStyle(),
         ),
         style: ElevatedButton.styleFrom(
@@ -308,16 +309,15 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
     String? hataMesaji;
 
     if (hataKodu == 287540269) {
-      hataMesaji =
-          "Çok fazla denediniz. Lütfen bir süre bekleyip tekrar deneyin";
+      hataMesaji = "tried_too_often".tr().toString();
     } else if (hataKodu == 185768934) {
-      hataMesaji = "Mevcut şifre alanı hatalı.";
+      hataMesaji = "current_password_incorrect".tr().toString();
     } else if (hataKodu == 265778269) {
-      hataMesaji = "Daha zor bir şifre tercih edin.";
+      hataMesaji = "harder_password".tr().toString();
     } else if (hataKodu == 1) {
-      hataMesaji = "Girilen şifreler aynı.";
+      hataMesaji = "same_password".tr().toString();
     } else {
-      hataMesaji = "Bir hata oluştu. Birkaç dakika içinde tekrar deneyin.";
+      hataMesaji = "an_error_occurred".tr().toString();
     }
 
     var snackBar = SnackBar(content: Text(hataMesaji));
@@ -325,17 +325,17 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   }
 
   Widget get _bottomSheetBasarili => Text(
-        'Success!',
+        'successfully_updated'.tr().toString(),
         style: TextStyle(
           fontSize: MediaQuery.of(context).size.height * 0.025,
           fontWeight: FontWeight.w600,
         ),
       );
 
-  Widget get _bottomSheetAciklama => const Padding(
+  Widget get _bottomSheetAciklama => Padding(
         padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
         child: Text(
-          'Your password has been successfully changed.',
+          'password_changed'.tr().toString(),
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 15,
@@ -350,6 +350,6 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
           return const TabBarMainMovie();
         }));
       },
-      child: const Text('Ok', style: TextStyle()),
+      child: Text('ok'.tr().toString(), style: TextStyle()),
       style: ElevatedButton.styleFrom(elevation: 5));
 }

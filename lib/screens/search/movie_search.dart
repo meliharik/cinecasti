@@ -28,7 +28,7 @@ class _MovieSearchScreenState extends ConsumerState<MovieSearchScreen>
   void initState() {
     super.initState();
     searchedMoviesFuture =
-        ApiService.getMovieBySearch(page: page, query: widget.query);
+        ApiService.getMovieBySearch(page: page, query: widget.query,context: context);
 
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
@@ -38,7 +38,7 @@ class _MovieSearchScreenState extends ConsumerState<MovieSearchScreen>
         });
         debugPrint('page: $page');
         searchedMoviesFuture =
-            ApiService.getMovieBySearch(page: page, query: widget.query);
+            ApiService.getMovieBySearch(page: page, query: widget.query,context: context);
       }
     });
   }

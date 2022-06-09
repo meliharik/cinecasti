@@ -25,8 +25,8 @@ Future<void> main() async {
         supportedLocales: const [
           Locale('en', 'US'),
           Locale('tr', 'TR'),
-          // Locale('ru', 'RU'),
-          // Locale('de', 'DE'),
+          Locale('ru', 'RU'),
+          Locale('de', 'DE'),
           // Locale('fr', 'FR'),
           // Locale('es', 'ES'),
           // Locale('it', 'IT'),
@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return MaterialApp(
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,

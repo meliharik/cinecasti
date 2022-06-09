@@ -52,7 +52,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ApiService.getPersonById(widget.id),
+      future: ApiService.getPersonById(widget.id,context),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           Person person = snapshot.data as Person;
@@ -282,7 +282,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                         ),
                       ),
                 FutureBuilder(
-                  future: ApiService.getPersonMovies(person.id!.toInt()),
+                  future: ApiService.getPersonMovies(person.id!.toInt(),context),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Movie> movies = snapshot.data as List<Movie>;
@@ -304,7 +304,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                   },
                 ),
                 FutureBuilder<List<CastTvSeries>>(
-                  future: ApiService.getPersonTvSeries(person.id!.toInt()),
+                  future: ApiService.getPersonTvSeries(person.id!.toInt(),context),
                   builder: (context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
                       List<CastTvSeries> series =
@@ -370,7 +370,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getPersonMovies(person.id!.toInt()),
+              future: ApiService.getPersonMovies(person.id!.toInt(),context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Movie> movies = snapshot.data as List<Movie>;
@@ -585,7 +585,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder<List<CastTvSeries>>(
-              future: ApiService.getPersonTvSeries(person.id!.toInt()),
+              future: ApiService.getPersonTvSeries(person.id!.toInt(),context),
               builder: (context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
                   List<CastTvSeries> tvSeries =
@@ -801,7 +801,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getPersonSocial(person.id!.toInt()),
+              future: ApiService.getPersonSocial(person.id!.toInt(),context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   PersonSocial personSocial = snapshot.data as PersonSocial;

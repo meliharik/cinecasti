@@ -62,7 +62,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ApiService.getMovieById(widget.id),
+      future: ApiService.getMovieById(widget.id,context),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           Movie movie = snapshot.data as Movie;
@@ -292,7 +292,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
 
   Widget card2(Movie movie) {
     return FutureBuilder(
-      future: ApiService.getMovieVideoId(movie),
+      future: ApiService.getMovieVideoId(movie,context),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           String videoId = snapshot.data as String;
@@ -384,7 +384,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getMovieCastMembers(movie),
+              future: ApiService.getMovieCastMembers(movie,context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Cast> cast = snapshot.data as List<Cast>;
@@ -503,7 +503,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getMovieCrewMembers(movie),
+              future: ApiService.getMovieCrewMembers(movie,context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Crew> crew = snapshot.data as List<Crew>;
@@ -612,7 +612,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getSimilarMovies(movie),
+              future: ApiService.getSimilarMovies(movie,context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Movie> movies = snapshot.data as List<Movie>;
@@ -784,7 +784,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getMovieProviders(movie),
+              future: ApiService.getMovieProviders(movie,context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<MovieAndTvSerieProvider> providers =

@@ -26,7 +26,7 @@ class _TopRatedScreenTvSerieState extends ConsumerState<TopRatedScreenTvSerie>
   @override
   void initState() {
     super.initState();
-    tvSeriesFuture = ApiService.getTopRatedTvSeries(page);
+    tvSeriesFuture = ApiService.getTopRatedTvSeries(page, context);
 
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
@@ -35,7 +35,7 @@ class _TopRatedScreenTvSerieState extends ConsumerState<TopRatedScreenTvSerie>
           page++;
         });
         debugPrint('page: $page');
-        tvSeriesFuture = ApiService.getTopRatedTvSeries(page);
+        tvSeriesFuture = ApiService.getTopRatedTvSeries(page, context);
       }
     });
   }
