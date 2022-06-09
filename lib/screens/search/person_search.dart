@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/person.dart';
 import 'package:movie_suggestion/screens/details/person_detail.dart';

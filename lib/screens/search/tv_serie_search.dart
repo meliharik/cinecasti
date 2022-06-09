@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/tv_serie.dart';
-import 'package:movie_suggestion/screens/details/movie_detail.dart';
+import 'package:movie_suggestion/screens/details/tv_serie_detail.dart';
 import 'package:movie_suggestion/service/api_service.dart';
 
 class TvSerieSearchScreen extends ConsumerStatefulWidget {
@@ -93,7 +93,7 @@ class _TvSerieSearchScreenState extends ConsumerState<TvSerieSearchScreen>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => MovieDetail(
+              builder: (context) => TvSerieDetail(
                 id: tvSeries[index].id!.toInt(),
               ),
             ),
@@ -160,8 +160,7 @@ class _TvSerieSearchScreenState extends ConsumerState<TvSerieSearchScreen>
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 8.0,right: 8,left: 8),
-
+                padding: const EdgeInsets.only(top: 8.0, right: 8, left: 8),
                 child: Text(
                   tvSeries[index].name.toString(),
                   textAlign: TextAlign.center,

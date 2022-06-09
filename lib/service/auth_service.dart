@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -7,6 +6,8 @@ import 'package:movie_suggestion/auth/model/kullanici.dart';
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   String? aktifKullaniciId;
+  String fotoUrl =
+      'https://firebasestorage.googleapis.com/v0/b/uludag-online-30c96.appspot.com/o/resimler%2FprofileDefault%2Fdefault_profile.png?alt=media&token=358d18e1-f9aa-448e-b3f6-5112989c5110';
 
   Kullanici? _kullaniciOlustur(User? kullanici) {
     return kullanici == null ? null : Kullanici.firebasedenUret(kullanici);
@@ -16,9 +17,13 @@ class AuthService {
     return _firebaseAuth.authStateChanges().map(_kullaniciOlustur);
   }
 
-  Future<Kullanici?> mailIleKayit(String eposta, String sifre) async {
+  Future<Kullanici?> mailIleKayit(
+      String eposta, String sifre, String adSoyad) async {
     var girisKarti = await _firebaseAuth.createUserWithEmailAndPassword(
         email: eposta, password: sifre);
+    await _firebaseAuth.currentUser!.updateDisplayName(adSoyad);
+    await _firebaseAuth.currentUser!.updatePhotoURL(fotoUrl);
+
     return _kullaniciOlustur(girisKarti.user);
   }
 
@@ -46,6 +51,10 @@ class AuthService {
         accessToken: googleYetkiKartim.accessToken);
     UserCredential girisKarti =
         await _firebaseAuth.signInWithCredential(sifresizGirisBelgesi);
+    await _firebaseAuth.currentUser!.updatePhotoURL(girisKarti.user!.photoURL);
+    await _firebaseAuth.currentUser!
+        .updateDisplayName(girisKarti.user!.displayName);
+
     return _kullaniciOlustur(girisKarti.user);
   }
 

@@ -4,10 +4,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:movie_suggestion/auth/forgot_password.dart';
 import 'package:movie_suggestion/auth/model/kullanici.dart';
 import 'package:movie_suggestion/auth/register.dart';
 import 'package:movie_suggestion/helper/height_width.dart';
-import 'package:movie_suggestion/screens/tabbar_main_movie.dart';
+import 'package:movie_suggestion/screens/tab_bar_main/tabbar_main_movie.dart';
 import 'package:movie_suggestion/service/auth_service.dart';
 import 'package:movie_suggestion/service/firestore_service.dart';
 
@@ -248,13 +249,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               padding: const EdgeInsets.only(right: 20.0),
               child: TextButton(
                 onPressed: () {
-                  //TODO: Sifremi unuttum butonuna tıklandığında yapılacaklar
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const ForgotPassword(),
-                  //   ),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ForgotPasswordScreen(),
+                    ),
+                  );
                 },
                 child: Text(
                   'Şifremi Unuttum',

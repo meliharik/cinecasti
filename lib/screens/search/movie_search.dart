@@ -163,7 +163,7 @@ class _MovieSearchScreenState extends ConsumerState<MovieSearchScreen>
                 child: Text(
                   movies[index].title.toString(),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),

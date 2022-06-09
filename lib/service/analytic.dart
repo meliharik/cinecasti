@@ -1,4 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/cupertino.dart';
 
 class AnalyticService {
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
@@ -16,7 +17,7 @@ class AnalyticService {
         'items': [itemCreator()]
       },
     );
-    print('logEvent succeeded');
+    debugPrint('logEvent succeeded');
   }
 
   static AnalyticsEventItem itemCreator() {

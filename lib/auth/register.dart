@@ -1,5 +1,4 @@
 import 'package:connectivity/connectivity.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:movie_suggestion/auth/login.dart';
 import 'package:movie_suggestion/auth/model/kullanici.dart';
 import 'package:movie_suggestion/helper/height_width.dart';
-import 'package:movie_suggestion/screens/tabbar_main_movie.dart';
+import 'package:movie_suggestion/screens/tab_bar_main/tabbar_main_movie.dart';
 import 'package:movie_suggestion/service/analytic.dart';
 import 'package:movie_suggestion/service/auth_service.dart';
 import 'package:movie_suggestion/service/firestore_service.dart';
@@ -296,7 +295,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               children: <TextSpan>[
                 TextSpan(
                     text: ' Gizlilik Politikasını ',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.blueAccent,
                     ),
                     recognizer: TapGestureRecognizer()
@@ -317,7 +316,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ),
                 TextSpan(
                     text: ' Kullanıcı Sözleşmesini ',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.blueAccent,
                     ),
                     recognizer: TapGestureRecognizer()
@@ -362,7 +361,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (connectivityResult != ConnectivityResult.none) {
         try {
           Kullanici? kullanici =
-              await AuthService().mailIleKayit(email!, password!);
+              await AuthService().mailIleKayit(email!, password!, adSoyad!);
           if (kullanici != null) {
             await FirebaseMessaging.instance
                 .getToken()
@@ -539,7 +538,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           children: <TextSpan>[
             TextSpan(
                 text: '  Giriş yap!',
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
                 recognizer: TapGestureRecognizer()
