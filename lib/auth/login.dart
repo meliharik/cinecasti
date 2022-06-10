@@ -1,4 +1,5 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +100,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             width: MediaQuery.of(context).size.width * 0.05,
           ),
           Text(
-            'Giriş Yap',
+            'sign_in'.tr().toString(),
             style: TextStyle(
               fontSize: MediaQuery.of(context).size.height * 0.042,
               fontWeight: FontWeight.bold,
@@ -115,7 +116,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             width: MediaQuery.of(context).size.width * 0.05,
           ),
           Text(
-            'Devam etmek için giriş yap!',
+            'sign_in_to_continue'.tr().toString(),
             style: TextStyle(
               fontSize: MediaQuery.of(context).size.height * 0.028,
             ),
@@ -133,7 +134,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.all(15),
             border: const OutlineInputBorder(),
-            hintText: 'Email',
+            hintText: 'email'.tr().toString(),
             // hintStyle: GoogleFonts.libreFranklin(),
             errorStyle: const TextStyle(
               fontWeight: FontWeight.w600,
@@ -162,9 +163,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ),
           validator: (input) {
             if (input!.isEmpty) {
-              return 'Email alanı boş bırakılamaz!';
+              return 'email_required'.tr().toString();
             } else if (!input.contains('@')) {
-              return 'Girilen değer mail formatında olmalı';
+              return 'email_invalid'.tr().toString();
             }
             return null;
           },
@@ -202,7 +203,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
             contentPadding: const EdgeInsets.all(15),
             border: const OutlineInputBorder(),
-            hintText: 'Şifre',
+            hintText: 'password'.tr().toString(),
             hintStyle: const TextStyle(fontWeight: FontWeight.w400),
             errorStyle: const TextStyle(
               fontFamily: 'Manrope',
@@ -230,9 +231,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ),
           validator: (input) {
             if (input!.isEmpty) {
-              return 'Şifre alanı boş bırakılamaz!';
+              return 'password_required'.tr().toString();
             } else if (input.trim().length <= 4) {
-              return 'Şifre 4 karakterden az olamaz';
+              return 'password_must_be_at_least_4_characters'.tr().toString();
             }
             return null;
           },
@@ -257,7 +258,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   );
                 },
                 child: Text(
-                  'Şifremi Unuttum',
+                  'forgot_password'.tr().toString(),
                   style: TextStyle(
                       color: Colors.grey,
                       fontSize: MediaQuery.of(context).size.height * 0.02),
@@ -268,8 +269,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Widget get _loginBtn => ElevatedButton(
         onPressed: _girisYap,
-        child: const Text(
-          'Giriş Yap',
+        child: Text(
+          'sign_in'.tr().toString(),
         ),
         style: ElevatedButton.styleFrom(
             primary: Theme.of(context).primaryColor,
@@ -281,7 +282,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
 
   Widget get _veyaText => Row(
-        children: const [
+        children: [
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(left: 25.0, right: 15),
@@ -292,7 +293,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
           ),
           Text(
-            'veya',
+            'or'.tr().toString(),
             style: TextStyle(
               fontWeight: FontWeight.w400,
               // color: Color(0xff4B4B4B),
@@ -316,8 +317,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           FontAwesomeIcons.google,
           color: Colors.white,
         ),
-        label: const Text(
-          'Google ile Giriş Yap',
+        label: Text(
+          'sign_in_with_google'.tr().toString(),
         ),
         style: ElevatedButton.styleFrom(
             primary: const Color(0xffde4032),
@@ -425,17 +426,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     String? hataMesaji;
 
     if (hataKodu == 505284406) {
-      hataMesaji = "Böyle bir kullanıcı bulunmuyor.";
+      hataMesaji = "user_not_found".tr().toString();
     } else if (hataKodu == 360587416) {
-      hataMesaji = "Girdiğiniz mail adresi geçersizdir.";
+      hataMesaji = "email_invalid".tr().toString();
     } else if (hataKodu == 185768934) {
-      hataMesaji = "Girilen şifre hatalı.";
+      hataMesaji = "password_incorrect".tr().toString();
     } else if (hataKodu == 446151799) {
-      hataMesaji = "Kullanıcı engellenmiş.";
+      hataMesaji = "user_banned".tr().toString();
     } else if (hataKodu == 0) {
-      hataMesaji = "İnternet bağlantınızı kontrol edin.";
+      hataMesaji = "check_connection".tr().toString();
     } else {
-      hataMesaji = "Bir hata oluştu. Birkaç dakika içinde tekrar deneyin.";
+      hataMesaji = "an_error_occurred".tr().toString();
     }
 
     // 474761051 The service is currently unavailable. This is a most likely a transient condition and may be corrected by retrying with a backoff.
@@ -448,7 +449,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Widget get _hesapOlusturText => RichText(
         text: TextSpan(
-            text: 'Hesabın yok mu?',
+            text: 'dont_have_an_account'.tr().toString(),
             style: const TextStyle(
               color: Colors.white70,
               fontWeight: FontWeight.w400,
@@ -456,7 +457,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
             children: <TextSpan>[
               TextSpan(
-                  text: '  Hesap oluştur!',
+                  text: ' ',
+                  style: const TextStyle(
+                    // color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RegisterScreen(),
+                        ),
+                      );
+                    }),
+              TextSpan(
+                  text: 'create_account'.tr().toString(),
                   style: const TextStyle(
                     // color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold,

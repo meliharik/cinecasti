@@ -224,8 +224,10 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
   }
 
   Widget card1(Episode episode) {
+    String languageCode = context.locale.languageCode;
     String formattedDate = episode.airDate!.isNotEmpty
-        ? DateFormat.yMMMd().format(DateTime.parse(episode.airDate.toString()))
+        ? DateFormat.yMMMd(languageCode)
+            .format(DateTime.parse(episode.airDate.toString()))
         : '';
     return Card(
       child: Container(

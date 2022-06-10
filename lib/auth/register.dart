@@ -1,4 +1,5 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +98,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         children: [
           boslukWidth(context, 0.05),
           Text(
-            'Hesap Oluştur',
+            'create_account'.tr().toString(),
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: MediaQuery.of(context).size.height * 0.04),
@@ -110,7 +111,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         children: [
           boslukWidth(context, 0.05),
           Text(
-            'Kayıt ol ve aramıza katıl!',
+            'sign_up_and_join_us'.tr().toString(),
             style:
                 TextStyle(fontSize: MediaQuery.of(context).size.height * 0.03),
           ),
@@ -127,7 +128,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.all(15),
             border: const OutlineInputBorder(),
-            hintText: 'Ad Soyad',
+            hintText: 'name_surname'.tr().toString(),
             errorStyle: const TextStyle(
               fontWeight: FontWeight.w600,
               color: Color(0xffEF2E5B),
@@ -156,12 +157,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           validator: (input) {
             if (input!.isEmpty) {
               debugPrint(input.toString());
-              return 'Ad Soyad alanı boş bırakılamaz!';
+              return 'name_surname_required'.tr().toString();
             } else if (input.contains(',') ||
                 input.contains('.') ||
                 input.contains('*')) {
               debugPrint(input.toString());
-              return 'Lütfen noktalama işareti kullanmayın.';
+              return 'name_surname_invalid'.tr().toString();
             }
             return null;
           },
@@ -180,7 +181,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.all(15),
             border: const OutlineInputBorder(),
-            hintText: 'Email',
+            hintText: 'email'.tr().toString(),
             hintStyle: const TextStyle(),
             errorStyle: const TextStyle(
               fontWeight: FontWeight.w600,
@@ -209,9 +210,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ),
           validator: (input) {
             if (input!.isEmpty) {
-              return 'Email alanı boş bırakılamaz!';
+              return 'email_required'.tr().toString();
             } else if (!input.contains('@')) {
-              return 'Girilen değer mail formatında olmalı';
+              return 'email_invalid'.tr().toString();
             }
             return null;
           },
@@ -247,7 +248,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             ),
             contentPadding: const EdgeInsets.all(15),
             border: const OutlineInputBorder(),
-            hintText: 'Şifre',
+            hintText: 'password'.tr().toString(),
             hintStyle: const TextStyle(fontWeight: FontWeight.w400),
             errorStyle: const TextStyle(
               fontWeight: FontWeight.w600,
@@ -274,9 +275,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ),
           validator: (input) {
             if (input!.isEmpty) {
-              return 'Şifre alanı boş bırakılamaz!';
+              return 'password_required'.tr().toString();
             } else if (input.trim().length <= 4) {
-              return 'Şifre 4 karakterden az olamaz';
+              return 'password_must_be_at_least_4_characters'.tr().toString();
             }
             return null;
           },
@@ -290,11 +291,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: RichText(
           text: TextSpan(
-              text: 'Kayıt olarak',
+              text: 'by_registering_you_agree_to'.tr().toString(),
               style: const TextStyle(fontWeight: FontWeight.w400),
               children: <TextSpan>[
                 TextSpan(
-                    text: ' Gizlilik Politikasını ',
+                  text: '  ',
+                  style: TextStyle(
+                      // color: Colors.white,
+                      ),
+                ),
+                TextSpan(
+                    text: 'privacy_policy'.tr().toString(),
                     style: const TextStyle(
                       color: Colors.blueAccent,
                     ),
@@ -309,13 +316,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         // );
                       }),
                 const TextSpan(
-                  text: 've',
+                  text: ' - ',
                   style: TextStyle(
                       // color: Colors.white,
                       ),
                 ),
                 TextSpan(
-                    text: ' Kullanıcı Sözleşmesini ',
+                    text: 'user_agreement'.tr().toString(),
                     style: const TextStyle(
                       color: Colors.blueAccent,
                     ),
@@ -329,17 +336,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         //   ),
                         // );
                       }),
-                const TextSpan(
-                  text: 'kabul etmiş sayılırsınız.',
-                ),
               ]),
         ),
       );
 
   Widget get _signUpBtn => ElevatedButton(
         onPressed: _hesapOlustur,
-        child: const Text(
-          'Hesap Oluştur',
+        child: Text(
+          'create_account'.tr().toString(),
         ),
         style: ElevatedButton.styleFrom(
             elevation: 5,
@@ -413,19 +417,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     String? hataMesaji;
 
     if (hataKodu == 505284406) {
-      hataMesaji = "Böyle bir kullanıcı bulunmuyor.";
+      hataMesaji = "user_not_found".tr().toString();
     } else if (hataKodu == 360587416) {
-      hataMesaji = "Girdiğiniz mail adresi geçersizdir.";
+      hataMesaji = "email_invalid".tr().toString();
     } else if (hataKodu == 185768934) {
-      hataMesaji = "Girilen şifre hatalı.";
+      hataMesaji = "password_incorrect".tr().toString();
     } else if (hataKodu == 446151799) {
-      hataMesaji = "Kullanıcı engellenmiş.";
+      hataMesaji = "user_banned".tr().toString();
     } else if (hataKodu == 0) {
-      hataMesaji = "İnternet bağlantınızı kontrol edin.";
+      hataMesaji = "check_connection".tr().toString();
     } else if (hataKodu == 34618382) {
-      hataMesaji = "Bu mail adresine kayıtlı bir kullanıcı bulunuyor.";
+      hataMesaji = "user_already_registered";
     } else {
-      hataMesaji = "Bir hata oluştu. Birkaç dakika içinde tekrar deneyin.";
+      hataMesaji = "an_error_occurred".tr().toString();
     }
 
     var snackBar = SnackBar(content: Text(hataMesaji));
@@ -433,7 +437,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Widget get _veyaText => Row(
-        children: const [
+        children: [
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(left: 25.0, right: 15),
@@ -444,7 +448,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             ),
           ),
           Text(
-            'veya',
+            'or'.tr().toString(),
             style: TextStyle(
               fontWeight: FontWeight.w400,
               // color: Color(0xff4B4B4B),
@@ -468,8 +472,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           FontAwesomeIcons.google,
           color: Colors.white,
         ),
-        label: const Text(
-          'Google ile Hesap Oluştur',
+        label: Text(
+          'sign_in_with_google'.tr().toString(),
         ),
         style: ElevatedButton.styleFrom(
             primary: const Color(0xffde4032),
@@ -530,14 +534,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   Widget get _girisYapTextBtn => RichText(
         text: TextSpan(
-          text: 'Zaten hesabın var mı?',
+          text: 'already_have_an_account'.tr().toString(),
           style: const TextStyle(
             fontWeight: FontWeight.w400,
             color: Colors.white70,
           ),
           children: <TextSpan>[
             TextSpan(
-                text: '  Giriş yap!',
+                text: ' ' + 'sign_in'.tr().toString(),
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),

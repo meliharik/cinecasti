@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -79,7 +80,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       );
 
   Widget get _sifremiUnuttumText => Text(
-        'Şifreni mi unuttun?',
+        'forgot_password'.tr().toString(),
         style: TextStyle(
           fontSize: MediaQuery.of(context).size.height * 0.04,
           fontWeight: FontWeight.bold,
@@ -87,7 +88,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       );
 
   Widget get _aciklamaText => Text(
-        'Please enter your e-mail address below.',
+        'please_enter_your_email_below'.tr().toString(),
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: MediaQuery.of(context).size.height * 0.02,
@@ -103,7 +104,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.all(15),
             border: const OutlineInputBorder(),
-            hintText: 'Email',
+            hintText: 'email'.tr().toString(),
             hintStyle: const TextStyle(),
             errorStyle: const TextStyle(
               fontFamily: 'Manrope',
@@ -133,9 +134,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           ),
           validator: (input) {
             if (input!.isEmpty) {
-              return 'Email alanı boş bırakılamaz!';
+              return 'email_required'.tr().toString();
             } else if (!input.contains('@')) {
-              return 'Girilen değer mail formatında olmalı';
+              return 'email_invalid'.tr().toString();
             }
             return null;
           },
@@ -147,8 +148,8 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
   Widget get _sifirlaBtn => ElevatedButton(
         onPressed: _resetPassword,
-        child: const Text(
-          'Şifremi Sıfırla',
+        child: Text(
+          'reset_password'.tr().toString(),
         ),
         style: ElevatedButton.styleFrom(
             elevation: 5,
@@ -208,15 +209,15 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     String? hataMesaji;
 
     if (hataKodu == 360587416) {
-      hataMesaji = "Girdiğiniz mail adresi geçersizdir.";
+      hataMesaji = "email_invalid".tr().toString();
     } else if (hataKodu == 34618382) {
-      hataMesaji = "Girdiğiniz mail kayıtlıdır.";
+      hataMesaji = "email_registered";
     } else if (hataKodu == 265778269) {
-      hataMesaji = "Daha zor bir şifre tercih edin.";
+      hataMesaji = "password_harder".tr().toString();
     } else if (hataKodu == 505284406) {
-      hataMesaji = "Bu mail adresine kayıtlı bir kullanıcı bulunmuyor.";
+      hataMesaji = "email_not_registered".tr().toString();
     } else {
-      hataMesaji = "Bir hata oluştu. Birkaç dakika içinde tekrar deneyin.";
+      hataMesaji = "an_error_occured".tr().toString();
     }
 
     var snackBar = SnackBar(content: Text(hataMesaji));
@@ -224,7 +225,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   }
 
   Widget get _bottomSheetBasarili => Text(
-        'Success!',
+        'successfully_updated'.tr().toString(),
         style: TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: MediaQuery.of(context).size.height * 0.03),
@@ -233,7 +234,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   Widget get _bottomSheetAciklama => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: Text(
-          'We have sent a link to your email address to reset your password. If you don\'t see the email, be sure to check your spam box.',
+          'email_sent'.tr().toString(),
           textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.w400,
@@ -253,5 +254,5 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
             MediaQuery.of(context).size.height * 0.05),
         elevation: 5,
       ),
-      child: const Text('Ok'));
+      child: Text('ok'.tr().toString()));
 }
