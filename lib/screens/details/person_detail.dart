@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -52,7 +53,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ApiService.getPersonById(widget.id,context),
+      future: ApiService.getPersonById(widget.id, context),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           Person person = snapshot.data as Person;
@@ -168,7 +169,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                   ),
                   person.birthday!.isNotEmpty
                       ? Text(
-                          "Born on " + formattedDateBirth,
+                          "born_on".tr().toString() + ' ' + formattedDateBirth,
                           overflow: TextOverflow.clip,
                           style: const TextStyle(
                             color: Colors.white60,
@@ -182,7 +183,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                   ),
                   person.deathday != null
                       ? Text(
-                          "Died on " + formattedDateDeath,
+                          "died_on".tr().toString() + ' ' + formattedDateDeath,
                           overflow: TextOverflow.clip,
                           style: const TextStyle(
                             color: Colors.white60,
@@ -268,7 +269,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
               children: [
                 person.birthday!.isNotEmpty
                     ? Text(
-                        '$age years old',
+                        '$age ' + 'years_old'.tr().toString(),
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
@@ -282,12 +283,13 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                         ),
                       ),
                 FutureBuilder(
-                  future: ApiService.getPersonMovies(person.id!.toInt(),context),
+                  future:
+                      ApiService.getPersonMovies(person.id!.toInt(), context),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Movie> movies = snapshot.data as List<Movie>;
                       return Text(
-                        '${movies.length} movies',
+                        '${movies.length} ' + 'movies'.tr().toString(),
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
@@ -304,14 +306,15 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                   },
                 ),
                 FutureBuilder<List<CastTvSeries>>(
-                  future: ApiService.getPersonTvSeries(person.id!.toInt(),context),
+                  future:
+                      ApiService.getPersonTvSeries(person.id!.toInt(), context),
                   builder: (context, AsyncSnapshot snapshot) {
                     if (snapshot.hasData) {
                       List<CastTvSeries> series =
                           snapshot.data as List<CastTvSeries>;
 
                       return Text(
-                        '${series.length} tv series',
+                        '${series.length} ' + 'tv_series'.tr().toString(),
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
@@ -333,8 +336,8 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
               color: Colors.grey,
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Biography',
+            Text(
+              'biography'.tr().toString(),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -357,8 +360,8 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Movies',
+            Text(
+              'movies'.tr().toString(),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -370,13 +373,13 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getPersonMovies(person.id!.toInt(),context),
+              future: ApiService.getPersonMovies(person.id!.toInt(), context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<Movie> movies = snapshot.data as List<Movie>;
 
                   if (movies.isEmpty) {
-                    return const Text('No movies found');
+                    return Text('no_movies'.tr().toString());
                   }
 
                   return SizedBox(
@@ -416,8 +419,11 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                const Text(
-                                  'SEE ALL MOVIES',
+                                Text(
+                                  'see_all_movies'
+                                      .tr()
+                                      .toString()
+                                      .toUpperCase(),
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
@@ -572,8 +578,8 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'TV Series',
+            Text(
+              'tv_series'.tr().toString(),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -585,13 +591,13 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder<List<CastTvSeries>>(
-              future: ApiService.getPersonTvSeries(person.id!.toInt(),context),
+              future: ApiService.getPersonTvSeries(person.id!.toInt(), context),
               builder: (context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
                   List<CastTvSeries> tvSeries =
                       snapshot.data as List<CastTvSeries>;
                   if (tvSeries.isEmpty) {
-                    return const Text('No TV Series');
+                    return Text('no_tv_series'.tr().toString());
                   }
 
                   return SizedBox(
@@ -631,8 +637,11 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                const Text(
-                                  'SEE ALL TV SERIES',
+                                Text(
+                                  'see_all_tv_series'
+                                      .tr()
+                                      .toString()
+                                      .toUpperCase(),
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
@@ -708,8 +717,9 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                                                 .episodeCount
                                                 .toString() +
                                             (tvSeries[index].episodeCount == 1
-                                                ? ' Season'
-                                                : ' Seasons'),
+                                                ? " " + 'season'.tr().toString()
+                                                : " " +
+                                                    'seasons'.tr().toString()),
                                         style: const TextStyle(
                                           fontSize: 12,
                                         ),
@@ -788,8 +798,8 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'See On',
+            Text(
+              'see_on'.tr().toString().toUpperCase(),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -801,7 +811,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
             ),
             const SizedBox(height: 8),
             FutureBuilder(
-              future: ApiService.getPersonSocial(person.id!.toInt(),context),
+              future: ApiService.getPersonSocial(person.id!.toInt(), context),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   PersonSocial personSocial = snapshot.data as PersonSocial;
@@ -818,8 +828,8 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                                 await launchUrl(Uri.parse(
                                     'https://www.facebook.com/${personSocial.facebookId}/'));
                               },
-                              title: const Text(
-                                'Facebook',
+                              title: Text(
+                                'facebook'.tr().toString(),
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
@@ -841,8 +851,8 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                                 await launchUrl(Uri.parse(
                                     'https://www.instagram.com/${personSocial.instagramId}/'));
                               },
-                              title: const Text(
-                                'Instagram',
+                              title: Text(
+                                'instagram'.tr().toString(),
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
@@ -864,8 +874,8 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                                 await launchUrl(Uri.parse(
                                     'https://twitter.com/${personSocial.twitterId}/'));
                               },
-                              title: const Text(
-                                'Twitter',
+                              title: Text(
+                                'twitter'.tr().toString(),
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
@@ -887,8 +897,8 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                                 await launchUrl(Uri.parse(
                                     'https://www.imdb.com/name/${person.imdbId}/'));
                               },
-                              title: const Text(
-                                'IMDB',
+                              title: Text(
+                                'imdb'.tr().toString(),
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
@@ -912,8 +922,8 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                           await launchUrl(Uri.parse(
                               'https://www.google.com/search?q=$editedText2'));
                         },
-                        title: const Text(
-                          'Google',
+                        title: Text(
+                          'google'.tr().toString(),
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
@@ -930,7 +940,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                   debugPrint('error');
                   debugPrint(snapshot.error.toString());
 
-                  return const Text('No Providers');
+                  return Text('no_providers'.tr().toString());
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -977,7 +987,7 @@ class _ExpandableTextState extends State<ExpandableText>
       widget.isExpanded
           ? ConstrainedBox(constraints: const BoxConstraints())
           : TextButton(
-              child: const Text('show more'),
+              child: Text('show_more'.tr().toString()),
               onPressed: () => setState(() => widget.isExpanded = true))
     ]);
   }

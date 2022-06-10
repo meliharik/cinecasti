@@ -17,18 +17,18 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   List languages = [
-    'tr-TR',
     'en-US',
-    'ru-RU',
     'de-DE',
+    'ru-RU',
     'fr-FR',
-    'es-ES',
     'it-IT',
+    'hi-IN',
+    'tr-TR',
+    'es-ES',
     'pt-PT',
     'zh-CN',
     'ja-JP',
     'ko-KR',
-    'hi-IN',
   ];
 
   @override

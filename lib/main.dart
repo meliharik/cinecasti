@@ -9,10 +9,34 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_suggestion/yonlendirme.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 
+  List languages = [
+    'en-US',
+    'tr-TR',
+    'ru-RU',
+    'de-DE',
+    'fr-FR',
+    'es-ES',
+    'it-IT',
+    'pt-PT',
+    'hi-IN',
+    'zh-CN',
+    'ja-JP',
+    'ko-KR',
+  ];
+
 Future<void> main() async {
   String defaultLocale = Platform.localeName; // en_US
   debugPrint("defaultLocale: " + defaultLocale);
   debugPrint(defaultLocale.substring(0, 2));
+  
+  for (var i = 0; i < languages.length; i++) {
+    if (languages[i].substring(0, 2) == defaultLocale.substring(0, 2)) {
+      defaultLocale = languages[i];
+      break;
+    }else{
+      defaultLocale = languages[0];
+    }
+  }
 
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();

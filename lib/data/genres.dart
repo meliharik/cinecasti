@@ -51,7 +51,7 @@ class GetGenre {
       case 10749:
         return ['romance'.tr().toString(), FontAwesomeIcons.solidHeart];
       case 878:
-        return ['sci-fi'.tr().toString(), FontAwesomeIcons.robot];
+        return ['sci_fi'.tr().toString(), FontAwesomeIcons.robot];
       case 10770:
         return ['tv_serie'.tr().toString(), FontAwesomeIcons.tv];
       case 53:

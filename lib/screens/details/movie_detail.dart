@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -273,7 +274,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
             Text(
               movie.overview!.isNotEmpty
                   ? (movie.overview.toString() + movie.id.toString())
-                  : 'No overview',
+                  : 'no_overview'.tr().toString(),
               style: const TextStyle(
                 fontSize: 15,
               ),
@@ -318,8 +319,8 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Trailer',
+                   Text(
+                    'trailer'.tr().toString(),
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -372,8 +373,8 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Cast',
+             Text(
+              'cast'.tr().toString(),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -390,7 +391,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                 if (snapshot.hasData) {
                   List<Cast> cast = snapshot.data as List<Cast>;
                   if (cast.isEmpty) {
-                    return const Text('No Cast Members Found');
+                    return  Text('no_cast'.tr().toString());
                   }
 
                   return SizedBox(
@@ -491,8 +492,8 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Crew',
+             Text(
+              'crew'.tr().toString(),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -510,7 +511,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                   List<Crew> crew = snapshot.data as List<Crew>;
 
                   if (crew.isEmpty) {
-                    return const Text('No Crew Members Found');
+                    return  Text('no_crew'.tr().toString());
                   }
 
                   return SizedBox(
@@ -600,8 +601,8 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Similar Movies',
+             Text(
+              'similar_movies'.tr().toString(),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -619,7 +620,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                   List<Movie> movies = snapshot.data as List<Movie>;
 
                   if (movies.isEmpty) {
-                    return const Text('No Similar Movies Found');
+                    return  Text('no_similar_movies'.tr().toString());
                   }
 
                   return SizedBox(
@@ -772,8 +773,8 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'See On',
+             Text(
+              'see_on'.tr().toString(),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -803,8 +804,8 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.imdb.com/title/${movie.imdbId}/'));
                           },
-                          title: const Text(
-                            'IMDB',
+                          title:  Text(
+                            'imdb'.tr().toString(),
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -828,8 +829,8 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.rottentomatoes.com/m/$editedText2/'));
                           },
-                          title: const Text(
-                            'Rotten Tomatoes',
+                          title:  Text(
+                            'rotten_tomatoes'.tr().toString(),
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -853,8 +854,8 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.google.com/search?q=$editedText2'));
                           },
-                          title: const Text(
-                            'Google',
+                          title:  Text(
+                            'google'.tr().toString(),
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -884,8 +885,8 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.imdb.com/title/${movie.imdbId}/'));
                           },
-                          title: const Text(
-                            'IMDB',
+                          title:  Text(
+                            'imdb'.tr().toString(),
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -910,8 +911,8 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.rottentomatoes.com/m/$editedText2/'));
                           },
-                          title: const Text(
-                            'Rotten Tomatoes',
+                          title:  Text(
+                            'rotten_tomatoes'.tr().toString(),
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -936,8 +937,8 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.google.com/search?q=$editedText2'));
                           },
-                          title: const Text(
-                            'Google',
+                          title:  Text(
+                            'google'.tr().toString(),
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -985,7 +986,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               'https://www.youtube.com/results?search_query=$editedText2'));
         },
         title: Text(
-          providers[index].providerName.toString(),
+          'youtube'.tr().toString(),
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -1010,7 +1011,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               'https://www.google.com/search?q=Amazon+Video+$editedText2'));
         },
         title: Text(
-          providers[index].providerName.toString(),
+          'amazon_video'.tr().toString(),
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -1034,7 +1035,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               'https://www.google.com/search?q=Netflix+$editedText2'));
         },
         title: Text(
-          providers[index].providerName.toString(),
+          'netflix'.tr().toString(),
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -1053,7 +1054,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
         ),
         onTap: () {},
         title: Text(
-          providers[index].providerName.toString(),
+          'disney_plus'.tr().toString(),
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -1077,7 +1078,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               'https://play.google.com/store/search?q=$editedText2&c=movies'));
         },
         title: Text(
-          providers[index].providerName.toString(),
+          'google_play_movies'.tr().toString(),
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,

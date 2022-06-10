@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -115,7 +116,7 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
       centerTitle: true,
       title: isTitleCentered
           ? Text(
-              'Episode ' + widget.episodeNumber.toString(),
+              'episode'.tr().toString() + ' ' + widget.episodeNumber.toString(),
               overflow: TextOverflow.clip,
               style: const TextStyle(
                 color: Colors.white,
@@ -146,7 +147,9 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Episode ' + widget.episodeNumber.toString(),
+                    'episode'.tr().toString() +
+                        ' ' +
+                        widget.episodeNumber.toString(),
                     overflow: TextOverflow.clip,
                     style: const TextStyle(
                       color: Colors.white,
@@ -234,7 +237,9 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text(
-                  'Season ' + episode.seasonNumber.toString(),
+                  'season'.tr().toString() +
+                      ' ' +
+                      episode.seasonNumber.toString(),
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -267,7 +272,7 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
             Text(
               episode.overview!.isNotEmpty
                   ? (episode.overview.toString())
-                  : 'No overview',
+                  : 'no_overview'.tr().toString(),
               style: const TextStyle(
                 fontSize: 15,
               ),
@@ -289,8 +294,8 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Guest Stars',
+            Text(
+              'guest_stars'.tr().toString(),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -387,8 +392,8 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'See On',
+            Text(
+              'see_on'.tr().toString(),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -410,8 +415,8 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
                 await launchUrl(Uri.parse(
                     'https://www.google.com/search?q=$editedText+Season+${episode.seasonNumber}+Episode+${episode.episodeNumber}'));
               },
-              title: const Text(
-                'Google',
+              title: Text(
+                'google'.tr().toString(),
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
@@ -443,7 +448,7 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
               'https://www.youtube.com/results?search_query=$editedText2'));
         },
         title: Text(
-          providers[index].providerName.toString(),
+          'youtube'.tr().toString(),
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -468,7 +473,7 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
               'https://www.google.com/search?q=Amazon+Video+$editedText2'));
         },
         title: Text(
-          providers[index].providerName.toString(),
+          'amazon_video'.tr().toString(),
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -492,7 +497,7 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
               'https://www.google.com/search?q=Netflix+$editedText2'));
         },
         title: Text(
-          providers[index].providerName.toString(),
+          'netflix'.tr().toString(),
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -511,7 +516,7 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
         ),
         onTap: () {},
         title: Text(
-          providers[index].providerName.toString(),
+          'disney_plus'.tr().toString(),
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -535,7 +540,7 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
               'https://play.google.com/store/search?q=$editedText2&c=movies'));
         },
         title: Text(
-          providers[index].providerName.toString(),
+          'google_play_movies'.tr().toString(),
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,

@@ -56,7 +56,7 @@ dependencies:
   cloud_firestore:
   google_sign_in:
   flutter_svg: ^1.1.0
-  image_picker:
+  image_picker: ^0.8.5+3
   firebase_storage:
   uuid:
   easy_localization: ^3.0.1

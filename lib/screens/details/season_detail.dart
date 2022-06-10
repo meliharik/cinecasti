@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -26,8 +27,10 @@ class _SeasonDetailState extends ConsumerState<SeasonDetail> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ApiService.getSeasonById(context: context,
-          seasonNumber: widget.seasonNumber, tvSerieId: widget.tvSerieId),
+      future: ApiService.getSeasonById(
+          context: context,
+          seasonNumber: widget.seasonNumber,
+          tvSerieId: widget.tvSerieId),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           Season season = snapshot.data as Season;
@@ -39,7 +42,9 @@ class _SeasonDetailState extends ConsumerState<SeasonDetail> {
                 onPressed: () => Navigator.pop(context),
               ),
               title: Text(
-                '${widget.tvSerieName} - Season ${widget.seasonNumber}',
+                '${widget.tvSerieName} - ' +
+                    'season'.tr().toString() +
+                    ' ${widget.seasonNumber}',
                 style: const TextStyle(color: Colors.white),
               ),
             ),
@@ -71,17 +76,21 @@ class _SeasonDetailState extends ConsumerState<SeasonDetail> {
                           loadingBuilder: (context, child, loadingProgress) =>
                               loadingProgress == null
                                   ? child
-                                  : Center(
-                                      child: CircularProgressIndicator(
-                                        value: loadingProgress
-                                                    .expectedTotalBytes !=
-                                                null
-                                            ? loadingProgress
-                                                    .cumulativeBytesLoaded /
-                                                loadingProgress
-                                                    .expectedTotalBytes!
-                                                    .toInt()
-                                            : null,
+                                  : SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          value: loadingProgress
+                                                      .expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                                      .toInt()
+                                              : null,
+                                        ),
                                       ),
                                     ),
                           fit: BoxFit.cover,
@@ -90,26 +99,25 @@ class _SeasonDetailState extends ConsumerState<SeasonDetail> {
                           child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Episode ${season.episodes![index].episodeNumber}',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'episode'.tr().toString() +
+                                      ' ${season.episodes![index].episodeNumber}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  Text(
-                                    '${season.episodes![index].name}',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                    ),
+                                ),
+                                Text(
+                                  '${season.episodes![index].name}',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 14,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

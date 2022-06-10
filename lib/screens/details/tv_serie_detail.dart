@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -277,7 +278,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
             Text(
               tvSerie.overview!.isNotEmpty
                   ? (tvSerie.overview.toString() + tvSerie.id.toString())
-                  : 'No overview',
+                  : 'no_overview'.tr().toString(),
               style: const TextStyle(
                 fontSize: 15,
               ),
@@ -321,8 +322,8 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Trailer',
+                  Text(
+                    'trailer'.tr().toString(),
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -374,7 +375,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
         padding: const EdgeInsets.all(16),
         child: ExpansionTile(
           title: Text(
-            'Seasons (${tvSerie.seasons!.length})',
+            "seasons".tr().toString() + ' (${tvSerie.seasons!.length})',
             style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
@@ -441,8 +442,8 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Cast',
+            Text(
+              'cast'.tr().toString(),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -460,7 +461,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                   List<Cast> cast = snapshot.data as List<Cast>;
 
                   if (cast.isEmpty) {
-                    return const Text('No Cast Members Found');
+                    return Text('no_cast'.tr().toString());
                   }
 
                   return SizedBox(
@@ -561,8 +562,8 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Crew',
+            Text(
+              'crew'.tr().toString(),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -579,7 +580,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                 if (snapshot.hasData) {
                   List<Crew> crew = snapshot.data as List<Crew>;
                   if (crew.isEmpty) {
-                    return const Text('No Crew Members Found');
+                    return Text('no_crew'.tr().toString());
                   }
 
                   return SizedBox(
@@ -669,8 +670,8 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Similar Tv Series',
+            Text(
+              'similar_tv_series'.tr().toString(),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -689,7 +690,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                       snapshot.data as List<SimilarTvSeries>;
 
                   if (tvSeries.isEmpty) {
-                    return const Text('No Similar Tv Series Found');
+                    return Text('no_tv_series'.tr().toString());
                   }
 
                   return SizedBox(
@@ -762,7 +763,9 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                                     children: [
                                       Text(
                                         tvSerie.numberOfSeasons.toString() +
-                                            ' Seasons   - ',
+                                            ' ' +
+                                            'seasons'.tr().toString() +
+                                            '   - ',
                                         style: const TextStyle(
                                           fontSize: 12,
                                         ),
@@ -842,8 +845,8 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'See On',
+            Text(
+              'see_on'.tr().toString(),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -888,8 +891,8 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.google.com/search?q=$editedText2'));
                           },
-                          title: const Text(
-                            'Google',
+                          title: Text(
+                            'google'.tr().toString(),
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -913,8 +916,8 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.rottentomatoes.com/m/$editedText2/'));
                           },
-                          title: const Text(
-                            'Rotten Tomatoes',
+                          title: Text(
+                            'rotten_tomatoes'.tr().toString(),
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -948,8 +951,8 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.rottentomatoes.com/m/$editedText2/'));
                           },
-                          title: const Text(
-                            'Rotten Tomatoes',
+                          title: Text(
+                            'rotten_tomatoes'.tr().toString(),
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -974,8 +977,8 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.google.com/search?q=$editedText2'));
                           },
-                          title: const Text(
-                            'Google',
+                          title: Text(
+                            'google'.tr().toString(),
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -995,7 +998,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                   debugPrint('error');
                   debugPrint(snapshot.error.toString());
 
-                  return const Text('No Providers');
+                  return Text('no_providers'.tr().toString());
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -1024,7 +1027,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
               'https://www.youtube.com/results?search_query=$editedText2'));
         },
         title: Text(
-          providers[index].providerName.toString(),
+          'youtube'.tr().toString(),
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -1049,7 +1052,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
               'https://www.google.com/search?q=Amazon+Video+$editedText2'));
         },
         title: Text(
-          providers[index].providerName.toString(),
+          'amazon_video'.tr().toString(),
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -1073,7 +1076,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
               'https://www.google.com/search?q=Netflix+$editedText2'));
         },
         title: Text(
-          providers[index].providerName.toString(),
+          'netflix'.tr().toString(),
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -1092,7 +1095,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
         ),
         onTap: () {},
         title: Text(
-          providers[index].providerName.toString(),
+          'disney_plus'.tr().toString(),
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -1116,7 +1119,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
               'https://play.google.com/store/search?q=$editedText2&c=movies'));
         },
         title: Text(
-          providers[index].providerName.toString(),
+          'google_play_movies'.tr().toString(),
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
