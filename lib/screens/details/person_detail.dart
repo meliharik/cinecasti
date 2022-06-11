@@ -78,12 +78,6 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
   Widget getPersonDetail(Person person) {
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          child: const Icon(
-            FontAwesomeIcons.heart,
-          ),
-        ),
         body: CustomScrollView(
           controller: controller,
           slivers: [

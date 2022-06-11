@@ -68,6 +68,41 @@ class TvSerie {
       this.voteAverage,
       this.voteCount});
 
+      TvSerie.fromFirebaseList(Map<String, dynamic> firebaseList) {
+        adult = false;
+        backdropPath = firebaseList['backdrop_path'];
+        createdBy = [];
+        episodeRunTime = [];
+        firstAirDate = firebaseList['first_air_date'];
+        genres = [];
+        homepage = firebaseList['homepage'];
+        id = firebaseList['id'];
+        inProduction = false;
+        languages = [];
+        lastAirDate = firebaseList['last_air_date'];
+        lastEpisodeToAir = LastEpisodeToAir();
+        name = firebaseList['name'];
+        nextEpisodeToAir = 0;
+        networks = [];
+        numberOfEpisodes = 0;
+        numberOfSeasons = 0;
+        originCountry = [];
+        originalLanguage = firebaseList['original_language'];
+        originalName = firebaseList['original_name'];
+        overview = firebaseList['overview'];
+        popularity = firebaseList['popularity'];
+        posterPath = firebaseList['poster_path'];
+        productionCompanies = [];
+        productionCountries = [];
+        seasons = [];
+        spokenLanguages = [];
+        status = firebaseList['status'];
+        tagline = firebaseList['tagline'];
+        type = firebaseList['type'];
+        voteAverage = firebaseList['vote_average'];
+        voteCount = firebaseList['vote_count'];
+      }
+
   TvSerie.fromJson(Map<String, dynamic> json) {
     adult = json['adult'];
     backdropPath = json['backdrop_path'];

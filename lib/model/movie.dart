@@ -52,6 +52,34 @@ class Movie {
       this.voteAverage,
       this.voteCount});
 
+  Movie.fromFirebaseList(Map<String, dynamic> firebaseList) {
+    adult = false;
+    backdropPath = firebaseList['backdrop_path'];
+    belongsToCollection = 0;
+    budget = 0;
+    genres = [];
+    homepage = '';
+    id = firebaseList['id'];
+    imdbId = firebaseList['imdb_id'];
+    originalLanguage = '';
+    originalTitle = firebaseList['original_title'];
+    overview = firebaseList['overview'];
+    popularity = 1.23;
+    posterPath = firebaseList['poster_path'];
+    productionCompanies = [];
+    productionCountries = [];
+    releaseDate = firebaseList['release_date'];
+    revenue = 0;
+    runtime = 0;
+    spokenLanguages = [];
+    status = '';
+    tagline = '';
+    title = firebaseList['title'];
+    video = false;
+    voteAverage = firebaseList['vote_average'];
+    voteCount = 0;
+  }
+
   Movie.fromJson(Map<String, dynamic> json) {
     adult = json['adult'];
     backdropPath = json['backdrop_path'];

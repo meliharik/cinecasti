@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:movie_suggestion/data/genres.dart';
 import 'package:movie_suggestion/helper/height_width.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
@@ -11,6 +10,8 @@ import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/model/movie_provider.dart';
 import 'package:movie_suggestion/screens/details/person_detail.dart';
 import 'package:movie_suggestion/service/api_service.dart';
+import 'package:movie_suggestion/service/firestore_service.dart';
+import 'package:movie_suggestion/widgets/fab_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -31,9 +32,16 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
   final controller = ScrollController();
   bool isTitleCentered = false;
 
+  bool isAddedWatchList = false;
+  bool isAddedWatchedList = false;
+  bool isAddedMyCollection = false;
+
   @override
   void initState() {
     super.initState();
+
+    isAddedControls();
+
     controller.addListener(() {
       if (controller.position.pixels >=
           MediaQuery.of(context).size.height / 2) {
@@ -59,6 +67,27 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
     controller.dispose();
     _controller.dispose();
     super.dispose();
+  }
+
+  isAddedControls() async {
+    await FirestoreService().isMovieInWatchList(widget.id).then((value) {
+      setState(() {
+        isAddedWatchList = value;
+      });
+      debugPrint('isAddedWatchList: $isAddedWatchList');
+    });
+    await FirestoreService().isMovieInWatchedList(widget.id).then((value) {
+      setState(() {
+        isAddedWatchedList = value;
+      });
+      debugPrint('isAddedWatchedList: $isAddedWatchedList');
+    });
+    await FirestoreService().isMovieInMyCollection(widget.id).then((value) {
+      setState(() {
+        isAddedMyCollection = value;
+      });
+      debugPrint('isAddedMyCollection: $isAddedMyCollection');
+    });
   }
 
   @override
@@ -88,6 +117,12 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
   Widget getMovieDetail(Movie movie) {
     return SafeArea(
       child: Scaffold(
+        floatingActionButton: Padding(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).size.height / 18),
+          child: getFabButton(movie),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         body: CustomScrollView(
           controller: controller,
           slivers: [
@@ -108,6 +143,125 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget getFabButton(Movie movie) {
+    return ExpandableFab(
+      distance: 150,
+      children: [
+        FloatingActionButton.extended(
+          heroTag: null,
+          onPressed: () async {
+            isAddedMyCollection
+                ? _showAlreadyInList(context, movie)
+                : _showAction(context, 2);
+            await FirestoreService().myCollectionFilmKaydet(movie);
+            setState(() {
+              isAddedMyCollection = true;
+            });
+          },
+          label: Text('my_collection'.tr().toString()),
+          icon: const Icon(
+            FontAwesomeIcons.bookmark,
+            color: Colors.redAccent,
+          ),
+        ),
+        FloatingActionButton.extended(
+          onPressed: () async {
+            isAddedWatchedList
+                ? _showAlreadyInList(context, movie)
+                : _showAction(context, 1);
+            await FirestoreService().watchedListFilmKaydet(movie);
+            setState(() {
+              isAddedWatchedList = true;
+            });
+          },
+          label: Text('watched_list'.tr().toString()),
+          icon: const Icon(
+            FontAwesomeIcons.check,
+            color: Colors.greenAccent,
+          ),
+        ),
+        FloatingActionButton.extended(
+          onPressed: () async {
+            isAddedWatchList
+                ? _showAlreadyInList(context, movie)
+                : _showAction(context, 0);
+            await FirestoreService().watchListFilmKaydet(movie);
+            setState(() {
+              isAddedWatchList = true;
+            });
+          },
+          label: Text('watch_list'.tr().toString()),
+          icon: const Icon(
+            FontAwesomeIcons.list,
+            color: Colors.blueAccent,
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showAction(BuildContext context, int index) {
+    List<String> _actionTitles = [
+      'watch_list'.tr().toString(),
+      'watched_list'.tr().toString(),
+      'my_collection'.tr().toString()
+    ];
+
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          //TODO: translate
+          content: Text(
+            'movie'.tr().toString() +
+                ' ' +
+                'added_to' +
+                ': ' +
+                _actionTitles[index],
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'ok'.tr().toString(),
+                style: TextStyle(
+                  color: Theme.of(context).hintColor,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _showAlreadyInList(BuildContext context, Movie movie) {
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          //TODO: translate
+          content: Text(
+            movie.title! + ' ' + 'already_in_list'.tr().toString(),
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'ok'.tr().toString(),
+                style: TextStyle(
+                  color: Theme.of(context).hintColor,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -319,9 +473,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   Text(
+                  Text(
                     'trailer'.tr().toString(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
@@ -373,9 +527,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             Text(
+            Text(
               'cast'.tr().toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -391,7 +545,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                 if (snapshot.hasData) {
                   List<Cast> cast = snapshot.data as List<Cast>;
                   if (cast.isEmpty) {
-                    return  Text('no_cast'.tr().toString());
+                    return Text('no_cast'.tr().toString());
                   }
 
                   return SizedBox(
@@ -492,9 +646,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             Text(
+            Text(
               'crew'.tr().toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -511,7 +665,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                   List<Crew> crew = snapshot.data as List<Crew>;
 
                   if (crew.isEmpty) {
-                    return  Text('no_crew'.tr().toString());
+                    return Text('no_crew'.tr().toString());
                   }
 
                   return SizedBox(
@@ -601,9 +755,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             Text(
+            Text(
               'similar_movies'.tr().toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -620,7 +774,7 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                   List<Movie> movies = snapshot.data as List<Movie>;
 
                   if (movies.isEmpty) {
-                    return  Text('no_similar_movies'.tr().toString());
+                    return Text('no_similar_movies'.tr().toString());
                   }
 
                   return SizedBox(
@@ -773,9 +927,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             Text(
+            Text(
               'see_on'.tr().toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -804,9 +958,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.imdb.com/title/${movie.imdbId}/'));
                           },
-                          title:  Text(
+                          title: Text(
                             'imdb'.tr().toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
@@ -829,9 +983,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.rottentomatoes.com/m/$editedText2/'));
                           },
-                          title:  Text(
+                          title: Text(
                             'rotten_tomatoes'.tr().toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
@@ -854,9 +1008,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.google.com/search?q=$editedText2'));
                           },
-                          title:  Text(
+                          title: Text(
                             'google'.tr().toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
@@ -885,9 +1039,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.imdb.com/title/${movie.imdbId}/'));
                           },
-                          title:  Text(
+                          title: Text(
                             'imdb'.tr().toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
@@ -911,9 +1065,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.rottentomatoes.com/m/$editedText2/'));
                           },
-                          title:  Text(
+                          title: Text(
                             'rotten_tomatoes'.tr().toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
@@ -937,9 +1091,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                             await launchUrl(Uri.parse(
                                 'https://www.google.com/search?q=$editedText2'));
                           },
-                          title:  Text(
+                          title: Text(
                             'google'.tr().toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),

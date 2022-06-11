@@ -13,6 +13,8 @@ import 'package:movie_suggestion/model/tv_serie.dart';
 import 'package:movie_suggestion/screens/details/person_detail.dart';
 import 'package:movie_suggestion/screens/details/season_detail.dart';
 import 'package:movie_suggestion/service/api_service.dart';
+import 'package:movie_suggestion/service/firestore_service.dart';
+import 'package:movie_suggestion/widgets/fab_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -32,9 +34,16 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
   final controller = ScrollController();
   bool isTitleCentered = false;
 
+  bool isAddedWatchList = false;
+  bool isAddedWatchedList = false;
+  bool isAddedMyCollection = false;
+
   @override
   void initState() {
     super.initState();
+
+    isAddedControls();
+
     controller.addListener(() {
       if (controller.position.pixels >=
           MediaQuery.of(context).size.height / 2) {
@@ -59,6 +68,27 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  isAddedControls() async {
+    await FirestoreService().isTvSerieInWatchList(widget.id).then((value) {
+      setState(() {
+        isAddedWatchList = value;
+      });
+      debugPrint('isAddedWatchList: $isAddedWatchList');
+    });
+    await FirestoreService().isTvSerieInWatchedList(widget.id).then((value) {
+      setState(() {
+        isAddedWatchedList = value;
+      });
+      debugPrint('isAddedWatchedList: $isAddedWatchedList');
+    });
+    await FirestoreService().isTvSerieInMyCollection(widget.id).then((value) {
+      setState(() {
+        isAddedMyCollection = value;
+      });
+      debugPrint('isAddedMyCollection: $isAddedMyCollection');
+    });
   }
 
   @override
@@ -89,6 +119,12 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
   Widget getTvSerieDetail(TvSerie tvSerie) {
     return SafeArea(
       child: Scaffold(
+        floatingActionButton: Padding(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).size.height / 18),
+          child: getFabButton(tvSerie),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         body: CustomScrollView(
           controller: controller,
           slivers: [
@@ -110,6 +146,125 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget getFabButton(TvSerie tvSerie) {
+    return ExpandableFab(
+      distance: 150,
+      children: [
+        FloatingActionButton.extended(
+          heroTag: null,
+          onPressed: () async {
+            isAddedMyCollection
+                ? _showAlreadyInList(context, tvSerie)
+                : _showAction(context, 2);
+            await FirestoreService().myCollectionDiziKaydet(tvSerie);
+            setState(() {
+              isAddedMyCollection = true;
+            });
+          },
+          label: Text('my_collection'.tr().toString()),
+          icon: const Icon(
+            FontAwesomeIcons.bookmark,
+            color: Colors.redAccent,
+          ),
+        ),
+        FloatingActionButton.extended(
+          onPressed: () async {
+            isAddedWatchedList
+                ? _showAlreadyInList(context, tvSerie)
+                : _showAction(context, 1);
+            await FirestoreService().watchedListDiziKaydet(tvSerie);
+            setState(() {
+              isAddedWatchedList = true;
+            });
+          },
+          label: Text('watched_list'.tr().toString()),
+          icon: const Icon(
+            FontAwesomeIcons.check,
+            color: Colors.greenAccent,
+          ),
+        ),
+        FloatingActionButton.extended(
+          onPressed: () async {
+            isAddedWatchList
+                ? _showAlreadyInList(context, tvSerie)
+                : _showAction(context, 0);
+            await FirestoreService().watchListDiziKaydet(tvSerie);
+            setState(() {
+              isAddedWatchList = true;
+            });
+          },
+          label: Text('watch_list'.tr().toString()),
+          icon: const Icon(
+            FontAwesomeIcons.list,
+            color: Colors.blueAccent,
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showAction(BuildContext context, int index) {
+    List<String> _actionTitles = [
+      'watch_list'.tr().toString(),
+      'watched_list'.tr().toString(),
+      'my_collection'.tr().toString()
+    ];
+
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          //TODO: translate
+          content: Text(
+            'tv_serie'.tr().toString() +
+                ' ' +
+                'added_to' +
+                ': ' +
+                _actionTitles[index],
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'ok'.tr().toString(),
+                style: TextStyle(
+                  color: Theme.of(context).hintColor,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _showAlreadyInList(BuildContext context, TvSerie tvSerie) {
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          //TODO: translate
+          content: Text(
+            tvSerie.name! + ' ' + 'already_in_list'.tr().toString(),
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'ok'.tr().toString(),
+                style: TextStyle(
+                  color: Theme.of(context).hintColor,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -324,7 +479,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                 children: [
                   Text(
                     'trailer'.tr().toString(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
@@ -444,7 +599,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
           children: [
             Text(
               'cast'.tr().toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -564,7 +719,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
           children: [
             Text(
               'crew'.tr().toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -672,7 +827,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
           children: [
             Text(
               'similar_tv_series'.tr().toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -847,7 +1002,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
           children: [
             Text(
               'see_on'.tr().toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -893,7 +1048,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                           },
                           title: Text(
                             'google'.tr().toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
@@ -918,7 +1073,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                           },
                           title: Text(
                             'rotten_tomatoes'.tr().toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
@@ -953,7 +1108,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                           },
                           title: Text(
                             'rotten_tomatoes'.tr().toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
@@ -979,7 +1134,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
                           },
                           title: Text(
                             'google'.tr().toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),

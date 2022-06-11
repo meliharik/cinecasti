@@ -5,6 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:movie_suggestion/auth/login.dart';
 import 'package:movie_suggestion/drawer/settings_screen.dart';
+import 'package:movie_suggestion/screens/lists/my_collection.dart';
+import 'package:movie_suggestion/screens/lists/watch_list.dart';
+import 'package:movie_suggestion/screens/lists/watched_list.dart';
 import 'package:movie_suggestion/screens/search/movie_search.dart';
 import 'package:movie_suggestion/screens/search/person_search.dart';
 import 'package:movie_suggestion/screens/search/tv_serie_search.dart';
@@ -253,7 +256,11 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
             ),
             title: Text('watch_list'.tr().toString()),
             onTap: () {
-              // Navigator.pushNamed(context, '/lists');
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WatchListScreen(),
+                  ));
             },
           ),
           ListTile(
@@ -263,7 +270,11 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
             ),
             title: Text('watched_list'.tr().toString()),
             onTap: () {
-              // Navigator.pushNamed(context, '/lists');
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WatchedListScreen(),
+                  ));
             },
           ),
           ListTile(
@@ -273,7 +284,11 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
             ),
             title: Text('my_collection'.tr().toString()),
             onTap: () {
-              // Navigator.pushNamed(context, '/lists');
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MyCollectionScreen(),
+                  ));
             },
           ),
           const Divider()
