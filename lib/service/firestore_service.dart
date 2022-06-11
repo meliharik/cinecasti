@@ -230,6 +230,15 @@ class FirestoreService {
     });
   }
 
+  Future<void> myCollectionDiziSil(TvSerie tvSerie) async {
+    await _firestore
+        .collection("myCollection")
+        .doc(_currentUser!.uid)
+        .collection('userTvSeries')
+        .doc(tvSerie.id.toString())
+        .delete();
+  }
+
   Future<bool> isMovieInWatchList(int id) async {
     var doc = await _firestore
         .collection("watchList")
@@ -319,6 +328,7 @@ class FirestoreService {
         .collection("watchList")
         .doc(_currentUser!.uid)
         .collection('userMovies')
+        .orderBy('added_list_date', descending: true)
         .get();
     List<Movie> movies = [];
     for (var i = 0; i < doc.docs.length; i++) {
@@ -332,6 +342,7 @@ class FirestoreService {
         .collection("watchedList")
         .doc(_currentUser!.uid)
         .collection('userMovies')
+        .orderBy('added_list_date', descending: true)
         .get();
     List<Movie> movies = [];
     for (var i = 0; i < doc.docs.length; i++) {
@@ -345,6 +356,7 @@ class FirestoreService {
         .collection("myCollection")
         .doc(_currentUser!.uid)
         .collection('userMovies')
+        .orderBy('added_list_date', descending: true)
         .get();
     List<Movie> movies = [];
     for (var i = 0; i < doc.docs.length; i++) {
@@ -358,6 +370,7 @@ class FirestoreService {
         .collection("watchList")
         .doc(_currentUser!.uid)
         .collection('userTvSeries')
+        .orderBy('added_list_date', descending: true)
         .get();
     List<TvSerie> tvSeries = [];
     for (var i = 0; i < doc.docs.length; i++) {
@@ -371,6 +384,7 @@ class FirestoreService {
         .collection("watchedList")
         .doc(_currentUser!.uid)
         .collection('userTvSeries')
+        .orderBy('added_list_date', descending: true)
         .get();
     List<TvSerie> tvSeries = [];
     for (var i = 0; i < doc.docs.length; i++) {
@@ -384,6 +398,7 @@ class FirestoreService {
         .collection("myCollection")
         .doc(_currentUser!.uid)
         .collection('userTvSeries')
+        .orderBy('added_list_date', descending: true)
         .get();
     List<TvSerie> tvSeries = [];
     for (var i = 0; i < doc.docs.length; i++) {

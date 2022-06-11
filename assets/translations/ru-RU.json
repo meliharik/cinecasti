@@ -152,5 +152,14 @@
    "user_not_found": "Пользователь не найден",
    "name_surname_required": "Необходимо ввести имя и фамилию",
    "name_surname_invalid": "Имя и фамилия не должны содержать цифры",
-   "user_already_registered": "Пользователь уже зарегистрирован"
+   "user_already_registered": "Пользователь уже зарегистрирован",
+
+   "remove_from_list": "Удалить из списка",
+   "removed_from_list": "Удалено из списка",
+   "added_to_list": "Добавлено в список",
+   "undo": "Отменить",
+   "already_in_list": "Уже в списке",
+   "movie_added_to": "Фильм добавлен в",
+   "tv_serie_added_to": "Сериал добавлен в"
+
 }

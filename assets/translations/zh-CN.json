@@ -152,5 +152,14 @@
    "user_not_found": "用户未找到",
    "name_surname_required": "名字和姓氏必填",
    "name_surname_invalid": "名字和姓氏无效",
-   "user_already_registered": "用户已注册"
+   "user_already_registered": "用户已注册",
+
+   "remove_from_list": "从列表中移除",
+   "removed_from_list": "已从列表中移除",
+   "added_to_list": "已添加到列表",
+   "undo": "撤销",
+   "already_in_list": "已在列表中",
+   "movie_added_to": "电影已添加到",
+   "tv_serie_added_to": "电视剧已添加到"
+
 }

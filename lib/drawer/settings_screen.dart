@@ -48,7 +48,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               title: Text('language'.tr().toString()),
               subtitle:
                   Text(GetLanguage.getLanguage(context.locale.languageCode)),
-              //TODO: language picker
               trailing: const Icon(
                 Icons.arrow_forward_ios,
                 size: 17,

@@ -214,11 +214,8 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          //TODO: translate
           content: Text(
-            'movie'.tr().toString() +
-                ' ' +
-                'added_to' +
+            'movie_added_to'.tr().toString() +
                 ': ' +
                 _actionTitles[index],
             style: Theme.of(context).textTheme.headlineSmall,
@@ -244,7 +241,6 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          //TODO: translate
           content: Text(
             movie.title! + ' ' + 'already_in_list'.tr().toString(),
             style: Theme.of(context).textTheme.headlineSmall,

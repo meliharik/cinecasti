@@ -152,6 +152,15 @@
    "user_not_found": "User not found",
    "name_surname_required": "Name and surname are required",
    "name_surname_invalid": "Name and surname are invalid",
-   "user_already_registered": "There is a registered user at this e-mail address."
+   "user_already_registered": "There is a registered user at this e-mail address.",
+
+   "remove_from_list": "remove from list",
+   "removed_from_list": "removed from list",
+   "added_to_list": "added to list",
+   "undo": "Undo",
+   "already_in_list": "Already in list",
+   "movie_added_to": "Movie added to",
+   "tv_serie_added_to": "TV serie added to"
+
 
 }

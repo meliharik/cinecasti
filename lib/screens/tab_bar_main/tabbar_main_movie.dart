@@ -86,7 +86,7 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
                 setState(() {
                   searchQuery = value;
                 });
-                //TODO: search
+                //TODO: search fix
                 debugPrint(value);
               },
               decoration: InputDecoration(
@@ -364,8 +364,6 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
   void _cikisYapFonk() async {
     try {
       await AuthService().cikisYap();
-      //TODO: notifications
-      //await NotificationService().cancelAllNotifications();
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => const LoginScreen()));
     } catch (hata) {

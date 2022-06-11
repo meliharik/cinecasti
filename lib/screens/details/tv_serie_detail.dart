@@ -217,11 +217,8 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          //TODO: translate
           content: Text(
-            'tv_serie'.tr().toString() +
-                ' ' +
-                'added_to' +
+            'tv_serie_added_to'.tr().toString() +
                 ': ' +
                 _actionTitles[index],
             style: Theme.of(context).textTheme.headlineSmall,
@@ -247,7 +244,6 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          //TODO: translate
           content: Text(
             tvSerie.name! + ' ' + 'already_in_list'.tr().toString(),
             style: Theme.of(context).textTheme.headlineSmall,

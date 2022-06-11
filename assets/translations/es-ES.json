@@ -153,5 +153,14 @@
    "user_not_found": "Usuario no encontrado",
    "name_surname_required": "El nombre y el apellido son requeridos",
    "name_surname_invalid": "El nombre y el apellido no son válidos",
-   "user_already_registered": "El usuario ya está registrado"
+   "user_already_registered": "El usuario ya está registrado",
+
+   "remove_from_list": "Eliminar de la lista",
+   "removed_from_list": "Eliminado de la lista",
+   "added_to_list": "Añadido a la lista",
+   "undo": "Deshacer",
+   "already_in_list": "Ya está en la lista",
+   "movie_added_to": "Película añadida a",
+   "tv_serie_added_to": "Serie añadida a"
+
 }

@@ -152,6 +152,15 @@
    "user_not_found": "Kullanıcı bulunamadı.",
    "name_surname_required": "İsim ve soyisim gerekli.",
    "name_surname_invalid": "İsim ve soyisim geçersiz.",
-   "user_already_registered": "Bu e-posta zaten kayıtlı."
+   "user_already_registered": "Bu e-posta zaten kayıtlı.",
+
+   "remove_from_list": "listeden çıkar",
+   "removed_from_list": "listeden çıkarıldı",
+   "added_to_list": "listeye eklendi",
+   "undo": "Geri Al",
+   "already_in_list": "Zaten listede",
+   "movie_added_to": "Film listeye eklendi",
+   "tv_serie_added_to": "TV serisi listeye eklendi"
+
 
 }

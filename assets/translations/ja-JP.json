@@ -152,5 +152,14 @@
    "user_not_found": "ユーザーが見つかりません",
    "name_surname_required": "名前と姓が必要です",
    "name_surname_invalid": "名前と姓が無効です",
-   "user_already_registered": "このユーザーは既に登録されています"
+   "user_already_registered": "このユーザーは既に登録されています",
+
+   "remove_from_list": "リストから削除",
+   "removed_from_list": "リストから削除しました",
+   "added_to_list": "リストに追加しました",
+   "undo": "やり直す",
+   "already_in_list": "すでにリストにあります",
+   "movie_added_to": "映画が追加されました",
+   "tv_serie_added_to": "テレビシリーズが追加されました"
+
 }

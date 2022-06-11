@@ -152,5 +152,14 @@
    "user_not_found": "उपयोगकर्ता नहीं मिला",
    "name_surname_required": "नाम और पिता नाम आवश्यक है",
    "name_surname_invalid": "नाम और पिता नाम अवैध है",
-   "user_already_registered": "उपयोगकर्ता पहले से ही पंजीकृत है"
+   "user_already_registered": "उपयोगकर्ता पहले से ही पंजीकृत है",
+
+   "remove_from_list": "सूची से हटाएं",
+   "removed_from_list": "सूची से हटाया गया",
+   "added_to_list": "सूची में जोड़ा गया",
+   "undo": "पूर्ववत करें",
+   "already_in_list": "पहले से ही सूची में है",
+   "movie_added_to": "मोवो को सूची में जोड़ा गया",
+   "tv_serie_added_to": "टीवी सर्विस को सूची में जोड़ा गया"
+
 }

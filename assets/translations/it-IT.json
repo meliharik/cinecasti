@@ -152,5 +152,14 @@
    "user_not_found": "Utente non trovato",
    "name_surname_required": "Nome e cognome richiesti",
    "name_surname_invalid": "Nome e cognome non validi",
-   "user_already_registered": "Utente gi\u00e0 registrato"
+   "user_already_registered": "Utente gi\u00e0 registrato",
+
+   "remove_from_list": "Rimuovi dalla lista",
+   "removed_from_list": "Rimosso dalla lista",
+   "added_to_list": "Aggiunto alla lista",
+   "undo": "Annulla",
+   "already_in_list": "Gi\u00e0 nella lista",
+   "movie_added_to": "Film aggiunto a",
+   "tv_serie_added_to": "Serie TV aggiunta a"
+
 }

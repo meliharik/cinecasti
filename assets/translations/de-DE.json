@@ -153,5 +153,13 @@
    "user_not_found": "Benutzer nicht gefunden",
    "name_surname_required": "Name und Vorname erforderlich",
    "name_surname_invalid": "Name und Vorname ungültig",
-   "user_already_registered": "Benutzer bereits registriert"
+   "user_already_registered": "Benutzer bereits registriert",
+
+   "remove_from_list": "aus Liste entfernen",
+   "removed_from_list": "aus Liste entfernt",
+   "added_to_list": "zu Liste hinzugefügt",
+   "undo": "Rückgängig machen",
+   "already_in_list": "Bereits in Liste",
+   "movie_added_to": "Film wurde zu",
+   "tv_serie_added_to": "TV-Serie wurde zu"
 }

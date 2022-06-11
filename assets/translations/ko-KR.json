@@ -152,5 +152,14 @@
    "user_not_found": "사용자가 없습니다",
    "name_surname_required": "이름과 성을 입력하십시오",
    "name_surname_invalid": "이름과 성이 잘못되었습니다",
-   "user_already_registered": "이미 등록된 사용자입니다"
+   "user_already_registered": "이미 등록된 사용자입니다",
+
+   "remove_from_list": "목록에서 제거",
+   "removed_from_list": "목록에서 제거됨",
+   "added_to_list": "목록에 추가됨",
+   "undo": "실행 취소",
+   "already_in_list": "이미 목록에 있습니다",
+   "movie_added_to": "영화가 추가되었습니다",
+   "tv_serie_added_to": "TV 시리즈가 추가되었습니다"
+
 }

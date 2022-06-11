@@ -17,7 +17,7 @@ class WatchedListScreen extends ConsumerStatefulWidget {
       _WatchedListScreenState();
 }
 
-class _WatchedListScreenState extends ConsumerState<WatchedListScreen> 
+class _WatchedListScreenState extends ConsumerState<WatchedListScreen>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -67,106 +67,149 @@ class _WatchedListScreenState extends ConsumerState<WatchedListScreen>
               itemCount: movies.length,
               itemBuilder: (context, index) {
                 Movie movie = movies[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 15.0),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: ((context) => MovieDetail(
-                                id: movie.id!.toInt(),
-                              )),
-                        ),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Stack(children: [
-                          Image.network(
-                            movie.backdropPath == null
-                                ? LinkHelper.episodeEmptyLink
-                                : 'https://image.tmdb.org/t/p/w500/${movie.backdropPath}',
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            loadingBuilder: (context, child, loadingProgress) =>
-                                loadingProgress == null
-                                    ? child
-                                    : SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.4,
-                                        child: Center(
-                                          child: CircularProgressIndicator(
-                                            value: loadingProgress
-                                                        .expectedTotalBytes !=
-                                                    null
-                                                ? loadingProgress
-                                                        .cumulativeBytesLoaded /
-                                                    loadingProgress
-                                                        .expectedTotalBytes!
-                                                        .toInt()
-                                                : null,
+                return Dismissible(
+                  key: Key(movie.id.toString()),
+                  background: Container(color: Colors.red),
+                  direction: DismissDirection.endToStart,
+                  secondaryBackground: Container(
+                    color: Colors.red,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(Icons.delete, color: Colors.white),
+                          Text('remove_from_list'.tr().toString(),
+                              style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  onDismissed: (direction) {
+                    // Remove the item from the data source.
+                    setState(() {
+                      movies.removeAt(index);
+                    });
+
+                    FirestoreService().watchedListFilmSil(movie);
+                    // Then show a snackbar.
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('${movie.title} removed from your list.'),
+                      action: SnackBarAction(
+                        onPressed: () {
+                          FirestoreService().watchedListFilmKaydet(movie);
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('${movie.title} added to your list.'),
+                          ));
+                          setState(() {});
+                        },
+                        label: 'UNDO',
+                      ),
+                    ));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 15.0),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: ((context) => MovieDetail(
+                                  id: movie.id!.toInt(),
+                                )),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Stack(children: [
+                            Image.network(
+                              movie.backdropPath == null
+                                  ? LinkHelper.episodeEmptyLink
+                                  : 'https://image.tmdb.org/t/p/w500/${movie.backdropPath}',
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              loadingBuilder: (context, child,
+                                      loadingProgress) =>
+                                  loadingProgress == null
+                                      ? child
+                                      : SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.4,
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              value: loadingProgress
+                                                          .expectedTotalBytes !=
+                                                      null
+                                                  ? loadingProgress
+                                                          .cumulativeBytesLoaded /
+                                                      loadingProgress
+                                                          .expectedTotalBytes!
+                                                          .toInt()
+                                                  : null,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                            fit: BoxFit.cover,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(5.0),
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(5),
+                              fit: BoxFit.cover,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(5.0),
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5),
+                                ),
+                                color: Colors.black45,
                               ),
-                              color: Colors.black45,
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  FontAwesomeIcons.imdb,
-                                  color: Color(0xfff5c518),
-                                  size: 30,
-                                ),
-                                const SizedBox(
-                                  width: 3,
-                                ),
-                                Text(
-                                  movie.voteAverage.toString(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    FontAwesomeIcons.imdb,
+                                    color: Color(0xfff5c518),
+                                    size: 30,
                                   ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ]),
-                        Expanded(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${movie.title}',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                  const SizedBox(
+                                    width: 3,
                                   ),
-                                ),
-                                Text(
-                                  '${movie.releaseDate}',
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 14,
+                                  Text(
+                                    movie.voteAverage.toString(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
+                            )
+                          ]),
+                          Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${movie.title}',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${movie.releaseDate}',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -192,106 +235,150 @@ class _WatchedListScreenState extends ConsumerState<WatchedListScreen>
               itemCount: tvSeries.length,
               itemBuilder: (context, index) {
                 TvSerie tvSerie = tvSeries[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 15.0),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: ((context) => TvSerieDetail(
-                                id: tvSerie.id!.toInt(),
-                              )),
-                        ),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Stack(children: [
-                          Image.network(
-                            tvSerie.backdropPath == null
-                                ? LinkHelper.episodeEmptyLink
-                                : 'https://image.tmdb.org/t/p/w500/${tvSerie.backdropPath}',
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            loadingBuilder: (context, child, loadingProgress) =>
-                                loadingProgress == null
-                                    ? child
-                                    : SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.4,
-                                        child: Center(
-                                          child: CircularProgressIndicator(
-                                            value: loadingProgress
-                                                        .expectedTotalBytes !=
-                                                    null
-                                                ? loadingProgress
-                                                        .cumulativeBytesLoaded /
-                                                    loadingProgress
-                                                        .expectedTotalBytes!
-                                                        .toInt()
-                                                : null,
+                return Dismissible(
+                  key: Key(tvSerie.id.toString()),
+                  background: Container(color: Colors.red),
+                  direction: DismissDirection.endToStart,
+                  secondaryBackground: Container(
+                    color: Colors.red,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(Icons.delete, color: Colors.white),
+                          Text('remove_from_list'.tr().toString(),
+                              style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  onDismissed: (direction) {
+                    // Remove the item from the data source.
+                    setState(() {
+                      tvSeries.removeAt(index);
+                    });
+
+                    FirestoreService().watchedListDiziSil(tvSerie);
+                    // Then show a snackbar.
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('${tvSerie.name} '+'removed_from_list'.tr().toString()),
+                      action: SnackBarAction(
+                        onPressed: () {
+                          FirestoreService().watchedListDiziKaydet(tvSerie);
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content:
+                                Text('${tvSerie.name} '+'added_to_list.'),
+                          ));
+                          setState(() {});
+                        },
+                        label: 'undo'.tr().toString().toUpperCase(),
+                      ),
+                    ));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 15.0),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: ((context) => TvSerieDetail(
+                                  id: tvSerie.id!.toInt(),
+                                )),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Stack(children: [
+                            Image.network(
+                              tvSerie.backdropPath == null
+                                  ? LinkHelper.episodeEmptyLink
+                                  : 'https://image.tmdb.org/t/p/w500/${tvSerie.backdropPath}',
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              loadingBuilder: (context, child,
+                                      loadingProgress) =>
+                                  loadingProgress == null
+                                      ? child
+                                      : SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.4,
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              value: loadingProgress
+                                                          .expectedTotalBytes !=
+                                                      null
+                                                  ? loadingProgress
+                                                          .cumulativeBytesLoaded /
+                                                      loadingProgress
+                                                          .expectedTotalBytes!
+                                                          .toInt()
+                                                  : null,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                            fit: BoxFit.cover,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(5.0),
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(5),
+                              fit: BoxFit.cover,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(5.0),
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5),
+                                ),
+                                color: Colors.black45,
                               ),
-                              color: Colors.black45,
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  FontAwesomeIcons.imdb,
-                                  color: Color(0xfff5c518),
-                                  size: 30,
-                                ),
-                                const SizedBox(
-                                  width: 3,
-                                ),
-                                Text(
-                                  tvSerie.voteAverage.toString(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    FontAwesomeIcons.imdb,
+                                    color: Color(0xfff5c518),
+                                    size: 30,
                                   ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ]),
-                        Expanded(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${tvSerie.name}',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                  const SizedBox(
+                                    width: 3,
                                   ),
-                                ),
-                                Text(
-                                  '${tvSerie.firstAirDate}',
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 14,
+                                  Text(
+                                    tvSerie.voteAverage.toString(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
+                            )
+                          ]),
+                          Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${tvSerie.name}',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${tvSerie.firstAirDate}',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );
