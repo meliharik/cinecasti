@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:movie_suggestion/helper/ad_helper.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/model/tv_serie.dart';
@@ -21,6 +23,43 @@ class _WatchedListScreenState extends ConsumerState<WatchedListScreen>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+
+  late BannerAd _bottomBannerAd;
+  bool _isBottomBannerAdLoaded = false;
+
+  _createBottomBannerAd() {
+    _bottomBannerAd = BannerAd(
+      adUnitId: AdHelper.getBannerAdUnitId,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBottomBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          debugPrint("error");
+          debugPrint(error.toString());
+          ad.dispose();
+        },
+      ),
+    );
+    _bottomBannerAd.load();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _createBottomBannerAd();
+  }
+
+  @override
+  void dispose() {
+    _bottomBannerAd.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final tab = TabBar(
@@ -36,6 +75,15 @@ class _WatchedListScreenState extends ConsumerState<WatchedListScreen>
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        bottomNavigationBar: _isBottomBannerAdLoaded
+            ? Container(
+                height: _bottomBannerAd.size.height.toDouble(),
+                width: _bottomBannerAd.size.width.toDouble(),
+                child: AdWidget(
+                  ad: _bottomBannerAd,
+                ),
+              )
+            : null,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           leading: IconButton(
@@ -262,13 +310,14 @@ class _WatchedListScreenState extends ConsumerState<WatchedListScreen>
                     FirestoreService().watchedListDiziSil(tvSerie);
                     // Then show a snackbar.
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('${tvSerie.name} '+'removed_from_list'.tr().toString()),
+                      content: Text('${tvSerie.name} ' +
+                          'removed_from_list'.tr().toString()),
                       action: SnackBarAction(
                         onPressed: () {
                           FirestoreService().watchedListDiziKaydet(tvSerie);
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content:
-                                Text('${tvSerie.name} '+'added_to_list.'),
+                                Text('${tvSerie.name} ' + 'added_to_list.'),
                           ));
                           setState(() {});
                         },

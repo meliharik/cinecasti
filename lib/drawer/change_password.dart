@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:movie_suggestion/helper/ad_helper.dart';
 import 'package:movie_suggestion/helper/height_width.dart';
 import 'package:movie_suggestion/screens/tab_bar_main/tabbar_main_movie.dart';
 import 'package:movie_suggestion/service/firestore_service.dart';
@@ -25,9 +27,55 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  late BannerAd _bottomBannerAd;
+  bool _isBottomBannerAdLoaded = false;
+
+  _createBottomBannerAd() {
+    _bottomBannerAd = BannerAd(
+      adUnitId: AdHelper.getBannerAdUnitId,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBottomBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          debugPrint("error");
+          debugPrint(error.toString());
+          ad.dispose();
+        },
+      ),
+    );
+    _bottomBannerAd.load();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _createBottomBannerAd();
+  }
+
+  @override
+  void dispose() {
+    _bottomBannerAd.dispose();
+    _loading = false;
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: _isBottomBannerAdLoaded
+            ? Container(
+                height: _bottomBannerAd.size.height.toDouble(),
+                width: _bottomBannerAd.size.width.toDouble(),
+                child: AdWidget(
+                  ad: _bottomBannerAd,
+                ),
+              )
+            : null,
       resizeToAvoidBottomInset: false,
       key: _scaffoldKey,
       appBar: AppBar(

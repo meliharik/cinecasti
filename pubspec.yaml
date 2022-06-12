@@ -62,7 +62,7 @@ dependencies:
   easy_localization: ^3.0.1
   shared_preferences: ^2.0.15
   flutter_phoenix: ^1.0.0
-  flutter_instagram_stories: ^1.0.1+1
+  flutter_stories: ^0.3.1
   google_mobile_ads: ^1.2.0
 
 dev_dependencies:

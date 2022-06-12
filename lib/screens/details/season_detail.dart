@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:movie_suggestion/helper/ad_helper.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/season.dart';
 import 'package:movie_suggestion/screens/details/episode_detail.dart';
@@ -24,6 +26,43 @@ class SeasonDetail extends ConsumerStatefulWidget {
 }
 
 class _SeasonDetailState extends ConsumerState<SeasonDetail> {
+
+  late BannerAd _bottomBannerAd;
+  bool _isBottomBannerAdLoaded = false;
+
+  _createBottomBannerAd() {
+    _bottomBannerAd = BannerAd(
+      adUnitId: AdHelper.getBannerAdUnitId,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBottomBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          debugPrint("error");
+          debugPrint(error.toString());
+          ad.dispose();
+        },
+      ),
+    );
+    _bottomBannerAd.load();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _createBottomBannerAd();
+  }
+
+  @override
+  void dispose() {
+    _bottomBannerAd.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -35,6 +74,15 @@ class _SeasonDetailState extends ConsumerState<SeasonDetail> {
         if (snapshot.hasData) {
           Season season = snapshot.data as Season;
           return Scaffold(
+            bottomNavigationBar: _isBottomBannerAdLoaded
+            ? Container(
+                height: _bottomBannerAd.size.height.toDouble(),
+                width: _bottomBannerAd.size.width.toDouble(),
+                child: AdWidget(
+                  ad: _bottomBannerAd,
+                ),
+              )
+            : null,
             appBar: AppBar(
               automaticallyImplyLeading: false,
               leading: IconButton(

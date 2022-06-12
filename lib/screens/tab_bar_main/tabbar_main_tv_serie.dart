@@ -3,14 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:movie_suggestion/auth/login.dart';
 import 'package:movie_suggestion/drawer/settings_screen.dart';
+import 'package:movie_suggestion/helper/ad_helper.dart';
 import 'package:movie_suggestion/screens/lists/my_collection.dart';
 import 'package:movie_suggestion/screens/lists/watch_list.dart';
 import 'package:movie_suggestion/screens/lists/watched_list.dart';
 import 'package:movie_suggestion/screens/search/movie_search.dart';
 import 'package:movie_suggestion/screens/search/person_search.dart';
 import 'package:movie_suggestion/screens/search/tv_serie_search.dart';
+import 'package:movie_suggestion/screens/suggest/suggest_tv_serie.dart';
 import 'package:movie_suggestion/screens/tab_bar_main/tabbar_main_movie.dart';
 import 'package:movie_suggestion/screens/tabs/popular_screen_tv_serie.dart';
 import 'package:movie_suggestion/screens/tabs/today_screen_tv_serie.dart';
@@ -31,8 +34,39 @@ class _TabBarMainTvSerieState extends ConsumerState<TabBarMainTvSerie> {
   String searchQuery = '';
   bool showLists = false;
 
+  late BannerAd _bottomBannerAd;
+  bool _isBottomBannerAdLoaded = false;
+
+  _createBottomBannerAd() {
+    _bottomBannerAd = BannerAd(
+      adUnitId: AdHelper.getBannerAdUnitId,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBottomBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          debugPrint("error");
+          debugPrint(error.toString());
+          ad.dispose();
+        },
+      ),
+    );
+    _bottomBannerAd.load();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _createBottomBannerAd();
+  }
+
   @override
   void dispose() {
+    _bottomBannerAd.dispose();
     textFieldController.dispose();
     super.dispose();
   }
@@ -69,6 +103,15 @@ class _TabBarMainTvSerieState extends ConsumerState<TabBarMainTvSerie> {
       return DefaultTabController(
         length: 3,
         child: Scaffold(
+          bottomNavigationBar: _isBottomBannerAdLoaded
+              ? Container(
+                  height: _bottomBannerAd.size.height.toDouble(),
+                  width: _bottomBannerAd.size.width.toDouble(),
+                  child: AdWidget(
+                    ad: _bottomBannerAd,
+                  ),
+                )
+              : null,
           appBar: AppBar(
             automaticallyImplyLeading: false,
             leading: IconButton(
@@ -131,6 +174,15 @@ class _TabBarMainTvSerieState extends ConsumerState<TabBarMainTvSerie> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        bottomNavigationBar: _isBottomBannerAdLoaded
+            ? Container(
+                height: _bottomBannerAd.size.height.toDouble(),
+                width: _bottomBannerAd.size.width.toDouble(),
+                child: AdWidget(
+                  ad: _bottomBannerAd,
+                ),
+              )
+            : null,
         drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
@@ -236,7 +288,14 @@ class _TabBarMainTvSerieState extends ConsumerState<TabBarMainTvSerie> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const SuggestTvSerie(),
+              ),
+            );
+          },
           child: const Icon(
             FontAwesomeIcons.shuffle,
           ),

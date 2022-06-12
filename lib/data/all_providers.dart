@@ -6,3 +6,5 @@ final movieProvider = StateProvider<Movie>((ref) => Movie());
 final isLoadingProvider = StateProvider<bool>((ref) => false);
 
 final stopSearchingProvider = StateProvider<bool>((ref) => false);
+
+final showAdIndexProvider = StateProvider<int>((ref) => 0);

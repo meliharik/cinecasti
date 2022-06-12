@@ -13,6 +13,7 @@ import 'package:movie_suggestion/screens/lists/watched_list.dart';
 import 'package:movie_suggestion/screens/search/movie_search.dart';
 import 'package:movie_suggestion/screens/search/person_search.dart';
 import 'package:movie_suggestion/screens/search/tv_serie_search.dart';
+import 'package:movie_suggestion/screens/suggest/suggest_movie.dart';
 import 'package:movie_suggestion/screens/tab_bar_main/tabbar_main_tv_serie.dart';
 import 'package:movie_suggestion/screens/tabs/playing_screen_movie.dart';
 import 'package:movie_suggestion/screens/tabs/popular_screen_movie.dart';
@@ -101,6 +102,15 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
       return DefaultTabController(
         length: 3,
         child: Scaffold(
+          bottomNavigationBar: _isBottomBannerAdLoaded
+              ? Container(
+                  height: _bottomBannerAd.size.height.toDouble(),
+                  width: _bottomBannerAd.size.width.toDouble(),
+                  child: AdWidget(
+                    ad: _bottomBannerAd,
+                  ),
+                )
+              : null,
           appBar: AppBar(
             automaticallyImplyLeading: false,
             leading: IconButton(
@@ -278,7 +288,14 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const SuggestMovie(),
+              ),
+            );
+          },
           child: const Icon(
             FontAwesomeIcons.shuffle,
           ),

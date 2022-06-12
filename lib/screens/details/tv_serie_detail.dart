@@ -2,8 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:movie_suggestion/data/genres.dart';
+import 'package:movie_suggestion/helper/ad_helper.dart';
 import 'package:movie_suggestion/helper/height_width.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/members.dart';
@@ -38,9 +40,34 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
   bool isAddedWatchedList = false;
   bool isAddedMyCollection = false;
 
+  late BannerAd _bottomBannerAd;
+  bool _isBottomBannerAdLoaded = false;
+
+  _createBottomBannerAd() {
+    _bottomBannerAd = BannerAd(
+      adUnitId: AdHelper.getBannerAdUnitId,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBottomBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          debugPrint("error");
+          debugPrint(error.toString());
+          ad.dispose();
+        },
+      ),
+    );
+    _bottomBannerAd.load();
+  }
+
   @override
   void initState() {
     super.initState();
+    _createBottomBannerAd();
 
     isAddedControls();
 
@@ -66,6 +93,7 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
 
   @override
   void dispose() {
+    _bottomBannerAd.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -119,6 +147,15 @@ class _TvSerieDetailState extends ConsumerState<TvSerieDetail> {
   Widget getTvSerieDetail(TvSerie tvSerie) {
     return SafeArea(
       child: Scaffold(
+        bottomNavigationBar: _isBottomBannerAdLoaded
+            ? Container(
+                height: _bottomBannerAd.size.height.toDouble(),
+                width: _bottomBannerAd.size.width.toDouble(),
+                child: AdWidget(
+                  ad: _bottomBannerAd,
+                ),
+              )
+            : null,
         floatingActionButton: Padding(
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).size.height / 18),
