@@ -298,7 +298,7 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
           children: [
             Text(
               'guest_stars'.tr().toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -396,7 +396,7 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
           children: [
             Text(
               'see_on'.tr().toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -419,7 +419,7 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
               },
               title: Text(
                 'google'.tr().toString(),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),

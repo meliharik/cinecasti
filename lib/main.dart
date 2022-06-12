@@ -6,39 +6,42 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:movie_suggestion/yonlendirme.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 
-  List languages = [
-    'en-US',
-    'tr-TR',
-    'ru-RU',
-    'de-DE',
-    'fr-FR',
-    'es-ES',
-    'it-IT',
-    'pt-PT',
-    'hi-IN',
-    'zh-CN',
-    'ja-JP',
-    'ko-KR',
-  ];
+List languages = [
+  'en-US',
+  'tr-TR',
+  'ru-RU',
+  'de-DE',
+  'fr-FR',
+  'es-ES',
+  'it-IT',
+  'pt-PT',
+  'hi-IN',
+  'zh-CN',
+  'ja-JP',
+  'ko-KR',
+];
 
 Future<void> main() async {
   String defaultLocale = Platform.localeName; // en_US
   debugPrint("defaultLocale: " + defaultLocale);
   debugPrint(defaultLocale.substring(0, 2));
-  
+
   for (var i = 0; i < languages.length; i++) {
     if (languages[i].substring(0, 2) == defaultLocale.substring(0, 2)) {
       defaultLocale = languages[i];
       break;
-    }else{
+    } else {
       defaultLocale = languages[0];
     }
   }
 
+
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize(); 
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp();
   HttpOverrides.global = MyHttpOverrides();

@@ -137,9 +137,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
                     prefs.setString(
                         'languageCode', context.locale.languageCode);
-                    print("dil: ");
+                    debugPrint("dil: ");
 
-                    print(prefs.getString('languageCode'));
+                    debugPrint(prefs.getString('languageCode'));
 
                     Phoenix.rebirth(context);
                   },

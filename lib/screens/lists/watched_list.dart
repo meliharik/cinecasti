@@ -78,9 +78,9 @@ class _WatchedListScreenState extends ConsumerState<WatchedListScreen>
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Icon(Icons.delete, color: Colors.white),
+                          const Icon(Icons.delete, color: Colors.white),
                           Text('remove_from_list'.tr().toString(),
-                              style: TextStyle(color: Colors.white)),
+                              style: const TextStyle(color: Colors.white)),
                         ],
                       ),
                     ),
@@ -246,9 +246,9 @@ class _WatchedListScreenState extends ConsumerState<WatchedListScreen>
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Icon(Icons.delete, color: Colors.white),
+                          const Icon(Icons.delete, color: Colors.white),
                           Text('remove_from_list'.tr().toString(),
-                              style: TextStyle(color: Colors.white)),
+                              style: const TextStyle(color: Colors.white)),
                         ],
                       ),
                     ),

@@ -294,7 +294,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               text: 'by_registering_you_agree_to'.tr().toString(),
               style: const TextStyle(fontWeight: FontWeight.w400),
               children: <TextSpan>[
-                TextSpan(
+                const TextSpan(
                   text: '  ',
                   style: TextStyle(
                       // color: Colors.white,
@@ -438,7 +438,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   Widget get _veyaText => Row(
         children: [
-          Expanded(
+          const Expanded(
             child: Padding(
               padding: EdgeInsets.only(left: 25.0, right: 15),
               child: Divider(
@@ -449,12 +449,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ),
           Text(
             'or'.tr().toString(),
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.w400,
               // color: Color(0xff4B4B4B),
             ),
           ),
-          Expanded(
+          const Expanded(
             child: Padding(
               padding: EdgeInsets.only(left: 15.0, right: 25),
               child: Divider(

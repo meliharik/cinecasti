@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/model/person.dart';
@@ -332,7 +331,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
             const SizedBox(height: 8),
             Text(
               'biography'.tr().toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -356,7 +355,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
           children: [
             Text(
               'movies'.tr().toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -418,7 +417,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                                       .tr()
                                       .toString()
                                       .toUpperCase(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -574,7 +573,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
           children: [
             Text(
               'tv_series'.tr().toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -636,7 +635,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                                       .tr()
                                       .toString()
                                       .toUpperCase(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -794,7 +793,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
           children: [
             Text(
               'see_on'.tr().toString().toUpperCase(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -824,7 +823,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                               },
                               title: Text(
                                 'facebook'.tr().toString(),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -847,7 +846,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                               },
                               title: Text(
                                 'instagram'.tr().toString(),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -870,7 +869,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                               },
                               title: Text(
                                 'twitter'.tr().toString(),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -893,7 +892,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                               },
                               title: Text(
                                 'imdb'.tr().toString(),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -918,7 +917,7 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                         },
                         title: Text(
                           'google'.tr().toString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
