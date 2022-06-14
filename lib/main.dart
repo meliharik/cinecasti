@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -41,7 +42,7 @@ Future<void> main() async {
 
 
   WidgetsFlutterBinding.ensureInitialized();
-  MobileAds.instance.initialize(); 
+  MobileAds.instance.initialize();
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp();
   HttpOverrides.global = MyHttpOverrides();

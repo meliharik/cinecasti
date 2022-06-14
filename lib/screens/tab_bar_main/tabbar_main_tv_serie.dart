@@ -19,6 +19,7 @@ import 'package:movie_suggestion/screens/tabs/popular_screen_tv_serie.dart';
 import 'package:movie_suggestion/screens/tabs/today_screen_tv_serie.dart';
 import 'package:movie_suggestion/screens/tabs/top_rated_screen_tv_serie.dart';
 import 'package:movie_suggestion/service/auth_service.dart';
+import 'package:share_plus/share_plus.dart';
 
 class TabBarMainTvSerie extends ConsumerStatefulWidget {
   const TabBarMainTvSerie({Key? key}) : super(key: key);
@@ -258,7 +259,11 @@ class _TabBarMainTvSerieState extends ConsumerState<TabBarMainTvSerie> {
                 ),
                 title: Text('recommend_cinecasti'.tr().toString()),
                 onTap: () {
-                  // Navigator.pushNamed(context, '/');
+                  Share.share(
+                    'download_app'.tr().toString() +
+                        '\nhttps://play.google.com/store/apps/details?id=com.cinecasti.mobile',
+                    subject: 'look_what_I_found'.tr().toString(),
+                  );
                 },
               ),
               _cikisYap()

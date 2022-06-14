@@ -65,10 +65,22 @@ dependencies:
   flutter_stories: ^0.3.1
   google_mobile_ads: ^1.2.0
   share_plus: ^4.0.8
+  flutter_native_splash: ^2.2.3+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+# splash
+flutter_native_splash:
+  color: "#1c2530"
+  image: assets/images/splash.png
+  android: true
+  android_gravity: center
+
+  android_12:
+    image: assets/images/splash.png
+    icon_background_color: "#1c2530"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
