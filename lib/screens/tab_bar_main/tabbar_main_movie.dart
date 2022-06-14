@@ -130,7 +130,6 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
                 setState(() {
                   searchQuery = value;
                 });
-                //TODO: search fix
                 debugPrint(value);
               },
               decoration: InputDecoration(

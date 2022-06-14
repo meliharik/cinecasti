@@ -8,6 +8,8 @@ import 'package:movie_suggestion/data/languages.dart';
 import 'package:movie_suggestion/drawer/change_password.dart';
 import 'package:movie_suggestion/drawer/edit_profile.dart';
 import 'package:movie_suggestion/helper/ad_helper.dart';
+import 'package:movie_suggestion/policy/policies.dart';
+import 'package:movie_suggestion/policy/privacy_policy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -135,6 +137,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         builder: (context) => const ChangePasswordScreen()));
               },
             ),
+            // const Divider(
+            //   thickness: 2,
+            // ),
+            // ListTile(
+            //   //TODO:translate
+            //   title: Text("policies".tr().toString()),
+            //   trailing: const Icon(
+            //     Icons.arrow_forward_ios,
+            //     size: 17,
+            //   ),
+            //   onTap: () {
+            //     Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //             builder: (context) => const PoliciesScreen()));
+            //   },
+            // ),
           ],
         ),
       ),

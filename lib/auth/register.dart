@@ -8,6 +8,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:movie_suggestion/auth/login.dart';
 import 'package:movie_suggestion/auth/model/kullanici.dart';
 import 'package:movie_suggestion/helper/height_width.dart';
+import 'package:movie_suggestion/policy/privacy_policy.dart';
+import 'package:movie_suggestion/policy/user_agreement.dart';
 import 'package:movie_suggestion/screens/tab_bar_main/tabbar_main_movie.dart';
 import 'package:movie_suggestion/service/analytic.dart';
 import 'package:movie_suggestion/service/auth_service.dart';
@@ -307,13 +309,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        //TODO: Gizlilik Politikası sayfasına gidilecek
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => const GizlilikPolitikasi(),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const GizlilikPolitikasi(),
+                          ),
+                        );
                       }),
                 const TextSpan(
                   text: ' - ',
@@ -328,13 +329,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        //TODO: Kullanıcı Sözleşmesi sayfasına gidilecek
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => const KullanimKosullari(),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const KullanimKosullari(),
+                          ),
+                        );
                       }),
               ]),
         ),
