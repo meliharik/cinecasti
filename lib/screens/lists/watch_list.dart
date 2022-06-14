@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/helper/ad_helper.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/movie.dart';
@@ -19,6 +20,8 @@ class WatchListScreen extends ConsumerStatefulWidget {
       _WatchListScreenState();
 }
 
+const int maxFailedLoad = 3;
+
 class _WatchListScreenState extends ConsumerState<WatchListScreen>
     with AutomaticKeepAliveClientMixin {
   @override
@@ -26,6 +29,9 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
 
   late BannerAd _bottomBannerAd;
   bool _isBottomBannerAdLoaded = false;
+
+  InterstitialAd? _interstitialAd;
+  int _loadAttempt = 0;
 
   _createBottomBannerAd() {
     _bottomBannerAd = BannerAd(
@@ -51,13 +57,53 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
   @override
   void initState() {
     super.initState();
+    _createInterstitialAd();
+
     _createBottomBannerAd();
   }
 
   @override
   void dispose() {
     _bottomBannerAd.dispose();
+    _interstitialAd?.dispose();
+
     super.dispose();
+  }
+
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.getPageUnitId,
+      request: const AdRequest(),
+      adLoadCallback:
+          InterstitialAdLoadCallback(onAdLoaded: (InterstitialAd ad) {
+        _interstitialAd = ad;
+        _loadAttempt = 0;
+      }, onAdFailedToLoad: (LoadAdError error) {
+        _loadAttempt++;
+        _interstitialAd = null;
+        debugPrint("error");
+        debugPrint(error.toString());
+        if (_loadAttempt >= maxFailedLoad) {
+          _createInterstitialAd();
+        }
+      }),
+    );
+  }
+
+  void _showInterstitialAd() {
+    if (_interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (InterstitialAd ad) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+        onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+      );
+      _interstitialAd!.show();
+    }
   }
 
   @override
@@ -142,12 +188,14 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
                     FirestoreService().watchListFilmSil(movie);
                     // Then show a snackbar.
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('${movie.title} '+'removed_from_list'.tr().toString()),
+                      content: Text('${movie.title} ' +
+                          'removed_from_list'.tr().toString()),
                       action: SnackBarAction(
                         onPressed: () {
                           FirestoreService().watchListFilmKaydet(movie);
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text('${movie.title} '+'added_to_list'.tr().toString()),
+                            content: Text('${movie.title} ' +
+                                'added_to_list'.tr().toString()),
                           ));
                           setState(() {});
                         },
@@ -159,6 +207,10 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
                     padding: const EdgeInsets.only(bottom: 15.0),
                     child: InkWell(
                       onTap: () {
+                        ref.read(showAdIndexProvider.state).state++;
+                        if (ref.watch(showAdIndexProvider) % 5 == 0) {
+                          _showInterstitialAd();
+                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -310,13 +362,14 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
                     FirestoreService().watchListDiziSil(tvSerie);
                     // Then show a snackbar.
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('${tvSerie.name} '+'removed_from_list'.tr().toString()),
+                      content: Text('${tvSerie.name} ' +
+                          'removed_from_list'.tr().toString()),
                       action: SnackBarAction(
                         onPressed: () {
                           FirestoreService().watchListDiziKaydet(tvSerie);
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content:
-                                Text('${tvSerie.name} '+'added_to_list'.tr().toString()),
+                            content: Text('${tvSerie.name} ' +
+                                'added_to_list'.tr().toString()),
                           ));
                           setState(() {});
                         },
@@ -328,6 +381,10 @@ class _WatchListScreenState extends ConsumerState<WatchListScreen>
                     padding: const EdgeInsets.only(bottom: 15.0),
                     child: InkWell(
                       onTap: () {
+                        ref.read(showAdIndexProvider.state).state++;
+                        if (ref.watch(showAdIndexProvider) % 5 == 0) {
+                          _showInterstitialAd();
+                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(

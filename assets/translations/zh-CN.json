@@ -160,6 +160,9 @@
    "undo": "撤销",
    "already_in_list": "已在列表中",
    "movie_added_to": "电影已添加到",
-   "tv_serie_added_to": "电视剧已添加到"
+   "tv_serie_added_to": "电视剧已添加到",
+
+   "look_what_I_found": "看看我找到了什么",
+   "download_app": "下载应用"
 
 }

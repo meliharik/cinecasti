@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/helper/ad_helper.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/tv_serie_credit.dart';
@@ -19,10 +20,14 @@ class PersonAllTvSeries extends ConsumerStatefulWidget {
       _PersonAllTvSeriesState();
 }
 
-class _PersonAllTvSeriesState extends ConsumerState<PersonAllTvSeries> {
+const int maxFailedLoad = 3;
 
+class _PersonAllTvSeriesState extends ConsumerState<PersonAllTvSeries> {
   late BannerAd _bottomBannerAd;
   bool _isBottomBannerAdLoaded = false;
+
+  InterstitialAd? _interstitialAd;
+  int _loadAttempt = 0;
 
   _createBottomBannerAd() {
     _bottomBannerAd = BannerAd(
@@ -48,27 +53,67 @@ class _PersonAllTvSeriesState extends ConsumerState<PersonAllTvSeries> {
   @override
   initState() {
     super.initState();
+    _createInterstitialAd();
+
     _createBottomBannerAd();
   }
 
   @override
   void dispose() {
     _bottomBannerAd.dispose();
+    _interstitialAd?.dispose();
+
     super.dispose();
+  }
+
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.getPageUnitId,
+      request: const AdRequest(),
+      adLoadCallback:
+          InterstitialAdLoadCallback(onAdLoaded: (InterstitialAd ad) {
+        _interstitialAd = ad;
+        _loadAttempt = 0;
+      }, onAdFailedToLoad: (LoadAdError error) {
+        _loadAttempt++;
+        _interstitialAd = null;
+        debugPrint("error");
+        debugPrint(error.toString());
+        if (_loadAttempt >= maxFailedLoad) {
+          _createInterstitialAd();
+        }
+      }),
+    );
+  }
+
+  void _showInterstitialAd() {
+    if (_interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (InterstitialAd ad) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+        onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+      );
+      _interstitialAd!.show();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: _isBottomBannerAdLoaded
-            ? Container(
-                height: _bottomBannerAd.size.height.toDouble(),
-                width: _bottomBannerAd.size.width.toDouble(),
-                child: AdWidget(
-                  ad: _bottomBannerAd,
-                ),
-              )
-            : null,
+          ? Container(
+              height: _bottomBannerAd.size.height.toDouble(),
+              width: _bottomBannerAd.size.width.toDouble(),
+              child: AdWidget(
+                ad: _bottomBannerAd,
+              ),
+            )
+          : null,
       appBar: AppBar(
         title: Text(widget.personName),
         automaticallyImplyLeading: false,
@@ -86,6 +131,10 @@ class _PersonAllTvSeriesState extends ConsumerState<PersonAllTvSeries> {
           for (var i = 0; i < widget.series.length; i++)
             InkWell(
               onTap: () {
+                ref.read(showAdIndexProvider.state).state++;
+                if (ref.watch(showAdIndexProvider) % 5 == 0) {
+                  _showInterstitialAd();
+                }
                 Navigator.push(
                   context,
                   MaterialPageRoute(

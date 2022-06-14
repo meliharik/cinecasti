@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:movie_suggestion/data/all_providers.dart';
+import 'package:movie_suggestion/helper/ad_helper.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/movie.dart';
 import 'package:movie_suggestion/screens/details/movie_detail.dart';
@@ -13,6 +16,8 @@ class PlayingScreenMovie extends ConsumerStatefulWidget {
       _PlayingScreenMovieState();
 }
 
+const int maxFailedLoad = 3;
+
 class _PlayingScreenMovieState extends ConsumerState<PlayingScreenMovie>
     with AutomaticKeepAliveClientMixin {
   @override
@@ -22,10 +27,14 @@ class _PlayingScreenMovieState extends ConsumerState<PlayingScreenMovie>
   List<Movie> playingMovies = [];
   final controller = ScrollController();
   int page = 1;
+  InterstitialAd? _interstitialAd;
+  int _loadAttempt = 0;
 
   @override
   void initState() {
     super.initState();
+
+    _createInterstitialAd();
 
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {
@@ -42,7 +51,45 @@ class _PlayingScreenMovieState extends ConsumerState<PlayingScreenMovie>
   @override
   void dispose() {
     controller.dispose();
+    _interstitialAd?.dispose();
+
     super.dispose();
+  }
+
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.getPageUnitId,
+      request: const AdRequest(),
+      adLoadCallback:
+          InterstitialAdLoadCallback(onAdLoaded: (InterstitialAd ad) {
+        _interstitialAd = ad;
+        _loadAttempt = 0;
+      }, onAdFailedToLoad: (LoadAdError error) {
+        _loadAttempt++;
+        _interstitialAd = null;
+        debugPrint("error");
+        debugPrint(error.toString());
+        if (_loadAttempt >= maxFailedLoad) {
+          _createInterstitialAd();
+        }
+      }),
+    );
+  }
+
+  void _showInterstitialAd() {
+    if (_interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (InterstitialAd ad) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+        onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+      );
+      _interstitialAd!.show();
+    }
   }
 
   @override
@@ -90,6 +137,10 @@ class _PlayingScreenMovieState extends ConsumerState<PlayingScreenMovie>
     } else {
       return InkWell(
         onTap: () {
+          ref.read(showAdIndexProvider.state).state++;
+          if (ref.watch(showAdIndexProvider) % 5 == 0) {
+            _showInterstitialAd();
+          }
           Navigator.push(
             context,
             MaterialPageRoute(

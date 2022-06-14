@@ -160,7 +160,10 @@
    "undo": "Desfazer",
    "already_in_list": "Já está na lista",
    "movie_added_to": "Filme adicionado à",
-   "tv_serie_added_to": "Série adicionada à"
+   "tv_serie_added_to": "Série adicionada à",
+
+   "look_what_I_found": "Veja o que eu encontrei",
+   "download_app": "Baixe a aplicação"
 
 
 }

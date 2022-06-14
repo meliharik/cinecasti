@@ -160,6 +160,9 @@
    "undo": "やり直す",
    "already_in_list": "すでにリストにあります",
    "movie_added_to": "映画が追加されました",
-   "tv_serie_added_to": "テレビシリーズが追加されました"
+   "tv_serie_added_to": "テレビシリーズが追加されました",
+
+   "look_what_I_found": "見てみたい！",
+   "download_app": "アプリをダウンロードする"
 
 }

@@ -161,6 +161,9 @@
    "undo": "Deshacer",
    "already_in_list": "Ya está en la lista",
    "movie_added_to": "Película añadida a",
-   "tv_serie_added_to": "Serie añadida a"
+   "tv_serie_added_to": "Serie añadida a",
+
+   "look_what_I_found": "¿Qué encontré?",
+   "download_app": "Descarga la aplicación"
 
 }

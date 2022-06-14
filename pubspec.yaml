@@ -64,6 +64,7 @@ dependencies:
   flutter_phoenix: ^1.0.0
   flutter_stories: ^0.3.1
   google_mobile_ads: ^1.2.0
+  share_plus: ^4.0.8
 
 dev_dependencies:
   flutter_test:

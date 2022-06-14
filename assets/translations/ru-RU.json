@@ -160,6 +160,9 @@
    "undo": "Отменить",
    "already_in_list": "Уже в списке",
    "movie_added_to": "Фильм добавлен в",
-   "tv_serie_added_to": "Сериал добавлен в"
+   "tv_serie_added_to": "Сериал добавлен в",
+
+   "look_what_I_found": "Посмотри, что я нашел",
+   "download_app": "Скачать приложение"
 
 }

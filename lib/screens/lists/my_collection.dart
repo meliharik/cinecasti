@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/helper/ad_helper.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/movie.dart';
@@ -19,6 +20,8 @@ class MyCollectionScreen extends ConsumerStatefulWidget {
       _MyCollectionScreenState();
 }
 
+const int maxFailedLoad = 3;
+
 class _MyCollectionScreenState extends ConsumerState<MyCollectionScreen>
     with AutomaticKeepAliveClientMixin {
   @override
@@ -26,6 +29,9 @@ class _MyCollectionScreenState extends ConsumerState<MyCollectionScreen>
 
   late BannerAd _bottomBannerAd;
   bool _isBottomBannerAdLoaded = false;
+
+  InterstitialAd? _interstitialAd;
+  int _loadAttempt = 0;
 
   _createBottomBannerAd() {
     _bottomBannerAd = BannerAd(
@@ -51,13 +57,53 @@ class _MyCollectionScreenState extends ConsumerState<MyCollectionScreen>
   @override
   void initState() {
     super.initState();
+    _createInterstitialAd();
+
     _createBottomBannerAd();
   }
 
   @override
   void dispose() {
     _bottomBannerAd.dispose();
+    _interstitialAd?.dispose();
+
     super.dispose();
+  }
+
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.getPageUnitId,
+      request: const AdRequest(),
+      adLoadCallback:
+          InterstitialAdLoadCallback(onAdLoaded: (InterstitialAd ad) {
+        _interstitialAd = ad;
+        _loadAttempt = 0;
+      }, onAdFailedToLoad: (LoadAdError error) {
+        _loadAttempt++;
+        _interstitialAd = null;
+        debugPrint("error");
+        debugPrint(error.toString());
+        if (_loadAttempt >= maxFailedLoad) {
+          _createInterstitialAd();
+        }
+      }),
+    );
+  }
+
+  void _showInterstitialAd() {
+    if (_interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (InterstitialAd ad) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+        onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+      );
+      _interstitialAd!.show();
+    }
   }
 
   @override
@@ -162,6 +208,10 @@ class _MyCollectionScreenState extends ConsumerState<MyCollectionScreen>
                     padding: const EdgeInsets.only(bottom: 15.0),
                     child: InkWell(
                       onTap: () {
+                        ref.read(showAdIndexProvider.state).state++;
+                        if (ref.watch(showAdIndexProvider) % 5 == 0) {
+                          _showInterstitialAd();
+                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -332,6 +382,10 @@ class _MyCollectionScreenState extends ConsumerState<MyCollectionScreen>
                     padding: const EdgeInsets.only(bottom: 15.0),
                     child: InkWell(
                       onTap: () {
+                        ref.read(showAdIndexProvider.state).state++;
+                        if (ref.watch(showAdIndexProvider) % 5 == 0) {
+                          _showInterstitialAd();
+                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(

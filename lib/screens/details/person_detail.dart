@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/helper/ad_helper.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/movie.dart';
@@ -14,6 +15,7 @@ import 'package:movie_suggestion/screens/details/tv_serie_detail.dart';
 import 'package:movie_suggestion/screens/seeAll/person_movies.dart';
 import 'package:movie_suggestion/screens/seeAll/person_tv_series.dart';
 import 'package:movie_suggestion/service/api_service.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PersonDetail extends ConsumerStatefulWidget {
@@ -24,12 +26,17 @@ class PersonDetail extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _PersonDetailState();
 }
 
+const int maxFailedLoad = 3;
+
 class _PersonDetailState extends ConsumerState<PersonDetail> {
   final controller = ScrollController();
   bool isTitleCentered = false;
 
   late BannerAd _bottomBannerAd;
   bool _isBottomBannerAdLoaded = false;
+
+  InterstitialAd? _interstitialAd;
+  int _loadAttempt = 0;
 
   _createBottomBannerAd() {
     _bottomBannerAd = BannerAd(
@@ -56,6 +63,8 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
   void initState() {
     super.initState();
     _createBottomBannerAd();
+    _createInterstitialAd();
+
     controller.addListener(() {
       if (controller.position.pixels >=
           MediaQuery.of(context).size.height / 2) {
@@ -79,7 +88,45 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
   @override
   void dispose() {
     _bottomBannerAd.dispose();
+    _interstitialAd?.dispose();
+
     super.dispose();
+  }
+
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.getPageUnitId,
+      request: const AdRequest(),
+      adLoadCallback:
+          InterstitialAdLoadCallback(onAdLoaded: (InterstitialAd ad) {
+        _interstitialAd = ad;
+        _loadAttempt = 0;
+      }, onAdFailedToLoad: (LoadAdError error) {
+        _loadAttempt++;
+        _interstitialAd = null;
+        debugPrint("error");
+        debugPrint(error.toString());
+        if (_loadAttempt >= maxFailedLoad) {
+          _createInterstitialAd();
+        }
+      }),
+    );
+  }
+
+  void _showInterstitialAd() {
+    if (_interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (InterstitialAd ad) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+        onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+      );
+      _interstitialAd!.show();
+    }
   }
 
   @override
@@ -178,7 +225,13 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
         // ),
         IconButton(
           icon: const Icon(FontAwesomeIcons.shareNodes),
-          onPressed: () {},
+          onPressed: () {
+            Share.share(
+              'download_app'.tr().toString() +
+                  '\nhttps://play.google.com/store/apps/details?id=com.cinecasti.mobile',
+              subject: 'look_what_I_found'.tr().toString(),
+            );
+          },
         ),
       ],
       expandedHeight: MediaQuery.of(context).size.height * 0.65,
@@ -427,6 +480,10 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                         if (index == 8) {
                           return InkWell(
                             onTap: () {
+                              ref.read(showAdIndexProvider.state).state++;
+                              if (ref.watch(showAdIndexProvider) % 5 == 0) {
+                                _showInterstitialAd();
+                              }
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -472,6 +529,10 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                           children: [
                             InkWell(
                               onTap: () {
+                                ref.read(showAdIndexProvider.state).state++;
+                                if (ref.watch(showAdIndexProvider) % 5 == 0) {
+                                  _showInterstitialAd();
+                                }
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -645,6 +706,10 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                         if (index == 8) {
                           return InkWell(
                             onTap: () {
+                              ref.read(showAdIndexProvider.state).state++;
+                              if (ref.watch(showAdIndexProvider) % 5 == 0) {
+                                _showInterstitialAd();
+                              }
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -690,6 +755,10 @@ class _PersonDetailState extends ConsumerState<PersonDetail> {
                           children: [
                             InkWell(
                               onTap: () {
+                                ref.read(showAdIndexProvider.state).state++;
+                                if (ref.watch(showAdIndexProvider) % 5 == 0) {
+                                  _showInterstitialAd();
+                                }
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

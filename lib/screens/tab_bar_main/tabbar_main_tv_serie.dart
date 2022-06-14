@@ -130,7 +130,6 @@ class _TabBarMainTvSerieState extends ConsumerState<TabBarMainTvSerie> {
                 setState(() {
                   searchQuery = value;
                 });
-                //TODO: search
                 debugPrint(value);
               },
               decoration: InputDecoration(
@@ -423,8 +422,6 @@ class _TabBarMainTvSerieState extends ConsumerState<TabBarMainTvSerie> {
   void _cikisYapFonk() async {
     try {
       await AuthService().cikisYap();
-      //TODO: notifications
-      //await NotificationService().cancelAllNotifications();
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => const LoginScreen()));
     } catch (hata) {

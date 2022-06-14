@@ -160,5 +160,8 @@
    "undo": "Annuler",
    "already_in_list": "Déjà dans la liste",
    "movie_added_to": "Film ajouté à",
-   "tv_serie_added_to": "Série TV ajoutée à"
+   "tv_serie_added_to": "Série TV ajoutée à",
+   
+   "look_what_I_found": "Regardez ce que j'ai trouvé",
+   "download_app": "Télécharger l'application"
 }

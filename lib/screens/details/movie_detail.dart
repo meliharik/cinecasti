@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/data/genres.dart';
 import 'package:movie_suggestion/helper/ad_helper.dart';
 import 'package:movie_suggestion/helper/height_width.dart';
@@ -14,6 +15,7 @@ import 'package:movie_suggestion/screens/details/person_detail.dart';
 import 'package:movie_suggestion/service/api_service.dart';
 import 'package:movie_suggestion/service/firestore_service.dart';
 import 'package:movie_suggestion/widgets/fab_button.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -25,6 +27,8 @@ class MovieDetail extends ConsumerStatefulWidget {
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _MovieDetailState();
 }
+
+const int maxFailedLoad = 3;
 
 class _MovieDetailState extends ConsumerState<MovieDetail> {
   late YoutubePlayerController _controller = YoutubePlayerController(
@@ -40,6 +44,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
 
   late BannerAd _bottomBannerAd;
   bool _isBottomBannerAdLoaded = false;
+
+  InterstitialAd? _interstitialAd;
+  int _loadAttempt = 0;
 
   _createBottomBannerAd() {
     _bottomBannerAd = BannerAd(
@@ -65,6 +72,8 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
   @override
   void initState() {
     super.initState();
+    _createInterstitialAd();
+
     _createBottomBannerAd();
     isAddedControls();
 
@@ -88,9 +97,47 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
     });
   }
 
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.getPageUnitId,
+      request: const AdRequest(),
+      adLoadCallback:
+          InterstitialAdLoadCallback(onAdLoaded: (InterstitialAd ad) {
+        _interstitialAd = ad;
+        _loadAttempt = 0;
+      }, onAdFailedToLoad: (LoadAdError error) {
+        _loadAttempt++;
+        _interstitialAd = null;
+        debugPrint("error");
+        debugPrint(error.toString());
+        if (_loadAttempt >= maxFailedLoad) {
+          _createInterstitialAd();
+        }
+      }),
+    );
+  }
+
+  void _showInterstitialAd() {
+    if (_interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (InterstitialAd ad) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+        onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+      );
+      _interstitialAd!.show();
+    }
+  }
+
   @override
   void dispose() {
     controller.dispose();
+    _interstitialAd?.dispose();
+
     _controller.dispose();
     _bottomBannerAd.dispose();
 
@@ -320,7 +367,13 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
       actions: [
         IconButton(
           icon: const Icon(FontAwesomeIcons.shareNodes),
-          onPressed: () {},
+          onPressed: () {
+            Share.share(
+              'download_app'.tr().toString() +
+                  '\nhttps://play.google.com/store/apps/details?id=com.cinecasti.mobile',
+              subject: 'look_what_I_found'.tr().toString(),
+            );
+          },
         ),
       ],
       expandedHeight: MediaQuery.of(context).size.height * 0.65,
@@ -455,10 +508,9 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
               color: Colors.grey,
             ),
             const SizedBox(height: 8),
-            //TODO: buradaki idyi kaldır
             Text(
               movie.overview!.isNotEmpty
-                  ? (movie.overview.toString() + movie.id.toString())
+                  ? (movie.overview.toString())
                   : 'no_overview'.tr().toString(),
               style: const TextStyle(
                 fontSize: 15,
@@ -590,6 +642,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                           children: [
                             InkWell(
                               onTap: () {
+                                ref.read(showAdIndexProvider.state).state++;
+                                if (ref.watch(showAdIndexProvider) % 5 == 0) {
+                                  _showInterstitialAd();
+                                }
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -819,6 +875,10 @@ class _MovieDetailState extends ConsumerState<MovieDetail> {
                           children: [
                             InkWell(
                               onTap: () {
+                                ref.read(showAdIndexProvider.state).state++;
+                                if (ref.watch(showAdIndexProvider) % 5 == 0) {
+                                  _showInterstitialAd();
+                                }
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

@@ -4,12 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
+import 'package:movie_suggestion/data/all_providers.dart';
 import 'package:movie_suggestion/helper/ad_helper.dart';
 import 'package:movie_suggestion/helper/link_helper.dart';
 import 'package:movie_suggestion/model/episode.dart';
 import 'package:movie_suggestion/model/movie_provider.dart';
 import 'package:movie_suggestion/screens/details/person_detail.dart';
 import 'package:movie_suggestion/service/api_service.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EpisodeDetail extends ConsumerStatefulWidget {
@@ -27,13 +29,17 @@ class EpisodeDetail extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _EpisodeDetailState();
 }
 
+const int maxFailedLoad = 3;
+
 class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
   final controller = ScrollController();
   bool isTitleCentered = false;
 
-
   late BannerAd _bottomBannerAd;
   bool _isBottomBannerAdLoaded = false;
+
+  InterstitialAd? _interstitialAd;
+  int _loadAttempt = 0;
 
   _createBottomBannerAd() {
     _bottomBannerAd = BannerAd(
@@ -59,6 +65,8 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
   @override
   void initState() {
     super.initState();
+    _createInterstitialAd();
+
     _createBottomBannerAd();
     controller.addListener(() {
       if (controller.position.pixels >=
@@ -83,8 +91,46 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
   @override
   void dispose() {
     _bottomBannerAd.dispose();
+    _interstitialAd?.dispose();
+
     controller.dispose();
     super.dispose();
+  }
+
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.getPageUnitId,
+      request: const AdRequest(),
+      adLoadCallback:
+          InterstitialAdLoadCallback(onAdLoaded: (InterstitialAd ad) {
+        _interstitialAd = ad;
+        _loadAttempt = 0;
+      }, onAdFailedToLoad: (LoadAdError error) {
+        _loadAttempt++;
+        _interstitialAd = null;
+        debugPrint("error");
+        debugPrint(error.toString());
+        if (_loadAttempt >= maxFailedLoad) {
+          _createInterstitialAd();
+        }
+      }),
+    );
+  }
+
+  void _showInterstitialAd() {
+    if (_interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (InterstitialAd ad) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+        onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+      );
+      _interstitialAd!.show();
+    }
   }
 
   @override
@@ -173,7 +219,13 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
       actions: [
         IconButton(
           icon: const Icon(FontAwesomeIcons.shareNodes),
-          onPressed: () {},
+          onPressed: () {
+            Share.share(
+              'download_app'.tr().toString() +
+                  '\nhttps://play.google.com/store/apps/details?id=com.cinecasti.mobile',
+              subject: 'look_what_I_found'.tr().toString(),
+            );
+          },
         ),
       ],
       expandedHeight: MediaQuery.of(context).size.height * 0.25,
@@ -308,7 +360,6 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
               color: Colors.grey,
             ),
             const SizedBox(height: 8),
-            //TODO: buradaki idyi kaldır
             Text(
               episode.overview!.isNotEmpty
                   ? (episode.overview.toString())
@@ -357,6 +408,10 @@ class _EpisodeDetailState extends ConsumerState<EpisodeDetail> {
                     children: [
                       InkWell(
                         onTap: () {
+                          ref.read(showAdIndexProvider.state).state++;
+                          if (ref.watch(showAdIndexProvider) % 5 == 0) {
+                            _showInterstitialAd();
+                          }
                           Navigator.push(
                             context,
                             MaterialPageRoute(

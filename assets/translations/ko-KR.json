@@ -160,6 +160,9 @@
    "undo": "실행 취소",
    "already_in_list": "이미 목록에 있습니다",
    "movie_added_to": "영화가 추가되었습니다",
-   "tv_serie_added_to": "TV 시리즈가 추가되었습니다"
+   "tv_serie_added_to": "TV 시리즈가 추가되었습니다",
+
+   "look_what_I_found": "어떤것을 찾았어요?",
+   "download_app": "앱 다운로드"
 
 }
