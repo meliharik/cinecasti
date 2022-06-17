@@ -26,11 +26,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _loading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   internetKontrol();
-  // }
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -340,8 +339,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
       if (connectivityResult != ConnectivityResult.none) {
         try {
-          Kullanici? kullanici =
-              await AuthService().mailIleGiris(email!, password!);
+          await AuthService().mailIleGiris(email!, password!);
 
           AuthService().onayMailiGonder();
 

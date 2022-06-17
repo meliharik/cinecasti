@@ -67,8 +67,8 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
   @override
   void dispose() {
     textFieldController.dispose();
-    super.dispose();
     _bottomBannerAd.dispose();
+    super.dispose();
   }
 
   @override
@@ -146,9 +146,11 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.close),
                   onPressed: () {
-                    setState(() {
-                      textFieldController.text = '';
-                    });
+                    if (mounted) {
+                      setState(() {
+                        textFieldController.text = '';
+                      });
+                    }
                   },
                 ),
               ),
@@ -199,9 +201,11 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
                   ),
                 ),
                 onDetailsPressed: () {
-                  setState(() {
-                    showLists = !showLists;
-                  });
+                  if (mounted) {
+                    setState(() {
+                      showLists = !showLists;
+                    });
+                  }
                 },
                 accountEmail: Text(
                   '${FirebaseAuth.instance.currentUser?.email}',
@@ -260,10 +264,10 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
                 title: Text('recommend_cinecasti'.tr().toString()),
                 onTap: () {
                   Share.share(
-              'download_app'.tr().toString() +
-                  '\nhttps://play.google.com/store/apps/details?id=com.cinecasti.mobile',
-              subject: 'look_what_I_found'.tr().toString(),
-            );
+                    'download_app'.tr().toString() +
+                        '\nhttps://play.google.com/store/apps/details?id=com.cinecasti.mobile',
+                    subject: 'look_what_I_found'.tr().toString(),
+                  );
                 },
               ),
               _cikisYap()
@@ -277,9 +281,11 @@ class _MainScreenState extends ConsumerState<TabBarMainMovie> {
             IconButton(
               icon: const Icon(Icons.search),
               onPressed: () {
-                setState(() {
-                  isSearching = !isSearching;
-                });
+                if (mounted) {
+                  setState(() {
+                    isSearching = !isSearching;
+                  });
+                }
               },
             ),
           ],

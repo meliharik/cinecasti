@@ -40,9 +40,9 @@ class _YonlendirmeState extends ConsumerState<Yonlendirme> {
             Kullanici? aktifKullanici = snapshot.data as Kullanici?;
             AuthService().aktifKullaniciId = aktifKullanici!.id;
 
-            return const TabBarMainMovie();
+            return TabBarMainMovie();
           } else {
-            return const LoginScreen();
+            return LoginScreen();
           }
         }
       },

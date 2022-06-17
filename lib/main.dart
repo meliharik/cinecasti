@@ -3,13 +3,16 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:movie_suggestion/auth/onboarding.dart';
+import 'package:movie_suggestion/auth/register.dart';
+import 'package:movie_suggestion/screens/tab_bar_main/tabbar_main_movie.dart';
 import 'package:movie_suggestion/yonlendirme.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 List languages = [
   'en-US',
@@ -26,6 +29,8 @@ List languages = [
   'ko-KR',
 ];
 
+int? initScreen; //onboarding için
+
 Future<void> main() async {
   String defaultLocale = Platform.localeName; // en_US
   debugPrint("defaultLocale: " + defaultLocale);
@@ -40,7 +45,6 @@ Future<void> main() async {
     }
   }
 
-
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
   await EasyLocalization.ensureInitialized();
@@ -48,6 +52,11 @@ Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  initScreen = prefs.getInt("initScreen");
+  await prefs.setInt("initScreen", 1);
+  print('initScreen $initScreen');
   runApp(
     ProviderScope(
       child: EasyLocalization(
@@ -68,7 +77,7 @@ Future<void> main() async {
         fallbackLocale:
             Locale(defaultLocale.substring(0, 2), defaultLocale.substring(3)),
         path: 'assets/translations',
-        child: Phoenix(child: const MyApp()),
+        child: const MyApp(),
       ),
     ),
   );
@@ -85,7 +94,13 @@ class MyApp extends StatelessWidget {
       locale: context.locale,
       title: 'CineCasti',
       debugShowCheckedModeBanner: false,
-      home: const Yonlendirme(),
+      // home: OnboardingScreen(),
+      initialRoute:
+          initScreen == 0 || initScreen == null ? "/" : '/yonlendirme',
+      routes: {
+        '/': (context) => const OnboardingScreen(),
+        '/yonlendirme': (context) => const Yonlendirme(),
+      },
       theme: FlexThemeData.dark(
         scheme: FlexScheme.ebonyClay,
         surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,

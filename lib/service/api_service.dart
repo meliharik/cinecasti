@@ -514,7 +514,7 @@ class ApiService {
       required int page,
       required BuildContext context}) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/search/movie?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}&query=$query&page=$page'));
+        'https://api.themoviedb.org/3/search/movie?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&query=$query&page=$page'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['results'];
@@ -533,7 +533,7 @@ class ApiService {
       required int page,
       required BuildContext context}) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/search/tv?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}&query=$query&page=$page'));
+        'https://api.themoviedb.org/3/search/tv?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&query=$query&page=$page'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['results'];
@@ -552,7 +552,7 @@ class ApiService {
       required int page,
       required BuildContext context}) async {
     var response = await http.get(Uri.parse(
-        'https://api.themoviedb.org/3/search/person?api_key=cb7c804a5ca858c46d783add66f4de13&language=${context.locale.languageCode}&query=$query&page=$page'));
+        'https://api.themoviedb.org/3/search/person?api_key=cb7c804a5ca858c46d783add66f4de13&language=en-US&query=$query&page=$page'));
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       List results = jsonResponse['results'];

@@ -31,7 +31,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   void initState() {
     super.initState();
-    // internetKontrol();
   }
 
   @override
