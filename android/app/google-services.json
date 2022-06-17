@@ -14,6 +14,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "31809723964-11n0jvoctugo843547fta2qk69maaf7r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cinecasti.mobile",
+            "certificate_hash": "8089dc2a8e022e1f1dac9c92e44aa8bba305e71a"
+          }
+        },
+        {
+          "client_id": "31809723964-avunnbgt01lg98lcu17acum8p5far74t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cinecasti.mobile",
+            "certificate_hash": "3d3ade0e8b5c78da5d2f1c7bbc80d430e085aa39"
+          }
+        },
+        {
+          "client_id": "31809723964-mdt9gb471qgvknaeei7072o0ndsee9rd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cinecasti.mobile",
+            "certificate_hash": "b1e1e53edf03f75d3fe383e86a97a9c966c23e79"
+          }
+        },
+        {
           "client_id": "31809723964-4suos5jgbousp2o1uokor264gb0tm2lq.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -32,7 +56,8 @@
             }
           ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-1445173667226709~1989930369"
     }
   ],
   "configuration_version": "1"
